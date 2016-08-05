@@ -47,7 +47,7 @@
         }
         @using (Html.BeginForm("GetUserPhoto", "Users"))
         {
-            <button class="btn btn-link needs-id" id="get-user-photo" disabled>@Resource.User_GetUserPhoto</button>
+            <button class="btn btn-link needs-id" id="get-user-photo" disabled @if (accountType == "msa") { @("name=not-supported") }>@Resource.User_GetUserPhoto</button>
             <input class="selected-id" name="id" type="hidden" />
         }
         @using (Html.BeginForm("GetDirectReports", "Users"))

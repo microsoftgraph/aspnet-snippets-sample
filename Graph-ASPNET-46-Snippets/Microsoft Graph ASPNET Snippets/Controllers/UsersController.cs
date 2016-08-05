@@ -46,6 +46,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
                     foreach (User user in users)
                     {
 
+                        // Filter out conference rooms.
                         string displayName = user.DisplayName ?? "";
                         if (!displayName.StartsWith("Conf Room"))
                         {

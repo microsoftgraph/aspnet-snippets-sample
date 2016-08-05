@@ -466,7 +466,7 @@
     <comment>Property display name for Results view</comment>
   </data>
   <data name="User_GetUserPhoto" xml:space="preserve">
-    <value>Get a user's photo</value>
+    <value>Get a user's photo*</value>
     <comment>Property display name for Results view</comment>
   </data>
   <data name="File_ChooseFile" xml:space="preserve">
@@ -478,7 +478,7 @@
     <comment>Instruction when an unsupported item is selected for UpdateFileContent in File view</comment>
   </data>
   <data name="File_GetSharedWithMe" xml:space="preserve">
-    <value>Get items that are shared with me</value>
+    <value>Get items that are shared with me*</value>
     <comment>GetSharedWithMe button text for Files view</comment>
   </data>
   <data name="Group_GetUnifiedGroups" xml:space="preserve">

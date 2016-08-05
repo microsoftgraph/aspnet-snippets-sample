@@ -331,7 +331,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get items that are shared with me.
+        ///   Looks up a localized string similar to Get items that are shared with me*.
         /// </summary>
         internal static string File_GetSharedWithMe {
             get {
@@ -880,7 +880,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get a user&apos;s photo.
+        ///   Looks up a localized string similar to Get a user&apos;s photo*.
         /// </summary>
         internal static string User_GetUserPhoto {
             get {
