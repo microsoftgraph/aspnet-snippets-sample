@@ -1,0 +1,21 @@
+﻿<!--  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
+        See LICENSE in the source repository root for complete license information. -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Error</title>
+</head>
+<body>
+    <hgroup>
+        <h1>Error.</h1>
+        <h2>An error occurred while processing your request.</h2>
+    </hgroup>
+    <div class="alert alert-danger">@ViewBag.Message</div>
+    @if (!string.IsNullOrEmpty(ViewBag.Debug))
+    {
+    <pre>@ViewBag.Debug</pre>
+    }
+</body>
+</html>

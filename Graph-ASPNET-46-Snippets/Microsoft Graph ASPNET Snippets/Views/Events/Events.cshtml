@@ -1,0 +1,52 @@
+﻿<!--  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
+        See LICENSE in the source repository root for complete license information. -->
+
+@using Resources;
+
+@model Microsoft_Graph_ASPNET_Snippets.Models.ResultsViewModel
+
+@{
+    ViewBag.Title = string.Format(Resource.Snippets, Resource.Event);
+}
+
+<h2>@ViewBag.Title</h2>
+<div class="col-md-12">
+    <h3>@Resource.Choose_Snippet</h3>
+    <div class="form-group">
+        @using (Html.BeginForm("GetMyEvents", "Events"))
+        {
+            <button class="btn btn-link" id="get-my-events">@Resource.Event_GetMyEvents</button>
+        }
+        @using (Html.BeginForm("CreateEvent", "Events"))
+        {
+            <button class="btn btn-link" id="create-event">@Resource.Event_CreateEvent</button>
+        }
+    </div>
+    <p>@Resource.Needs_Id</p>
+    <div class="form-group">
+        @using (Html.BeginForm("GetEvent", "Events"))
+        {
+            <button class="btn btn-link needs-id" id="get-event" disabled>@Resource.Event_GetEvent</button>
+            <input class="selected-id" name="id" type="hidden" />
+        }
+        @using (Html.BeginForm("UpdateEvent", "Events"))
+        {
+            <button class="btn btn-link needs-id" id="update-event" disabled>@Resource.Event_UpdateEvent</button>
+            <input class="selected-id" name="id" type="hidden" />
+            <input class="selected-name" name="name" type="hidden" />
+        }
+        @using (Html.BeginForm("DeleteEvent", "Events"))
+        {
+            <button class="btn btn-link needs-id" id="delete-event" disabled>@Resource.Event_DeleteEvent</button>
+            <span class="alert-warning">@Html.Raw(Resource.Delete_Warning)</span>
+            <input class="selected-id" name="id" type="hidden" />
+        }
+    </div>
+</div>
+@Html.Partial("_ResultsPartial")
+
+
+
+
+
+

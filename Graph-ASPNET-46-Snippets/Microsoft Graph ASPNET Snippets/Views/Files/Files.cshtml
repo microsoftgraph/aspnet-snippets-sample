@@ -1,0 +1,70 @@
+﻿<!--  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
+        See LICENSE in the source repository root for complete license information. -->
+
+@using Resources;
+
+@model Microsoft_Graph_ASPNET_Snippets.Models.ResultsViewModel
+
+@{
+    ViewBag.Title = string.Format(Resource.Snippets, Resource.File_And_Folder);
+    var accountType = Session["AccountType"] as string;
+}
+
+<h2>@ViewBag.Title</h2>
+<div class="col-md-12">
+    <h3>@Resource.Choose_Snippet</h3>
+    <div class="form-group">
+        @using (Html.BeginForm("GetMyFilesAndFolders", "Files"))
+        {
+            <button class="btn btn-link" id="get-files">@Resource.File_GetMyFilesAndFolders</button>
+        }
+        @using (Html.BeginForm("GetSharedWithMe", "Files"))
+        {
+            <button class="btn btn-link" id="get-shared-with-me" @if (accountType == "msa") { @("disabled") }>@Resource.File_GetSharedWithMe</button>
+        }
+        @using (Html.BeginForm("GetMyDrive", "Files"))
+        {
+            <button class="btn btn-link" id="get-default-drive">@Resource.File_GetMyDrive</button>
+        }
+        @using (Html.BeginForm("CreateFile", "Files"))
+        {
+            <button class="btn btn-link" id="create-file">@Resource.File_CreateFile</button>
+        }
+        @using (Html.BeginForm("CreateFolder", "Files"))
+        {
+            <button class="btn btn-link" id="create-folder">@Resource.File_CreateFolder</button>
+        }
+    </div>
+    <p>@Resource.Needs_Id</p>
+    <div class="form-group">
+        @using (Html.BeginForm("GetFileOrFolderMetadata", "Files"))
+        {
+            <button class="btn btn-link needs-id" id="get-file-metadata" disabled>@Resource.File_GetFileOrFolderMetadata</button>
+            <input class="selected-id" name="id" type="hidden" />
+        }
+        @using (Html.BeginForm("DownloadFile", "Files"))
+        {
+            <button class="btn btn-link needs-id file-only" id="download-file" disabled>@Resource.File_DownloadFile</button>
+            <input class="selected-id" name="id" type="hidden" />
+        }
+        @using (Html.BeginForm("UpdateFileOrFolderMetadata", "Files"))
+        {
+            <button class="btn btn-link needs-id" id="update-file-metadata" disabled>@Resource.File_UpdateFileOrFolderMetadata</button>
+            <input class="selected-id" name="id" type="hidden" />
+            <input class="selected-name" name="name" type="hidden" />
+        }
+        @using (Html.BeginForm("UpdateFileContent", "Files"))
+        {
+            <button class="btn btn-link needs-id file-only" id="update-file-content" disabled>@Resource.File_UpdateFileContent</button>
+            <input class="selected-id" name="id" type="hidden" />
+            <input class="selected-name" name="name" type="hidden" />
+        }
+        @using (Html.BeginForm("DeleteFileOrFolder", "Files"))
+        {
+            <button class="btn btn-link needs-id" id="delete-file" disabled>@Resource.File_DeleteFileOrFolder</button>
+            <span class="alert-warning">@Html.Raw(Resource.Delete_Warning)</span>
+            <input class="selected-id" name="id" type="hidden" />
+        }
+    </div>
+</div>
+@Html.Partial("_ResultsPartial")
