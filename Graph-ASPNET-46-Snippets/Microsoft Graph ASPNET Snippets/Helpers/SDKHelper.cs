@@ -3,7 +3,6 @@
 *  See LICENSE in the source repository root for complete license information. 
 */
 
-using System.Threading.Tasks;
 using Microsoft.Graph;
 using System.Net.Http.Headers;
 using System;
