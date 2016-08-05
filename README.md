@@ -10,7 +10,7 @@
 * [Contributing](#contributing)
 * [Additional resources](#additional-resources)
 
-This sample project provides a repository of code snippets that use the Microsoft Graph to perform common tasks, such as sending email, managing groups, and other activities from within an ASP.NET MVC app. It uses the [Microsoft Graph .NET Client SDK](https://github.com/microsoftgraph/msgraph-sdk-dotnet) to work with data returned by Microsoft Graph. 
+This sample project provides a repository of code snippets that use the Microsoft Graph to perform common tasks, such as sending email, managing groups, and other activities from within an ASP.NET MVC app. It uses the [Microsoft Graph .NET Client SDK](https://github.com/microsoftgraph/msgraph-sdk-dotnet) to work with data returned by the Microsoft Graph. 
 
 In addition, the sample uses the [Microsoft Authentication Library (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) for authentication. The MSAL SDK provides features for working with the [v2 authentication endpoint](https://azure.microsoft.com/en-us/documentation/articles/active-directory-appmodel-v2-overview), which enables developers to write a single code flow that handles authentication for both work or school (Azure Active Directory) and personal (Microsoft) accounts.
 
@@ -21,7 +21,7 @@ In addition, the sample uses the [Microsoft Authentication Library (MSAL)](https
 This sample requires the following:  
 
   * [Visual Studio 2015](https://www.visualstudio.com/en-us/downloads) 
-  * Either a [Microsoft account](https://www.outlook.com) or an administrator [Office 365 for business account](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account). You can sign up for [an Office 365 Developer subscription](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account) that includes the resources that you need to start building Office 365 apps.
+  * Either a [Microsoft account](https://www.outlook.com) or an administrator [Office 365 for business account](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account). You can sign up for [an Office 365 Developer subscription](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account) that includes the resources that you need to start building apps.
 
 ## Register the application
 
@@ -62,7 +62,7 @@ This sample requires the following:
 
    >If you see any errors while installing packages, make sure the local path where you placed the solution is not too long/deep. Moving the solution closer to the root of your drive may resolve this issue.
 
-5. Sign in with your personal account or your work or school administrator account, and grant the requested permissions. This sample requests permission scopes that can only be granted by an admin.
+5. Sign in with your personal account or your work or school administrator account, and grant the requested permissions. This sample requests commercial permission scopes that can only be granted by an admin.
 
 6. Choose a snippets category, such as Users, Files, or Mail.
 
@@ -81,31 +81,31 @@ To use the sample without modifying your actual account data, be sure to perform
 
 ## Code of note
 
-- [Startup.Auth.cs](/Graph-ASPNET-46-Snippets/Graph%20ASPNET%2046%20Snippets/App_Start/Startup.Auth.cs). Authenticates the current user and initializes the sample's token cache.
+- [Startup.Auth.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/App_Start/Startup.Auth.cs). Authenticates the current user and initializes the sample's token cache.
 
-- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Graph%20ASPNET%2046%20Snippets/TokenStorage/SessionTokenCache.cs). Stores the user's token information. You can replace this with your own custom token cache. Learn more in [Caching access tokens in a multitenant application](https://azure.microsoft.com/en-us/documentation/articles/guidance-multitenant-identity-token-cache/).
+- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs). Stores the user's token information. You can replace this with your own custom token cache. Learn more in [Caching access tokens in a multitenant application](https://azure.microsoft.com/en-us/documentation/articles/guidance-multitenant-identity-token-cache/).
 
-- [SampleAuthProvider.cs](/Graph-ASPNET-46-Snippets/Graph%20ASPNET%2046%20Snippets/Helpers/SampleAuthProvider.cs). Implements the local IAuthProvider interface, and gets an access token by using the **AcquireTokenSilentAsync** method. You can replace this with your own authorization provider. 
+- [SampleAuthProvider.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SampleAuthProvider.cs). Implements the local IAuthProvider interface, and gets an access token by using the **AcquireTokenSilentAsync** method. You can replace this with your own authorization provider. 
 
-- [SDKHelper.cs](/Graph-ASPNET-46-Snippets/Graph%20ASPNET%2046%20Snippets/Helpers/SDKHelper.cs). Initializes the **GraphServiceClient** from the [Microsoft Graph .NET Client Library](https://github.com/microsoftgraph/msgraph-sdk-dotnet) that's used to interact with the Microsoft Graph.
+- [SDKHelper.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SDKHelper.cs). Initializes the **GraphServiceClient** from the [Microsoft Graph .NET Client Library](https://github.com/microsoftgraph/msgraph-sdk-dotnet) that's used to interact with the Microsoft Graph.
 
 - The following controllers contain methods that use the **GraphServiceClient** to build and send calls to the Microsoft Graph service and process the response.
-  - [UsersController.cs](/Graph-ASPNET-46-Snippets/Graph%20ASPNET%2046%20Snippets/Controllers/UsersController.cs). 
-  - [MessagesController.cs](/Graph-ASPNET-46-Snippets/Graph%20ASPNET%2046%20Snippets/Controllers/MessagesController.cs).
-  - [EventsController.cs](/Graph-ASPNET-46-Snippets/Graph%20ASPNET%2046%20Snippets/Controllers/EventsController.cs). 
-  - [FilesController.cs](/Graph-ASPNET-46-Snippets/Graph%20ASPNET%2046%20Snippets/Controllers/FilesController.cs).  
-  - [GroupsController.cs](/Graph-ASPNET-46-Snippets/Graph%20ASPNET%2046%20Snippets/Controllers/GroupsController.cs). 
+  - [UsersController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/UsersController.cs) 
+  - [MessagesController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/MessagesController.cs)
+  - [EventsController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/EventsController.cs) 
+  - [FilesController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/FilesController.cs)  
+  - [GroupsController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/GroupsController.cs) 
 
 - The following views contain the sample's UI.  
-  - [Users.cshtml](/Graph-ASPNET-46-Snippets/Graph%20ASPNET%2046%20Snippets/Views/Users/Users.cshtml). 
-  - [Messages.cshtml](/Graph-ASPNET-46-Snippets/Graph%20ASPNET%2046%20Snippets/Views/Messages/Messages.cshtml).
-  - [Events.cshtml](/Graph-ASPNET-46-Snippets/Graph%20ASPNET%2046%20Snippets/Views/Events/Events.cshtml). 
-  - [Files.cshtml](/Graph-ASPNET-46-Snippets/Graph%20ASPNET%2046%20Snippets/Views/Files/Files.cshtml).  
-  - [Groups.cshtml](/Graph-ASPNET-46-Snippets/Graph%20ASPNET%2046%20Snippets/Views/Groups/Groups.cshtml).
+  - [Users.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Users/Users.cshtml) 
+  - [Messages.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Messages/Messages.cshtml)
+  - [Events.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Events/Events.cshtml) 
+  - [Files.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Files/Files.cshtml)  
+  - [Groups.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Groups/Groups.cshtml)
 
 - The following files contain the view models and partial view that are used to parse and display Microsoft Graph data as generic objects (for the purposes of this sample). 
-  - [ResultsViewModel.cs](/Graph-ASPNET-46-Snippets/Graph%20ASPNET%2046%20Snippets/Models/ResultsViewModel.cs).
-  - [_ResultsPartial.cshtml](/Graph-ASPNET-46-Snippets/Graph%20ASPNET%2046%20Snippets/Views/Shared/_ResultsPartial.cshtml).  
+  - [ResultsViewModel.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Models/ResultsViewModel.cs)
+  - [_ResultsPartial.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Shared/_ResultsPartial.cshtml)  
 
 ## Questions and comments
 
