@@ -58,14 +58,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.TokenStorage
             context.Session.Remove(CacheId);
         }
 
-        // Triggered right before ADAL needs to access the cache.
+        // Triggered right before MSAL needs to access the cache.
         // Reload the cache from the persistent store in case it changed since the last access.
         private void BeforeAccessNotification(TokenCacheNotificationArgs args)
         {
             Load();
         }
 
-        // Triggered right after ADAL accessed the cache.
+        // Triggered right after MSAL accessed the cache.
         private void AfterAccessNotification(TokenCacheNotificationArgs args)
         {
             // if the access operation resulted in a cache update

@@ -16,7 +16,7 @@ function onSelectedItemChanged() {
 
                 // Set the item name in the hidden name field, if it exists.
                 if ($('.selected-name')) {
-                    var displayName = selectedItem[0].previousSibling.parentElement.innerText;
+                    var displayName = selectedItem[0].previousSibling.parentNode.innerText;
                     $('.selected-name').prop('value', displayName.substring(2));
                 }
             }

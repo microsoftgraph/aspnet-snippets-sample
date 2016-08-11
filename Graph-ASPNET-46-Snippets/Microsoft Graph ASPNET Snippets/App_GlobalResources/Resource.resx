@@ -310,7 +310,7 @@
     <comment>GetMyFilesAndFolders button text for Files view</comment>
   </data>
   <data name="File_UpdateFileContent" xml:space="preserve">
-    <value>Update file content (.txt file only)</value>
+    <value>Update file contents (.txt file only)</value>
     <comment>UpdateFileContent button text for Files view</comment>
   </data>
   <data name="File_UpdateFileOrFolderMetadata" xml:space="preserve">

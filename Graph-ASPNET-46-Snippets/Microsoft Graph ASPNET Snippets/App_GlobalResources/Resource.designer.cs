@@ -340,7 +340,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update file content (.txt file only).
+        ///   Looks up a localized string similar to Update file contents (.txt file only).
         /// </summary>
         internal static string File_UpdateFileContent {
             get {

@@ -319,7 +319,8 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
         }
 
         // Update the metadata of a file or folder. 
-        // This snippet updates the item's name.
+        // This snippet updates the item's name. 
+        // To move an item, point the ParentReference.Id or ParentReference.Path property to the target destination.
         public async Task<ActionResult> UpdateFileOrFolderMetadata(string id, string name)
         {
             ResultsViewModel results = new ResultsViewModel();
@@ -337,7 +338,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
                 // Update the item.
                 DriveItem fileOrFolder = await graphClient.Me.Drive.Items[id].Request().UpdateAsync(new DriveItem
                 {
-                    Name = Resource.Updated + name
+                    Name = Resource.Updated + name.TrimEnd()
                 });
 
                 if (fileOrFolder != null)
