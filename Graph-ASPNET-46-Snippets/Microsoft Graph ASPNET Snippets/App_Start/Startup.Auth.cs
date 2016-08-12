@@ -16,6 +16,7 @@ using Microsoft_Graph_ASPNET_Snippets.TokenStorage;
 using System.IdentityModel.Tokens;
 using System.IdentityModel.Claims;
 using Microsoft.Identity.Client;
+using Microsoft_Graph_ASPNET_Snippets.Utils;
 
 namespace Microsoft_Graph_ASPNET_Snippets
 {
@@ -32,13 +33,22 @@ namespace Microsoft_Graph_ASPNET_Snippets
         private static string redirectUri = ConfigurationManager.AppSettings["ida:RedirectUri"];
         private static string nonAdminScopes = ConfigurationManager.AppSettings["ida:NonAdminScopes"];
         private static string adminScopes = ConfigurationManager.AppSettings["ida:AdminScopes"];
-        private static string scopes = "openid email profile offline_access " + nonAdminScopes + " " + adminScopes;
+        private static string scopes = "openid email profile offline_access " + nonAdminScopes;
 
         public void ConfigureAuth(IAppBuilder app)
         {
             app.SetDefaultSignInAsAuthenticationType(CookieAuthenticationDefaults.AuthenticationType);
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions());
+
+            app.UseOAuth2CodeRedeemer(
+                new OAuth2CodeRedeemerOptions
+                {
+                    ClientId = appId,
+                    ClientSecret = appSecret,
+                    RedirectUri = redirectUri
+                }
+                );
 
             app.UseOpenIdConnectAuthentication(
                 new OpenIdConnectAuthenticationOptions
@@ -70,7 +80,7 @@ namespace Microsoft_Graph_ASPNET_Snippets
                         {
                             var code = context.Code;
                             string signedInUserID = context.AuthenticationTicket.Identity.FindFirst(ClaimTypes.NameIdentifier).Value;
-                            string graphScopes = nonAdminScopes + " " + adminScopes;
+                            string graphScopes = nonAdminScopes;
                             string[] scopes = graphScopes.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                             
                             ConfidentialClientApplication cca = new ConfidentialClientApplication(appId, redirectUri,
