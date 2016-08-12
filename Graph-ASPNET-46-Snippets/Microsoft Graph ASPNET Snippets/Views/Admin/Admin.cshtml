@@ -1,4 +1,9 @@
-﻿
+﻿<!--  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
+        See LICENSE in the source repository root for complete license information. -->
+
+@using Resources;
+
+
 @{
     ViewBag.Title = "Admin";
 }
@@ -6,5 +11,5 @@
 <h2>Admin</h2>
 
 <text>
-    This page requires you to grant additional permissions to the app. Click <a href="@ViewBag.AuthorizationRequest">here</a> to be redirected to the consent experience.
+    @if (ViewBag.AuthorizationRequest != null) { string urlString = Resource.ConsentLink.Replace("URL", ViewBag.AuthorizationRequest); @Html.Raw(urlString) } else { @Resource.NoConsentRequired}
 </text>
