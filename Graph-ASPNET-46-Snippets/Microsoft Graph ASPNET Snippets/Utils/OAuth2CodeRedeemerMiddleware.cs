@@ -61,7 +61,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Utils
                     try
                     {
                         AuthenticationResult result = await cca.AcquireTokenByAuthorizationCodeAsync(crd.Scopes, code);
-
+                        HttpContext.Current.Session.Add("IsAdmin", true);
 
                     }
                     catch (Exception ee)

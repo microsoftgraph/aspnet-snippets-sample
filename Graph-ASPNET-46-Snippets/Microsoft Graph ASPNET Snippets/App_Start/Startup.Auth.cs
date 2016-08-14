@@ -95,6 +95,8 @@ namespace Microsoft_Graph_ASPNET_Snippets
                             {
                                 HttpContext.Current.Session.Add("AccountType", "msa");
                             }
+                            // Set IsAdmin session variable to false, since the user hasn't consented to admin scopes yet.
+                            HttpContext.Current.Session.Add("IsAdmin", false);
                         },
                         AuthenticationFailed = (context) =>
                         {

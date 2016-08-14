@@ -57,8 +57,13 @@ namespace Microsoft_Graph_ASPNET_Snippets.Helpers
                 redirectUri + segments[1],
                 new ClientCredential(appSecret),
                 tokenCache);
-            
-            string allScopes = nonAdminScopes + " " + adminScopes;
+            bool? isAdmin = HttpContext.Current.Session["IsAdmin"] as bool?;
+
+            string allScopes = nonAdminScopes;
+            if (isAdmin.GetValueOrDefault())
+            {
+                allScopes += " " + adminScopes;
+            }
             string[] scopes = allScopes.Split(new char[] { ' ' });
             try
             {
