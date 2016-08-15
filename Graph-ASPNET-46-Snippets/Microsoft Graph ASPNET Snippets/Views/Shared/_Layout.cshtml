@@ -3,6 +3,7 @@
 
 @{
     ViewBag.AppName = "Microsoft Graph Snippets Sample for ASP.NET 4.6";
+    var accountType = Session["AccountType"] as string;
 }
 
 <!DOCTYPE html>
@@ -34,7 +35,10 @@
                     <li>@Html.ActionLink("Events", "Index", "Events")</li>
                     <li>@Html.ActionLink("Files", "Index", "Files")</li>
                     <li>@Html.ActionLink("Groups", "Index", "Groups")</li>
+                    @if (accountType != "msa")
+                    {
                     <li>@Html.ActionLink("Admin scopes", "Index", "Admin")</li>
+                    }
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
