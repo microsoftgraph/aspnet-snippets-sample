@@ -115,6 +115,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Click &lt;a href=&quot;URL&quot;&gt;here&lt;/a&gt; to consent to the admin-only scopes..
+        /// </summary>
+        internal static string ConsentLink {
+            get {
+                return ResourceManager.GetString("ConsentLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;b&gt;Warning:&lt;/b&gt; This operation cannot be undone..
         /// </summary>
         internal static string Delete_Warning {
@@ -525,6 +534,15 @@ namespace Resources {
         internal static string Needs_Id {
             get {
                 return ResourceManager.GetString("Needs_Id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have consented to the admin-only scopes..
+        /// </summary>
+        internal static string NoConsentRequired {
+            get {
+                return ResourceManager.GetString("NoConsentRequired", resourceCulture);
             }
         }
         

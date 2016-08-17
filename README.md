@@ -12,9 +12,13 @@
 
 This sample project provides a repository of code snippets that use the Microsoft Graph to perform common tasks, such as sending email, managing groups, and other activities from within an ASP.NET MVC app. It uses the [Microsoft Graph .NET Client SDK](https://github.com/microsoftgraph/msgraph-sdk-dotnet) to work with data returned by the Microsoft Graph. 
 
-In addition, the sample uses the [Microsoft Authentication Library (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) for authentication. The MSAL SDK provides features for working with the [v2 authentication endpoint](https://azure.microsoft.com/en-us/documentation/articles/active-directory-appmodel-v2-overview), which enables developers to write a single code flow that handles authentication for both work or school (Azure Active Directory) and personal (Microsoft) accounts.
+The sample uses the [Microsoft Authentication Library (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) for authentication. The MSAL SDK provides features for working with the [v2.0 endpoint](https://azure.microsoft.com/en-us/documentation/articles/active-directory-appmodel-v2-overview), which enables developers to write a single code flow that handles authentication for both work or school (Azure Active Directory) and personal (Microsoft) accounts.
 
- > **Note** The MSAL SDK is currently in prerelease, and as such should not be used in production code. It is used here for illustrative purposes only.
+In addition, the sample shows how to request tokens incrementally--a feature supported by the v2.0 endpoint. Users consent to an initial set of permission scopes during sign in, but can consent to other scopes later. In the case of this sample, any valid user can sign in, but admininstrators can later consent to the admin-level scopes required for certain operations.
+
+The sample uses the [ASP.NET OpenId Connect OWIN middleware](https://www.nuget.org/packages/Microsoft.Owin.Security.OpenIdConnect/) for sign in and during the initial token acquisition. The sample also implements custom Owin middleware to exchange an authorization code for access and refresh tokens outside of the sign-in flow. The custom middleware calls MSAL to build the authorization request URI and handles the redirects. To learn more about incremental consent, see [Integrate Microsoft identity and the Microsoft Graph into a web application using OpenID Connect](https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2).
+
+ > **Note** The MSAL SDK is currently in prerelease, and as such should not be used in production code. The custom middleware and token cache have limitations that make them unsuitable for production code. For example, the middleware has a hard dependency on the cache, and the cache is session-based. The code is used here for illustrative purposes only.
 
 ## Prerequisites
 
@@ -62,13 +66,16 @@ This sample requires the following:
 
    >If you see any errors while installing packages, make sure the local path where you placed the solution is not too long/deep. Moving the solution closer to the root of your drive may resolve this issue.
 
-5. Sign in with your personal account or your work or school administrator account, and grant the requested permissions. This sample requests commercial permission scopes that can only be granted by an admin.
+5. Sign in with your personal account (MSA) or your work or school account, and grant the requested permissions. 
 
-6. Choose a snippets category, such as Users, Files, or Mail.
+6. Choose a snippets category, such as Users, Files, or Mail. 
 
-7. Choose an operation you want to run. Operations that require an argument (such as ID) are disabled until you run a snippet that lets you select an entity. 
+7. Choose an operation you want to run. Note the following:
+  - Operations that require an argument (such as ID) are disabled until you run a snippet that lets you select an entity. 
 
-   If you logged in with a personal account, snippets that aren't supported for Microsoft accounts are disabled.
+  - Some snippets (marked as *admin-only*) require commercial permission scopes that can only be granted by an administrator. To run these snippets, you need to sign in as an admin and then use the link on the *Admin scopes* tab to consent to the admin-level scopes. This tab is not available for users who are logged in with personal accounts.
+   
+  - If you logged in with a personal account, snippets that aren't supported for Microsoft accounts are disabled..
    
 Response information is displayed at the bottom of the page.
 
@@ -106,6 +113,10 @@ To use the sample without modifying your actual account data, be sure to perform
 - The following files contain the view models and partial view that are used to parse and display Microsoft Graph data as generic objects (for the purposes of this sample). 
   - [ResultsViewModel.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Models/ResultsViewModel.cs)
   - [_ResultsPartial.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Shared/_ResultsPartial.cshtml)  
+
+- The following files contain code used to implement incremental consent. 
+  - [AdminController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/AdminController.cs)
+  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs)
 
 ## Questions and comments
 

@@ -170,6 +170,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\EventsController.cs" />
     <Compile Include="Controllers\FilesController.cs" />
     <Compile Include="Controllers\GroupsController.cs" />
@@ -188,6 +189,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="TokenStorage\SessionTokenCache.cs" />
+    <Compile Include="Utils\OAuth2CodeRedeemerMiddleware.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\FileToUpload.txt" />
@@ -245,6 +247,7 @@
   <ItemGroup>
     <None Include="Properties\PublishProfiles\aspnet-snippets - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\aspnet-snippets - Web Deploy.pubxml" />
+    <Content Include="Views\Admin\Admin.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

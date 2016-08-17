@@ -493,4 +493,12 @@
     <value>Member count</value>
     <comment>Property display name for Results view</comment>
   </data>
+  <data name="ConsentLink" xml:space="preserve">
+    <value>Click &lt;a href="URL"&gt;here&lt;/a&gt; to consent to the admin-only scopes.</value>
+    <comment>Text for selecting a link</comment>
+  </data>
+  <data name="NoConsentRequired" xml:space="preserve">
+    <value>You have consented to the admin-only scopes.</value>
+    <comment>Text that appears when user has already consented to admin scopes</comment>
+  </data>
 </root>
