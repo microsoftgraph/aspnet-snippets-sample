@@ -394,7 +394,7 @@
     <comment>DeleteUser button text for Users view</comment>
   </data>
   <data name="User_GetDirectReports" xml:space="preserve">
-    <value>Get a user's direct reports*</value>
+    <value>Get a user's direct reports (admin-only)*</value>
     <comment>GetDirectReports button text for Users view</comment>
   </data>
   <data name="User_GetMe" xml:space="preserve">

@@ -853,7 +853,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get a user&apos;s direct reports*.
+        ///   Looks up a localized string similar to Get a user&apos;s direct reports (admin-only)*.
         /// </summary>
         internal static string User_GetDirectReports {
             get {

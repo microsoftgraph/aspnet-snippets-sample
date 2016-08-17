@@ -3,20 +3,20 @@
 *  See LICENSE in the source repository root for complete license information. 
 */
 
-using System;
-using System.Collections.Generic;
-using System.Web.Mvc;
-using System.Threading.Tasks;
 using Microsoft.Graph;
 using Microsoft_Graph_ASPNET_Snippets.Helpers;
 using Microsoft_Graph_ASPNET_Snippets.Models;
 using Resources;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
 {
     [Authorize]
     public class GroupsController : Controller
     {
+        GroupsService groupsService = new GroupsService();
+
         public ActionResult Index()
         {
             return View("Groups");
@@ -27,29 +27,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
         public async Task<ActionResult> GetGroups()
         {
             ResultsViewModel results = new ResultsViewModel();
-            List<ResultsItem> items = new List<ResultsItem>();
-
             try
             {
 
                 // Initialize the GraphServiceClient.
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-                
+
                 // Get groups.
-                IGraphServiceGroupsCollectionPage groups = await graphClient.Groups.Request().GetAsync();
-                
-                if (groups?.Count > 0)
-                {
-                    foreach (Group group in groups)
-                    {
-                        items.Add(new ResultsItem
-                        {
-                            Display = group.DisplayName,
-                            Id = group.Id
-                        });
-                    }
-                }
-                results.Items = items;
+                results.Items = await groupsService.GetGroups(graphClient);
             }
             catch (ServiceException se)
             {
@@ -64,29 +49,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
         public async Task<ActionResult> GetUnifiedGroups()
         {
             ResultsViewModel results = new ResultsViewModel();
-            List<ResultsItem> items = new List<ResultsItem>();
-
             try
             {
 
                 // Initialize the GraphServiceClient.
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-                
+
                 // Get unified groups.
-                IGraphServiceGroupsCollectionPage groups = await graphClient.Groups.Request().Filter("groupTypes/any(a:a%20eq%20'unified')").GetAsync();
-                
-                if (groups?.Count > 0)
-                {
-                    foreach (Group group in groups)
-                    {
-                        items.Add(new ResultsItem
-                        {
-                            Display = group.DisplayName,
-                            Id = group.Id
-                        });
-                    }
-                }
-                results.Items = items;
+                results.Items = await groupsService.GetUnifiedGroups(graphClient);
             }
             catch (ServiceException se)
             {
@@ -101,8 +71,6 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
         public async Task<ActionResult> GetMyMemberOfGroups()
         {
             ResultsViewModel results = new ResultsViewModel();
-            List<ResultsItem> items = new List<ResultsItem>();
-
             try
             {
 
@@ -110,27 +78,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
 
                 // Get groups the current user is a direct member of.
-                IUserMemberOfCollectionWithReferencesPage memberOfGroups = await graphClient.Me.MemberOf.Request().GetAsync();
-                
-                if (memberOfGroups?.Count > 0)
-                {
-                    foreach (var directoryObject in memberOfGroups)
-                    {
-
-                        // We only want groups, so ignore DirectoryRole objects.
-                        if (directoryObject is Group)
-                        {
-                            Group group = directoryObject as Group;
-                            items.Add(new ResultsItem
-                            {
-                                Display = group.DisplayName,
-                                Id = group.Id
-                            });
-                        }
-
-                    }
-                }
-                results.Items = items;
+                results.Items = await groupsService.GetMyMemberOfGroups(graphClient);
             }
             catch (ServiceException se)
             {
@@ -146,41 +94,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
         public async Task<ActionResult> CreateGroup()
         {
             ResultsViewModel results = new ResultsViewModel();
-            List<ResultsItem> items = new List<ResultsItem>();
-            ResultsItem item = new ResultsItem();
-            string guid = Guid.NewGuid().ToString();
-
             try
             {
 
                 // Initialize the GraphServiceClient.
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-                    
+
                 // Add the group.
-                Group group = await graphClient.Groups.Request().AddAsync(new Group
-                {
-                    GroupTypes = new List<string> { "Unified" },
-                    DisplayName = Resource.Group + guid.Substring(0, 8),
-                    Description = Resource.Group + guid,
-                    MailNickname = Resource.Group.ToLower() + guid.Substring(0, 8),
-                    MailEnabled = false,
-                    SecurityEnabled = false
-                });
-
-                if (group != null)
-                {
-                    
-                    // Get group properties.
-                    item.Display = group.DisplayName;
-                    item.Id = group.Id;
-                    item.Properties.Add(Resource.Prop_Description, group.Description);
-                    item.Properties.Add(Resource.Prop_Email, group.Mail);
-                    item.Properties.Add(Resource.Prop_Created, group.AdditionalData["createdDateTime"]);
-                    item.Properties.Add(Resource.Prop_Id, group.Id);
-
-                    items.Add(item);
-                }
-                results.Items = items;
+                results.Items = await groupsService.CreateGroup(graphClient);
             }
             catch (ServiceException se)
             {
@@ -195,31 +116,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
         public async Task<ActionResult> GetGroup(string id)
         {
             ResultsViewModel results = new ResultsViewModel();
-            List<ResultsItem> items = new List<ResultsItem>();
-            ResultsItem item = new ResultsItem();
-
             try
             {
 
                 // Initialize the GraphServiceClient.
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-                    
+
                 // Get the group.
-                Group group = await graphClient.Groups[id].Request().Expand("members").GetAsync();
-
-                if (group != null)
-                {
-
-                    // Get group properties.
-                    item.Display = group.DisplayName;
-                    item.Id = group.Id;
-                    item.Properties.Add(Resource.Prop_Email, group.Mail);
-                    item.Properties.Add(Resource.Prop_MemberCount, group.Members?.Count);
-                    item.Properties.Add(Resource.Prop_Id, group.Id);
-
-                    items.Add(item);
-                }
-                results.Items = items;
+                results.Items = await groupsService.GetGroup(graphClient, id);
             }
             catch (ServiceException se)
             {
@@ -235,31 +139,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
         {
             ResultsViewModel results = new ResultsViewModel();
             results.Selectable = false;
-            List<ResultsItem> items = new List<ResultsItem>();
-
             try
             {
 
                 // Initialize the GraphServiceClient.
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-                   
-                // Get group members. 
-                IGroupMembersCollectionWithReferencesPage members = await graphClient.Groups[id].Members.Request().GetAsync();
 
-                if (members?.Count > 0)
-                {
-                    foreach (User user in members)
-                    {
-                        ResultsItem item = new ResultsItem();
-
-                        // Get member properties.
-                        item.Properties.Add(Resource.Prop_Upn, user.UserPrincipalName);
-                        item.Properties.Add(Resource.Prop_Id, user.Id);
-
-                        items.Add(item);
-                    }
-                    results.Items = items;
-                }
+                // Get group members.
+                results.Items = await groupsService.GetMembers(graphClient, id);
             }
             catch (ServiceException se)
             {
@@ -275,31 +162,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
         {
             ResultsViewModel results = new ResultsViewModel();
             results.Selectable = false;
-            List<ResultsItem> items = new List<ResultsItem>();
-
             try
             {
 
                 // Initialize the GraphServiceClient.
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-                    
+
                 // Get group owners.
-                IGroupOwnersCollectionWithReferencesPage members = await graphClient.Groups[id].Owners.Request().GetAsync();
-                
-                if (members?.Count > 0)
-                {
-                    foreach (User user in members)
-                    {
-                        ResultsItem item = new ResultsItem();
-
-                        // Get owner properties.
-                        item.Properties.Add(Resource.Prop_Upn, user.UserPrincipalName);
-                        item.Properties.Add(Resource.Prop_Id, user.Id);
-
-                        items.Add(item);
-                    }
-                    results.Items = items;
-                }
+                results.Items = await groupsService.GetOwners(graphClient, id);
             }
             catch (ServiceException se)
             {
@@ -316,9 +186,6 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
         {
             ResultsViewModel results = new ResultsViewModel();
             results.Selectable = false;
-            List<ResultsItem> items = new List<ResultsItem>();
-            ResultsItem item = new ResultsItem();
-
             try
             {
 
@@ -326,15 +193,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
 
                 // Update the group.
-                await graphClient.Groups[id].Request().UpdateAsync(new Group
-                {
-                    DisplayName = Resource.Updated + name
-                });
-                
-                // This operation doesn't return anything.
-                item.Properties.Add(Resource.No_Return_Data, "");
-                items.Add(item);
-                results.Items = items;
+                results.Items = await groupsService.UpdateGroup(graphClient, id, name);
             }
             catch (ServiceException se)
             {
@@ -350,9 +209,6 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
         {
             ResultsViewModel results = new ResultsViewModel();
             results.Selectable = false;
-            List<ResultsItem> items = new List<ResultsItem>();
-            ResultsItem item = new ResultsItem();
-
             try
             {
 
@@ -360,12 +216,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
 
                 // Delete the group.
-                await graphClient.Groups[id].Request().DeleteAsync();
-                
-                // This operation doesn't return anything.
-                item.Properties.Add(Resource.No_Return_Data, "");
-                items.Add(item);
-                results.Items = items;
+                results.Items = await groupsService.DeleteGroup(graphClient, id);
             }
             catch (ServiceException se)
             {

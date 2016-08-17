@@ -185,7 +185,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\EventsService.cs" />
+    <Compile Include="Models\FilesService.cs" />
+    <Compile Include="Models\GroupsService.cs" />
+    <Compile Include="Models\MailService.cs" />
     <Compile Include="Models\ResultsViewModel.cs" />
+    <Compile Include="Models\UsersService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="TokenStorage\SessionTokenCache.cs" />
