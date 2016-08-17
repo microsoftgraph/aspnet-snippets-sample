@@ -19,6 +19,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
     [Authorize]
     public class UsersController : Controller
     {
+        UsersService usersService = new UsersService();
 
         // Load the view.
         public ActionResult Index()
@@ -30,35 +31,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
         public async Task<ActionResult> GetUsers()
         {
             ResultsViewModel results = new ResultsViewModel();
-            List<ResultsItem> items = new List<ResultsItem>();
-
             try
             {
 
                 // Initialize the GraphServiceClient.
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
 
-                IGraphServiceUsersCollectionPage users = await graphClient.Users.Request().GetAsync();
-
-                // Populate the view model.
-                if (users?.Count > 0)
-                {
-                    foreach (User user in users)
-                    {
-
-                        // Filter out conference rooms.
-                        string displayName = user.DisplayName ?? "";
-                        if (!displayName.StartsWith("Conf Room"))
-                        {
-                            items.Add(new ResultsItem
-                            {
-                                Display = user.DisplayName,
-                                Id = user.Id
-                            });
-                        }
-                    }
-                }
-                results.Items = items;
+                // Get users.
+                results.Items = await usersService.GetUsers(graphClient);
             }
             catch (ServiceException se)
             {
@@ -72,30 +52,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
         public async Task<ActionResult> GetMe()
         {
             ResultsViewModel results = new ResultsViewModel();
-            List<ResultsItem> items = new List<ResultsItem>();
-            ResultsItem item = new ResultsItem();
-
             try
             {
 
                 // Initialize the GraphServiceClient.
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-                    
+
                 // Get the current user's profile.
-                User me = await graphClient.Me.Request().GetAsync();
-                
-                if (me != null)
-                {
-
-                    // Get user properties.
-                    item.Display = me.DisplayName;
-                    item.Id = me.Id;
-                    item.Properties.Add(Resource.Prop_Upn, me.UserPrincipalName);
-                    item.Properties.Add(Resource.Prop_Id, me.Id);
-
-                    items.Add(item);
-                }
-                results.Items = items;
+                results.Items = await usersService.GetMe(graphClient);
             }
             catch (ServiceException se)
             {
@@ -109,30 +73,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
         public async Task<ActionResult> GetMyManager()
         {
             ResultsViewModel results = new ResultsViewModel();
-            List<ResultsItem> items = new List<ResultsItem>();
-            ResultsItem item = new ResultsItem();
-
             try
             {
 
                 // Initialize the GraphServiceClient.
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-                    
+
                 // Get the current user's manager.
-                User manager = await graphClient.Me.Manager.Request().GetAsync() as User; 
-                
-                if (manager != null)
-                {
-
-                    // Get user properties.
-                    item.Display = manager.DisplayName;
-                    item.Id = manager.Id;
-                    item.Properties.Add(Resource.Prop_Upn, manager.UserPrincipalName);
-                    item.Properties.Add(Resource.Prop_Id, manager.Id);
-
-                    items.Add(item);
-                }
-                results.Items = items;
+                results.Items = await usersService.GetMyManager(graphClient);
             }
 
             // Known issue: Throws exception if manager is null, with message "Resource 'manager' does not exist or one of its queried reference-property objects are not present."
@@ -149,31 +97,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
         {
             ResultsViewModel results = new ResultsViewModel();
             results.Selectable = false;
-            List<ResultsItem> items = new List<ResultsItem>();
-            ResultsItem item = new ResultsItem();
-
             try
             {
 
                 // Initialize the GraphServiceClient.
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
 
-                using (Stream photo = await graphClient.Me.Photo.Content.Request().GetAsync())
-                {
-                    if (photo != null)
-                    {
-
-                        // Get byte[] for display.
-                        using (BinaryReader reader = new BinaryReader(photo))
-                        {
-                            byte[] data = reader.ReadBytes((int)photo.Length);
-                            item.Properties.Add("Stream", data);
-
-                            items.Add(item);
-                        }
-                    }
-                    results.Items = items;
-                }
+                // Get my photo.
+                results.Items = await usersService.GetMyPhoto(graphClient);
             }
 
             //Known issue: Throws exception if photo is null, with message "The photo wasn't found."
@@ -190,46 +121,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
         public async Task<ActionResult> CreateUser()
         {
             ResultsViewModel results = new ResultsViewModel();
-            List<ResultsItem> items = new List<ResultsItem>();
-            ResultsItem item = new ResultsItem();
-            string guid = Guid.NewGuid().ToString();
-
             try
             {
 
                 // Initialize the GraphServiceClient.
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
 
-                // This snippet gets the tenant domain from the Organization object to construct the user's email address.
-                IGraphServiceOrganizationCollectionPage organization = await graphClient.Organization.Request().GetAsync();
-                string alias = Resource.User.ToLower() + guid.Substring(0, 8);
-                string domain = organization.CurrentPage[0].VerifiedDomains.ElementAt(0).Name;
-
                 // Add the user.
-                User user = await graphClient.Users.Request().AddAsync(new User
-                {
-                    AccountEnabled = true,
-                    DisplayName = Resource.User + guid.Substring(0, 8),
-                    MailNickname = alias,
-                    PasswordProfile = new PasswordProfile
-                    {
-                        Password = Resource.Prop_Password
-                    },
-                    UserPrincipalName = alias + "@" + domain
-                });
-                
-                if (user != null)
-                {
-
-                    // Get user properties.
-                    item.Display = user.DisplayName;
-                    item.Id = user.Id;
-                    item.Properties.Add(Resource.Prop_Upn, user.UserPrincipalName);
-                    item.Properties.Add(Resource.Prop_Id, user.Id);
-
-                    items.Add(item);
-                }
-                results.Items = items;
+                results.Items = await usersService.CreateUser(graphClient);
             }
             catch (ServiceException se)
             {
@@ -243,9 +142,6 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
         public async Task<ActionResult> GetUser(string id)
         {
             ResultsViewModel results = new ResultsViewModel();
-            List<ResultsItem> items = new List<ResultsItem>();
-            ResultsItem item = new ResultsItem();
-
             try
             {
 
@@ -253,20 +149,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
 
                 // Get the user.
-                User user = await graphClient.Users[id].Request().GetAsync();
-                
-                if (user != null)
-                {
-
-                    // Get user properties.
-                    item.Display = user.DisplayName;
-                    item.Id = user.Id;
-                    item.Properties.Add(Resource.Prop_Upn, user.UserPrincipalName);
-                    item.Properties.Add(Resource.Prop_Id, user.Id);
-
-                    items.Add(item);
-                }
-                results.Items = items;
+                results.Items = await usersService.GetUser(graphClient, id);
             }
             catch (ServiceException se)
             {
@@ -281,9 +164,6 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
         {
             ResultsViewModel results = new ResultsViewModel();
             results.Selectable = false;
-            List<ResultsItem> items = new List<ResultsItem>();
-            ResultsItem item = new ResultsItem();
-
             try
             {
 
@@ -291,26 +171,10 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
 
                 // Get the user's photo.
-                using (Stream photo = await graphClient.Users[id].Photo.Content.Request().GetAsync())
-                {
-                    if (photo != null)
-                    {
-
-                        // Get byte[] for display.
-                        using (BinaryReader reader = new BinaryReader(photo))
-                        {
-                            byte[] data = reader.ReadBytes((int)photo.Length);
-                            item.Properties.Add("Stream", data);
-
-                            items.Add(item);
-                        }
-                    }
-                    results.Items = items;
-                }
+                results.Items = await usersService.GetUserPhoto(graphClient, id);
             }
 
-
-            // Throws an exception when requesting the photo for unlicensed users (such as those created by this sample), with message "The requested user 'userf0c1fe9a@MOD182601.onmicrosoft.com' is invalid."
+            // Throws an exception when requesting the photo for unlicensed users (such as those created by this sample), with message "The requested user '<user-name>' is invalid."
             catch (ServiceException se)
             {
                 if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
@@ -323,8 +187,6 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
         public async Task<ActionResult> GetDirectReports(string id)
         {
             ResultsViewModel results = new ResultsViewModel();
-            List<ResultsItem> items = new List<ResultsItem>();
-
             try
             {
 
@@ -332,27 +194,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
 
                 // Get user's direct reports.
-                IUserDirectReportsCollectionWithReferencesPage directs = await graphClient.Users[id].DirectReports.Request().GetAsync();
-                
-                if (directs?.Count > 0)
-                {
-                    foreach (User user in directs)
-                    {
-                        ResultsItem item = new ResultsItem
-                        {
-                            Display = user.DisplayName,
-                            Id = user.Id
-                        };
-
-                        // Get user properties.
-                        item.Properties.Add(Resource.Prop_Name, user.DisplayName);
-                        item.Properties.Add(Resource.Prop_Upn, user.UserPrincipalName);
-                        item.Properties.Add(Resource.Prop_Id, user.Id);
-
-                        items.Add(item);
-                    }
-                    results.Items = items;
-                }
+                results.Items = await usersService.GetDirectReports(graphClient, id);
             }
             catch (ServiceException se)
             {
@@ -369,28 +211,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
         {
             ResultsViewModel results = new ResultsViewModel();
             results.Selectable = false;
-            List<ResultsItem> items = new List<ResultsItem>();
-            ResultsItem item = new ResultsItem();
-
             try
             {
 
                 // Initialize the GraphServiceClient.
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-                
-                // Change user display name.
-                User userToUpdate = new User
-                {
-                    DisplayName = Resource.Updated + name
-                };
 
-                // Update the user.
-                await graphClient.Users[id].Request().UpdateAsync(userToUpdate);
-                
-                // This operation doesn't return anything.
-                item.Properties.Add(Resource.No_Return_Data, "");
-                items.Add(item);
-                results.Items = items;
+                // Change user display name.
+                results.Items = await usersService.UpdateUser(graphClient, id, name);
             }
             catch (ServiceException se)
             {
@@ -406,9 +234,6 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
         {
             ResultsViewModel results = new ResultsViewModel();
             results.Selectable = false;
-            List<ResultsItem> items = new List<ResultsItem>();
-            ResultsItem item = new ResultsItem();
-
             try
             {
 
@@ -416,25 +241,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
 
                 // Make sure that the current user is not selected.
-                User me = await graphClient.Me.Request().Select("id").GetAsync();
-                if (id == me.Id)
-                {
-
-                    // Selected item is not supported.
-                    results.Selectable = false;
-                    item.Properties.Add(Resource.User_ChooseAnotherUser, "");
-                }
-                else
-                {
-
-                    // Delete the user.
-                    await graphClient.Users[id].Request().DeleteAsync();
-                    
-                    // This operation doesn't return anything.
-                    item.Properties.Add(Resource.No_Return_Data, "");
-                    items.Add(item);
-                    results.Items = items;
-                }
+                results.Items = await usersService.DeleteUser(graphClient, id);
             }
             catch (ServiceException se)
             {

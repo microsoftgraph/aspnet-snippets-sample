@@ -3,51 +3,37 @@
 *  See LICENSE in the source repository root for complete license information. 
 */
 
-using System;
-using System.Collections.Generic;
-using System.Web.Mvc;
-using System.Threading.Tasks;
 using Microsoft.Graph;
 using Microsoft_Graph_ASPNET_Snippets.Helpers;
 using Microsoft_Graph_ASPNET_Snippets.Models;
 using Resources;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace Microsoft_Graph_ASPNET_Snippets.Controllers
 {
     [Authorize]
     public class MailController : Controller
     {
+        MailService mailService = new MailService();
+
         public ActionResult Index()
         {
             return View("Mail");
         }
-        
+
         // Get messages in all the current user's mail folders.
         public async Task<ActionResult> GetMyMessages()
         {
             ResultsViewModel results = new ResultsViewModel();
-            List<ResultsItem> items = new List<ResultsItem>();
             try
             {
 
                 // Initialize the GraphServiceClient.
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
 
-                // Get messages from all mail folders.
-                IUserMessagesCollectionPage messages = await graphClient.Me.Messages.Request().GetAsync();
-                    
-                if (messages?.Count > 0)
-                {
-                    foreach (Message message in messages)
-                    {
-                        items.Add(new ResultsItem
-                        {
-                            Display = message.Subject,
-                            Id = message.Id
-                        });
-                    }
-                }
-                results.Items = items;
+                // Get the messages.
+                results.Items = await mailService.GetMyMessages(graphClient);
             }
             catch (ServiceException se)
             {
@@ -63,29 +49,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
         public async Task<ActionResult> GetMyInboxMessages()
         {
             ResultsViewModel results = new ResultsViewModel();
-            List<ResultsItem> items = new List<ResultsItem>();
-
             try
             {
 
                 // Initialize the GraphServiceClient.
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
 
-                // Get messages in the Inbox folder.
-                IMailFolderMessagesCollectionPage messages = await graphClient.Me.MailFolders.Inbox.Messages.Request().GetAsync();
-                
-                if (messages?.Count > 0)
-                {
-                    foreach (Message message in messages)
-                    {
-                        items.Add(new ResultsItem
-                        {
-                            Display = message.Subject,
-                            Id = message.Id
-                        });
-                    }
-                }
-                results.Items = items;
+                // Get the messages.
+                results.Items = await mailService.GetMyInboxMessages(graphClient);
             }
             catch (ServiceException se)
             {
@@ -103,48 +74,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
         {
             ResultsViewModel results = new ResultsViewModel();
             results.Selectable = false;
-            List<ResultsItem> items = new List<ResultsItem>();
-            ResultsItem item = new ResultsItem();
-            string guid = Guid.NewGuid().ToString();
-
             try
             {
 
                 // Initialize the GraphServiceClient.
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
 
-                // Create the recipient list. This snippet uses the current user as the recipient.
-                User me = await graphClient.Me.Request().Select("Mail, UserPrincipalName").GetAsync();
-                string address = me.Mail ?? me.UserPrincipalName;
-
-                List<Recipient> recipients = new List<Recipient>();
-                recipients.Add(new Recipient
-                {
-                    EmailAddress = new EmailAddress
-                    {
-                        Address = address
-                    }
-                });
-
-                // Create the message.
-                Message email = new Message
-                {
-                    Body = new ItemBody
-                    {
-                        Content = Resource.Prop_Body + guid,
-                        ContentType = BodyType.Text,
-                    },
-                    Subject = Resource.Prop_Subject + guid.Substring(0, 8),
-                    ToRecipients = recipients
-                };
-
                 // Send the message.
-                await graphClient.Me.SendMail(email, true).Request().PostAsync();
-                
-                // This operation doesn't return anything.
-                item.Properties.Add(Resource.No_Return_Data, "");
-                items.Add(item);
-                results.Items = items;
+                results.Items = await mailService.SendMessage(graphClient);
             }
             catch (ServiceException se)
             {
@@ -160,32 +97,13 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
         public async Task<ActionResult> GetMessage(string id)
         {
             ResultsViewModel results = new ResultsViewModel();
-            List<ResultsItem> items = new List<ResultsItem>();
-            ResultsItem item = new ResultsItem();
-
             try
             {
-
                 // Initialize the GraphServiceClient.
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
 
                 // Get the message.
-                Message message = await graphClient.Me.Messages[id].Request().GetAsync();
-                
-                if (message != null)
-                {
-
-                    // Get message properties.
-                    item.Display = message.Subject;
-                    item.Id = message.Id;
-                    item.Properties.Add(Resource.Prop_BodyPreview, message.BodyPreview);
-                    item.Properties.Add(Resource.Prop_From, message.From.EmailAddress.Name);
-                    item.Properties.Add(Resource.Prop_Received, message.ReceivedDateTime.Value.LocalDateTime);
-                    item.Properties.Add(Resource.Prop_Id, message.Id);
-
-                    items.Add(item);
-                }
-                results.Items = items;
+                results.Items = await mailService.GetMessage(graphClient, id);
             }
             catch (ServiceException se)
             {
@@ -203,22 +121,13 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
         {
             ResultsViewModel results = new ResultsViewModel();
             results.Selectable = false;
-            List<ResultsItem> items = new List<ResultsItem>();
-            ResultsItem item = new ResultsItem();
-
             try
             {
-
                 // Initialize the GraphServiceClient.
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
 
                 // Delete the message.
-                await graphClient.Me.Messages[id].Request().DeleteAsync();
-
-                // This operation doesn't return anything.
-                item.Properties.Add(Resource.No_Return_Data, "");
-                items.Add(item);
-                results.Items = items;
+                results.Items = await mailService.DeleteMessage(graphClient, id);
             }
             catch (ServiceException se)
             {
