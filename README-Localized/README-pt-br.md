@@ -1,33 +1,33 @@
-# Exemplo de Trechos de Código do Microsoft Graph para ASP.NET 4.6
+# <a name="microsoft-graph-snippets-sample-for-asp.net-4.6"></a>Exemplo de Trechos de Código do Microsoft Graph para ASP.NET 4.6
 
-## Sumário
+## <a name="table-of-contents"></a>Sumário
 
-* [Pré-requisitos](#pré-requisitos)
-* [Registrar o aplicativo](#registrar-o-aplicativo)
-* [Criar e executar o exemplo](#criar-e-executar-o-exemplo)
-* [Código da observação](#código-da-observação)
-* [Perguntas e comentários](#perguntas-e-comentários)
-* [Colaboração](#colaboração)
-* [Recursos adicionais](#recursos-adicionais)
+* [Pré-requisitos](#prerequisites)
+* [Registrar o aplicativo](#register-the-application)
+* [Criar e executar o exemplo](#build-and-run-the-sample)
+* [Código da observação](#code-of-note)
+* [Perguntas e comentários](#questions-and-comments)
+* [Colaboração](#contributing)
+* [Recursos adicionais](#additional-resources)
 
 Este exemplo de projeto fornece um repositório de trechos de código que usa o Microsoft Graph para realizar tarefas comuns, como o envio de emails, gerenciamento de grupos e outras atividades diretamente de um aplicativo do ASP.NET MVC. O exemplo usa o [SDK de cliente do Microsoft Graph .NET](https://github.com/microsoftgraph/msgraph-sdk-dotnet) para trabalhar com dados retornados pelo Microsoft Graph. 
 
-O exemplo usa a [Biblioteca de Autenticação da Microsoft (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) para autenticação. O SDK da MSAL fornece recursos para trabalhar com o [ponto de extremidade v2.0](https://azure.microsoft.com/en-us/documentation/articles/active-directory-appmodel-v2-overview) que permite que os desenvolvedores gravem um único fluxo de código para tratar da autenticação de contas comerciais ou escolares (Azure Active Directory) e de contas pessoais (Microsoft).
+O exemplo usa a [Biblioteca de Autenticação da Microsoft (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) para autenticação. O SDK da MSAL fornece recursos para trabalhar com o [ponto de extremidade do Microsoft Azure AD versão 2.0](https://azure.microsoft.com/en-us/documentation/articles/active-directory-appmodel-v2-overview), que permite aos desenvolvedores gravar um único fluxo de código para tratar da autenticação de contas pessoais (Microsoft), corporativas ou de estudantes (Azure Active Directory).
 
-Além disso, o exemplo mostra como solicitar tokens de forma incremental, um recurso compatível com o ponto de extremidade v2.0. Os usuários permitem um conjunto inicial de escopos de permissão durante a conexão, mas podem permitir outros escopos posteriormente. No caso deste exemplo, qualquer usuário válido pode entrar, mas apenas administradores podem posteriormente permitir os escopos de administrador necessários para determinadas operações.
+Além disso, o exemplo mostra como solicitar tokens de forma incremental, um recurso compatível com o ponto de extremidade do Microsoft Azure AD versão 2.0. Os usuários permitem um conjunto inicial de escopos de permissão durante a conexão, mas podem permitir outros escopos posteriormente. No caso deste exemplo, qualquer usuário válido pode entrar, mas apenas administradores podem posteriormente permitir os escopos de administrador necessários para determinadas operações.
 
-O exemplo usa o [middleware OWIN do OpenId Connect do ASP.NET](https://www.nuget.org/packages/Microsoft.Owin.Security.OpenIdConnect/) para entrar e durante a aquisição de token inicial. O exemplo também implementa o middleware Owin personalizado para compartilhar um código de autorização para tokens de acesso e de atualização fora do fluxo de entrada. A middleware personalizado chama a MSAL para compilar o URI de solicitação de autorização e manipula os redirecionamentos. Para saber mais sobre o consentimento incremental, consulte [Integrar a identidade da Microsoft e o Microsoft Graph em um aplicativo Web usando o OpenID Connect](https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2).
+O exemplo usa o [middleware OWIN do OpenId Connect do ASP.NET](https://www.nuget.org/packages/Microsoft.Owin.Security.OpenIdConnect/) para entrar e durante a aquisição de token inicial. O exemplo também implementa o middleware Owin personalizado para compartilhar um código de autorização para tokens de acesso e de atualização fora do fluxo de entrada. O middleware personalizado chama a MSAL para compilar o URI de solicitação de autorização e manipula os redirecionamentos. Para saber mais sobre o consentimento incremental, confira o artigo [Integrar a identidade da Microsoft e o Microsoft Graph em um aplicativo Web usando o OpenID Connect](https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2).
 
  > **Observação** No momento, o SDK da MSAL encontra-se em pré-lançamento e como tal não deve ser usado no código de produção. O middleware personalizado e o cache de token têm limitações que os tornam impróprios para códigos de produção. Por exemplo, o middleware tem uma dependência difícil em cache e o cache é baseado em sessão. O código é usado apenas para fins ilustrativos
 
-## Pré-requisitos
+## <a name="prerequisites"></a>Pré-requisitos
 
 Este exemplo requer o seguinte:  
 
   * [Visual Studio 2015](https://www.visualstudio.com/en-us/downloads) 
-  * Uma [conta da Microsoft](https://www.outlook.com) ou uma [conta do Office 365 para empresas](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account). Uma conta de administrador do Office 365 é necessária para executar operações de administrador. Você pode se inscrever para uma [assinatura de Desenvolvedor do Office 365](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account) que inclui os recursos necessários para começar a criar aplicativos.
+  * Uma [conta da Microsoft](https://www.outlook.com) ou uma [conta do Office 365 para empresas](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account). Uma conta de administrador do Office 365 é necessária para executar operações de administrador. Inscreva-se para [uma Assinatura de Desenvolvedor do Office 365](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account), que inclui os recursos necessários para que você comece a criar aplicativos.
 
-## Registrar o aplicativo
+## <a name="register-the-application"></a>Registrar o aplicativo
 
 1. Entre no [Portal de Registro do Aplicativo](https://apps.dev.microsoft.com/) usando sua conta pessoal ou sua conta comercial ou escolar.
 
@@ -54,7 +54,7 @@ Este exemplo requer o seguinte:
 9. Escolha **Salvar**.
  
  
-## Criar e executar o exemplo
+## <a name="build-and-run-the-sample"></a>Criar e executar o exemplo
 
 1. Baixe ou clone o Exemplo de Trechos de Código do Microsoft Graph para ASP.NET 4.6.
 
@@ -73,20 +73,20 @@ Este exemplo requer o seguinte:
 7. Escolha uma operação que você queira executar. Observe o seguinte:
   - As operações que exigem um argumento (como ID) são desativadas até você executar um trecho de código que permita escolher uma entidade. 
 
-  - Alguns trechos de código (marcados como *somente administradores*) exigem escopos de permissão comerciais que só podem ser concedidos por um administrador. Para executar esses trechos de código, você precisa fazer logon como administrador e, em seguida, usar o link na guia *Escopos de administrador* para permitir escopos de administrador. Essa guia não está disponível para usuários que estão conectados com contas pessoais.
+  - Alguns trechos de código (marcados como *somente administradores*) exigem escopos de permissão comerciais que só podem ser concedidos por um administrador. Para executar esses trechos de código, entre como administrador e use o link na guia *Escopos de administrador* para permitir escopos em nível de administrador. Essa guia não está disponível para usuários que estão conectados com contas pessoais.
    
   - Se você estiver conectado com uma conta pessoal, os trechos de código sem suporte para contas da Microsoft serão desabilitados.
    
 As informações de resposta são exibidas na parte inferior da página.
 
-### Como o exemplo afeta os dados da conta
+### <a name="how-the-sample-affects-your-account-data"></a>Como o exemplo afeta os dados da conta
 
 Este exemplo cria, atualiza e exclui entidades e dados (como usuários ou arquivos). Dependendo do modo como você a usar, **poderá editar ou excluir dados e entidades reais** e deixar artefatos de dados. 
 
 Para usar o exemplo sem modificar seus dados reais da conta, certifique-se de executar a atualização e excluir operações somente em entidades que são criadas pelo exemplo. 
 
 
-## Código da observação
+## <a name="code-of-note"></a>Código da observação
 
 - [Startup.Auth.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/App_Start/Startup.Auth.cs). Autentica o usuário atual e inicializa o cache de token do exemplo.
 
@@ -94,7 +94,7 @@ Para usar o exemplo sem modificar seus dados reais da conta, certifique-se de ex
 
 - [SampleAuthProvider.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SampleAuthProvider.cs). Implementa a interface IAuthProvider local e obtém acesso a um token usando o método **AcquireTokenSilentAsync**. Isso pode ser substituído pelo seu próprio provedor de autorização. 
 
-- [SDKHelper.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SDKHelper.cs). Inicializa o **GraphServiceClient** na [Biblioteca de Cliente do Microsoft Graph .NET](https://github.com/microsoftgraph/msgraph-sdk-dotnet) usada para interagir com o Microsoft Graph.
+- [SDKHelper.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SDKHelper.cs). Inicializa o **GraphServiceClient**, na [Biblioteca do Cliente .NET para Microsoft Graph](https://github.com/microsoftgraph/msgraph-sdk-dotnet), que é usado para interagir com o Microsoft Graph.
 
 - Os seguintes controladores contêm métodos que usam o **GraphServiceClient** para criar e enviar chamadas para o serviço do Microsoft Graph e processar a resposta.
   - [UsersController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/UsersController.cs) 
@@ -118,24 +118,24 @@ Para usar o exemplo sem modificar seus dados reais da conta, certifique-se de ex
   - [AdminController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/AdminController.cs)
   - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs)
 
-## Perguntas e comentários
+## <a name="questions-and-comments"></a>Perguntas e comentários
 
 Gostaríamos de saber sua opinião sobre este exemplo. Você pode nos enviar suas perguntas e sugestões por meio da seção [Issues](https://github.com/microsoftgraph/aspnet-snippets-sample/issues) deste repositório.
 
 Seus comentários são importantes para nós. Junte-se a nós na página [Stack Overflow](http://stackoverflow.com/questions/tagged/microsoftgraph). Marque suas perguntas com [MicrosoftGraph].
 
-## Colaboração
+## <a name="contributing"></a>Colaboração
 
 Se quiser contribuir para esse exemplo, confira [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Este projeto adotou o [Código de Conduta do Código Aberto da Microsoft](https://opensource.microsoft.com/codeofconduct/). Para saber mais, confira as [Perguntas frequentes do Código de Conduta](https://opensource.microsoft.com/codeofconduct/faq/) ou contate [opencode@microsoft.com](mailto:opencode@microsoft.com) se tiver outras dúvidas ou comentários. 
 
-## Recursos adicionais
+## <a name="additional-resources"></a>Recursos adicionais
 
-- [Outros exemplos de Trechos de Código do Microsoft Graph](https://github.com/MicrosoftGraph?utf8=%E2%9C%93&query=snippets)
+- [Outros exemplos de trechos de código do Microsoft Graph](https://github.com/MicrosoftGraph?utf8=%E2%9C%93&query=snippets)
 - [Visão geral do Microsoft Graph](http://graph.microsoft.io)
 - [Exemplos de código para desenvolvedores do Office](http://dev.office.com/code-samples)
-- [Centro de desenvolvimento do Office](http://dev.office.com/)
+- [Centro de Desenvolvimento do Office](http://dev.office.com/)
 
-## Direitos autorais
+## <a name="copyright"></a>Direitos autorais
 Copyright © 2016 Microsoft. Todos os direitos reservados.
