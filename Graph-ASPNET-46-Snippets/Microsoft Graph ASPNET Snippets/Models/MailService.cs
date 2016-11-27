@@ -123,7 +123,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
                     Properties = new Dictionary<string, object>
                     {
                         { Resource.Prop_BodyPreview, message.BodyPreview },
-                        { Resource.Prop_From, message.From.EmailAddress.Name },
+                        { Resource.Prop_From, message.From?.EmailAddress.Name },
                         { Resource.Prop_Received, message.ReceivedDateTime.Value.LocalDateTime },
                         { Resource.Prop_Id, message.Id }
                     }

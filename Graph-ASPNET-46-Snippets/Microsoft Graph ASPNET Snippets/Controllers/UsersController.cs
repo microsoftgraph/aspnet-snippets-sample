@@ -83,7 +83,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
                 results.Items = await usersService.GetMyManager(graphClient);
             }
 
-            // Known issue: Throws exception if manager is null, with message "Resource 'manager' does not exist or one of its queried reference-property objects are not present."
+            // Throws exception if manager is null, with Request_ResourceNotFound code.
             catch (ServiceException se)
             {
                 if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
@@ -107,7 +107,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
                 results.Items = await usersService.GetMyPhoto(graphClient);
             }
 
-            //Known issue: Throws exception if photo is null, with message "The photo wasn't found."
+            // Throws exception if photo is null, with itemNotFound code.
             catch (ServiceException se)
             {
                 if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
