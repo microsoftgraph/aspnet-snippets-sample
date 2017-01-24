@@ -114,9 +114,9 @@ To use the sample without modifying your actual account data, be sure to perform
   - [ResultsViewModel.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Models/ResultsViewModel.cs)
   - [_ResultsPartial.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Shared/_ResultsPartial.cshtml)  
 
-- The following files contain code used to implement incremental consent. 
+- The following files contain code used to support incremental consent. For this sample, users are prompted to consent to an initial set of permissions during sign in, and admin permissions separately. 
   - [AdminController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/AdminController.cs)
-  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs)
+  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs). Custom middleware that redeems an authorization code for access and refresh tokens outside of the sign-in flow. See https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2 for more information about implementing incremental consent.
 
 ## Questions and comments
 
