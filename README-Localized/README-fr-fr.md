@@ -1,4 +1,4 @@
-# <a name="microsoft-graph-snippets-sample-for-asp.net-4.6"></a>Exemple d’extraits de code Microsoft Graph pour ASP.NET 4.6
+# <a name="microsoft-graph-snippets-sample-for-aspnet-46"></a>Exemple d’extraits de code Microsoft Graph pour ASP.NET 4.6
 
 ## <a name="table-of-contents"></a>Sommaire
 
@@ -39,7 +39,7 @@ Cet exemple nécessite les éléments suivants :
 
 4. Copiez l’ID de l’application. Il s’agit de l’identificateur unique de votre application. 
 
-5. Sous **Secrets de l’application**, choisissez **Générer un nouveau mot de passe**. Copiez le mot de passe à partir de la boîte de dialogue **Nouveau mot de passe créé**.
+5. Sous **Secrets de l'application**, choisissez **Générer un nouveau mot de passe**. Copiez le mot de passe à partir de la boîte de dialogue **Nouveau mot de passe créé**.
 
    Vous devez saisir l’ID d’application et la question secrète de l’application que vous avez copiés dans l’exemple d’application. 
 
@@ -114,9 +114,9 @@ Pour utiliser l’exemple sans modifier vos données de compte réelles, veillez
   - [ResultsViewModel.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Models/ResultsViewModel.cs)
   - [_ResultsPartial.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Shared/_ResultsPartial.cshtml)  
 
-- Les fichiers suivants contiennent le code utilisé pour implémenter le consentement incrémentiel. 
+- Les fichiers suivants contiennent le code utilisé pour prendre en charge le consentement incrémentiel. Pour cet exemple, les utilisateurs sont invités à consentir à un ensemble initial d’autorisations au cours de la connexion et à des autorisations d’administrateur séparément. 
   - [AdminController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/AdminController.cs)
-  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs)
+  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs). Intergiciel personnalisé qui échange un code d’autorisation pour les jetons d’accès et d’actualisation en dehors du flux de connexion. Pour plus d’informations sur l’implémentation du consentement incrémentiel, reportez-vous à https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2.
 
 ## <a name="questions-and-comments"></a>Questions et commentaires
 

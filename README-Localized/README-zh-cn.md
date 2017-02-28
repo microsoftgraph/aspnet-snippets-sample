@@ -1,4 +1,4 @@
-# <a name="microsoft-graph-snippets-sample-for-asp.net-4.6"></a>适用于 ASP.NET 4.6 的 Microsoft Graph 代码段示例
+# <a name="microsoft-graph-snippets-sample-for-aspnet-46"></a>适用于 ASP.NET 4.6 的 Microsoft Graph 代码段示例
 
 ## <a name="table-of-contents"></a>目录
 
@@ -114,9 +114,9 @@
   - [ResultsViewModel.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Models/ResultsViewModel.cs)
   - [_ResultsPartial.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Shared/_ResultsPartial.cshtml)  
 
-- 以下文件包含用于实现增量同意的代码。 
+- 以下文件包含用于支持增量同意的代码。对于此示例，系统将分别提示用户同意登录期间的初始权限集和管理权限。 
   - [AdminController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/AdminController.cs)
-  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs)
+  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs)。自定义中间件兑现登录流之外的访问令牌和刷新令牌的授权代码。有关实现增量同意的详细信息，请参阅 Https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2。
 
 ## <a name="questions-and-comments"></a>问题和意见
 

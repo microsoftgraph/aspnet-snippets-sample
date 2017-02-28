@@ -1,4 +1,4 @@
-# <a name="microsoft-graph-snippets-sample-for-asp.net-4.6"></a>Пример фрагментов кода Microsoft Graph для ASP.NET 4.6
+# <a name="microsoft-graph-snippets-sample-for-aspnet-46"></a>Пример фрагментов кода Microsoft Graph для ASP.NET 4.6
 
 ## <a name="table-of-contents"></a>Содержание
 
@@ -20,7 +20,7 @@
 
  > **Примечание.** Сейчас доступна предварительная версия пакета SDK MSAL, поэтому его не следует использовать в рабочем коде. Из-за ряда ограничений специальное ПО промежуточного слоя и кэш токенов непригодны для рабочего кода. Например, ПО промежуточного слоя сильно зависит от кэша, а кэш очищается после сеанса. Код используется здесь только в демонстрационных целях.
 
-## <a name="prerequisites"></a>Необходимые компоненты
+## <a name="prerequisites"></a>Необходимые условия
 
 Для этого примера требуются следующие компоненты:  
 
@@ -114,9 +114,9 @@
   - [ResultsViewModel.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Models/ResultsViewModel.cs)
   - [_ResultsPartial.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Shared/_ResultsPartial.cshtml)  
 
-- Файлы ниже содержат код, используемый для предоставления дополнительных разрешений. 
+- Файлы ниже содержат код, используемый для поддержки дополнительных разрешений. В этом примере при входе пользователям предлагается принять начальный набор разрешений и отдельно выбрать разрешения администратора. 
   - [AdminController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/AdminController.cs)
-  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs)
+  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs). Настраиваемое ПО промежуточного слоя, которое использует код авторизации для маркеров обновления и доступа после входа. Дополнительные сведения о внедрении дополнительного согласия см. по адресу: https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2.
 
 ## <a name="questions-and-comments"></a>Вопросы и комментарии
 

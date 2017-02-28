@@ -1,4 +1,4 @@
-# <a name="microsoft-graph-snippets-sample-for-asp.net-4.6"></a>Exemplo de Trechos de Código do Microsoft Graph para ASP.NET 4.6
+# <a name="microsoft-graph-snippets-sample-for-aspnet-46"></a>Exemplo de Trechos de Código do Microsoft Graph para ASP.NET 4.6
 
 ## <a name="table-of-contents"></a>Sumário
 
@@ -114,9 +114,9 @@ Para usar o exemplo sem modificar seus dados reais da conta, certifique-se de ex
   - [ResultsViewModel.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Models/ResultsViewModel.cs)
   - [_ResultsPartial.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Shared/_ResultsPartial.cshtml)  
 
-- Os arquivos a seguir contêm o código usado para implementar o consentimento incremental. 
+- Os arquivos a seguir contêm o código usado para fornecer suporte ao consentimento incremental. Neste exemplo, os usuários são solicitados a consentir um conjunto inicial de permissões durante a entrada e a consentir permissões de administrador separadamente. 
   - [AdminController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/AdminController.cs)
-  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs)
+  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs). Middleware personalizado que resgata um código de autorização para tokens de acesso e de atualização fora do fluxo de entrada. Confira https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2 para saber mais sobre como implementar o consentimento incremental.
 
 ## <a name="questions-and-comments"></a>Perguntas e comentários
 

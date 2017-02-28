@@ -1,4 +1,4 @@
-# <a name="microsoft-graph-snippets-sample-for-asp.net-4.6"></a>Microsoft Graph 程式碼片段範例 (適用於 ASP.NET 4.6)
+# <a name="microsoft-graph-snippets-sample-for-aspnet-46"></a>Microsoft Graph 程式碼片段範例 (適用於 ASP.NET 4.6)
 
 ## <a name="table-of-contents"></a>目錄
 
@@ -114,11 +114,11 @@
   - [ResultsViewModel.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Models/ResultsViewModel.cs)
   - [_ResultsPartial.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Shared/_ResultsPartial.cshtml)  
 
-- 下列檔案包含用來實作遞增同意的程式碼。 
+- 下列檔案包含用來支援遞增同意的程式碼。在此範例中，系統會提示使用者在登入期間同意初始權限集，並單獨授予管理員權限。 
   - [AdminController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/AdminController.cs)
-  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs)
+  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs)。自訂中介軟體，其可兌換授權碼以存取和重新整理登入流程之外的權杖。如需有關實作增量同意的詳細資訊，請參閱 https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2。
 
-## <a name="questions-and-comments"></a>問題和建議
+## <a name="questions-and-comments"></a>問題與建議
 
 我們很樂於收到您對於此範例的意見反應。您可以在此儲存機制的[問題](https://github.com/microsoftgraph/aspnet-snippets-sample/issues)區段中，將您的問題及建議傳送給我們。
 

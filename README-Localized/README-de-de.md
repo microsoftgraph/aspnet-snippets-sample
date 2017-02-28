@@ -1,4 +1,4 @@
-# <a name="microsoft-graph-snippets-sample-for-asp.net-4.6"></a>Microsoft Graph-Codeausschnittbeispiel für ASP.NET 4.6 
+# <a name="microsoft-graph-snippets-sample-for-aspnet-46"></a>Microsoft Graph-Codeausschnittbeispiel für ASP.NET 4.6 
 
 ## <a name="table-of-contents"></a>Inhalt
 
@@ -8,7 +8,7 @@
 * [Relevanter Code](#code-of-note)
 * [Fragen und Kommentare](#questions-and-comments)
 * [Mitwirkung](#contributing)
-* [Weitere Ressourcen](#additional-resources)
+* [Zusätzliche Ressourcen](#additional-resources)
 
 Dieses Beispielprojekt enthält ein Repository von Codeausschnitten, die Microsoft Graph verwenden, um allgemeine Aufgaben, z. B. das Senden von E-Mails, das Verwalten von Gruppen und andere Aktivitäten, aus einer ASP.NET-MVC-App heraus auszuführen. Es verwendet das [Microsoft Graph .NET-Client-SDK](https://github.com/microsoftgraph/msgraph-sdk-dotnet), um mit Daten zu arbeiten, die vom Microsoft Graph zurückgegeben werden. 
 
@@ -20,7 +20,7 @@ Das Beispiel verwendet die [ASP.NET OpenId Connect OWIN-Middleware](https://www.
 
  > **Hinweis** Das MSAL-SDK befindet sich derzeit in der Vorabversion und sollte daher nicht in Produktionscode verwendet werden. Die benutzerdefinierte Middleware und der Tokencache haben Einschränkungen, aufgrund der sie für Produktionscode nicht geeignet sind. Die Middleware weist beispielsweise eine harte Abhängigkeit vom Cache auf und der Cache ist sitzungsbasiert. Der Code dient hier nur zur Veranschaulichung.
 
-## <a name="prerequisites"></a>Anforderungen
+## <a name="prerequisites"></a>Voraussetzungen
 
 Für dieses Beispiel ist Folgendes erforderlich:  
 
@@ -35,7 +35,7 @@ Für dieses Beispiel ist Folgendes erforderlich:
 
 3. Geben Sie einen Namen für die App ein, und wählen Sie **Anwendung erstellen** aus. 
     
-   Die Registrierungsseite wird angezeigt wird, und die Eigenschaften der App werden aufgeführt.
+   Die Registrierungsseite wird angezeigt, und die Eigenschaften der App werden aufgeführt.
 
 4. Kopieren Sie die Anwendungs-ID: Dies ist der eindeutige Bezeichner für Ihre App. 
 
@@ -79,7 +79,7 @@ Für dieses Beispiel ist Folgendes erforderlich:
    
 Antwortinformationen werden am unteren Rand der Seite angezeigt.
 
-### <a name="how-the-sample-affects-your-account-data"></a>Wie sich das Beispiel auf Ihre Mandantendaten auswirkt
+### <a name="how-the-sample-affects-your-account-data"></a>Wie sich das Beispiel auf Ihre Kontodaten auswirkt
 
 In diesem Beispiel werden Entitäten und Daten erstellt, aktualisiert und gelöscht (z. B. Benutzer oder Dateien). Je nachdem, wie Sie das Beispiel verwenden, **bearbeiten oder löschen Sie tatsächliche Entitäten und Daten** und hinterlassen Datenartefakte. 
 
@@ -114,9 +114,9 @@ Um das Beispiel zu verwenden, ohne die tatsächlichen Kontodaten zu ändern, mü
   - [ResultsViewModel.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Models/ResultsViewModel.cs)
   - [_ResultsPartial.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Shared/_ResultsPartial.cshtml)  
 
-- Die folgenden Dateien enthalten Code, der zum Implementieren der inkrementellen Zustimmung verwendet wird. 
+- Die folgenden Dateien enthalten Code zur Unterstützung der inkrementellen Zustimmung. In diesem Beispiel werden Benutzer aufgefordert, einem anfänglichen Satz von Berechtigungen während der Anmeldung zu Administratorberechtigungen separat zuzustimmen. 
   - [AdminController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/AdminController.cs)
-  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs)
+  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs) Benutzerdefinierte Middleware, um einen Autorisierungscode für Zugriffs- und Aktualisierungstoken außerhalb des Anmeldungsflusses einzulösen. Weitere Informationen zum Implementieren der inkrementellen Zustimmung finden Sie unter „https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2“.
 
 ## <a name="questions-and-comments"></a>Fragen und Kommentare
 

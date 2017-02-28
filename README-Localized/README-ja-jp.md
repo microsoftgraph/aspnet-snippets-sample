@@ -1,4 +1,4 @@
-﻿# <a name="microsoft-graph-snippets-sample-for-asp.net-4.6"></a>ASP.NET 4.6 用 Microsoft Graph スニペットのサンプル
+# <a name="microsoft-graph-snippets-sample-for-aspnet-46"></a>ASP.NET 4.6 用 Microsoft Graph スニペットのサンプル
 
 ## <a name="table-of-contents"></a>目次
 
@@ -25,7 +25,8 @@
 このサンプルを実行するには次のものが必要です:  
 
   * [Visual Studio 2015](https://www.visualstudio.com/en-us/downloads) 
-  * [Microsoft アカウント](https://www.outlook.com)または [Office 365 for Business アカウント](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account)のいずれか。管理レベルの操作を実行するには、Office 365 の管理者アカウントが必要です。アプリの構築を開始するために必要なリソースを含む、[Office 365 Developer サブスクリプション](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account)にサインアップできます。
+  * 
+  [Microsoft アカウント](https://www.outlook.com)または [Office 365 for Business アカウント](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account)のいずれか。管理レベルの操作を実行するには、Office 365 の管理者アカウントが必要です。アプリの構築を開始するために必要なリソースを含む、[Office 365 Developer サブスクリプション](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account)にサインアップできます。
 
 ## <a name="register-the-application"></a>アプリケーションの登録
 
@@ -39,7 +40,7 @@
 
 4. アプリケーション ID をコピーします。これは、アプリの一意識別子です。 
 
-5. **[アプリケーション シークレット]** で、**[新しいパスワードを生成する]** を選択します。**[新しいパスワードを生成する]** ダイアログからパスワードをコピーします。
+5. **[アプリケーション シークレット]** で、**[新しいパスワードを生成する]** を選びます。**[新しいパスワードが生成されました]** ダイアログからパスワードをコピーします。
 
    サンプル アプリにコピーするアプリ ID とアプリ シークレットの値を入力する必要があります。 
 
@@ -114,9 +115,9 @@
   - [ResultsViewModel.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Models/ResultsViewModel.cs)
   - [_ResultsPartial.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Shared/_ResultsPartial.cshtml)  
 
-- 次のファイルには、段階的な同意を実装するために使用されるコードが含まれています。 
+- 次のファイルには、段階的な同意をサポートするために使用されるコードが含まれています。このサンプルで、ユーザーはサインイン中にアクセス許可の初期セットへの同意を求められ、管理者アクセス許可への同意は別途求められます。 
   - [AdminController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/AdminController.cs)
-  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs)
+  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs)。アクセスの認証コードを使い、サインイン フローの外部のトークンを更新するカスタム ミドルウェアです。段階的な同意の実装の詳細については、https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2 を参照してください。
 
 ## <a name="questions-and-comments"></a>質問とコメント
 
@@ -138,4 +139,4 @@
 - [Office デベロッパー センター](http://dev.office.com/)
 
 ## <a name="copyright"></a>著作権
-Copyright (c) 2016 Microsoft.All rights reserved.
+Copyright (c) 2016 Microsoft. All rights reserved.

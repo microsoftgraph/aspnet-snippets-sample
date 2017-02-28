@@ -1,4 +1,4 @@
-# <a name="microsoft-graph-snippets-sample-for-asp.net-4.6"></a>Ejemplo de fragmentos de código de muestra de Microsoft Graph para ASP.NET 4.6
+# <a name="microsoft-graph-snippets-sample-for-aspnet-46"></a>Ejemplo de fragmentos de código de muestra de Microsoft Graph para ASP.NET 4.6
 
 ## <a name="table-of-contents"></a>Tabla de contenido
 
@@ -39,7 +39,7 @@ Este ejemplo necesita lo siguiente:
 
 4. Copie el Id. de aplicación. Se trata del identificador único para su aplicación. 
 
-5. En **Secretos de aplicación**, seleccione **Generar nueva contraseña**. Copie la contraseña del cuadro de diálogo de **Nueva contraseña generada**.
+5. En **Secretos de aplicación**, seleccione **Generar nueva contraseña**. Copie la contraseña del cuadro de diálogo **Nueva contraseña generada**.
 
    Deberá escribir los valores secretos de la aplicación y el Id. de la aplicación que ha copiado en la aplicación del ejemplo. 
 
@@ -51,7 +51,7 @@ Este ejemplo necesita lo siguiente:
 
    La opción **Permitir flujo implícito** permite el flujo híbrido. Durante la autenticación, esto permite que la aplicación reciba la información de inicio de sesión (id_token) y artefactos (en este caso, un código de autorización) que la aplicación puede usar para obtener un token de acceso.
 
-9. Seleccione **Guardar**.
+9. Elija **Guardar**.
  
  
 ## <a name="build-and-run-the-sample"></a>Compilar y ejecutar el ejemplo
@@ -79,7 +79,7 @@ Este ejemplo necesita lo siguiente:
    
 La información de la respuesta se muestra en la parte inferior de la página.
 
-### <a name="how-the-sample-affects-your-account-data"></a>Repercusión de la muestra en los datos de la cuenta
+### <a name="how-the-sample-affects-your-account-data"></a>Repercusión de la muestra en los datos en su cuenta
 
 Este ejemplo crea, actualiza y elimina entidades y datos, como por ejemplo, usuarios o archivos. Dependiendo del uso que haga, **puede modificar o eliminar entidades reales y datos** y dejar artefactos de datos. 
 
@@ -114,9 +114,9 @@ Para usar el ejemplo sin modificar los datos reales de la cuenta, asegúrese de 
   - [ResultsViewModel.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Models/ResultsViewModel.cs)
   - [_ResultsPartial.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Shared/_ResultsPartial.cshtml)  
 
-- Los archivos siguientes contienen el código usado para implementar el consentimiento incremental. 
+- Los archivos siguientes contienen el código usado para admitir el consentimiento incremental. En este ejemplo, se solicita a los usuarios su consentimiento para usar un conjunto inicial de permisos al iniciar sesión y, por otro lado, permisos de administración. 
   - [AdminController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/AdminController.cs)
-  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs)
+  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs) Software intermedio personalizado que permite canjear un código de autorización para acceder y actualizar tokens ajenos al flujo de inicio de sesión. Consulte https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2 para obtener más información sobre la implementación del consentimiento incremental.
 
 ## <a name="questions-and-comments"></a>Preguntas y comentarios
 
