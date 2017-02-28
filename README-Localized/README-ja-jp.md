@@ -1,4 +1,4 @@
-﻿# <a name="microsoft-graph-snippets-sample-for-asp.net-4.6"></a>ASP.NET 4.6 用 Microsoft Graph スニペットのサンプル
+# <a name="microsoft-graph-snippets-sample-for-aspnet-46"></a>ASP.NET 4.6 用 Microsoft Graph スニペットのサンプル
 
 ## <a name="table-of-contents"></a>目次
 
@@ -12,7 +12,7 @@
 
 このサンプル プロジェクトには、ASP.NET MVC アプリ内からのメール送信、グループ管理、および他のアクティビティなどの一般的なタスクを実行するために Microsoft Graph を使用する、コード スニペットのリポジトリが用意されています。[Microsoft Graph .NET クライアント SDK](https://github.com/microsoftgraph/msgraph-sdk-dotnet) を使用して、Microsoft Graph が返すデータを操作します。 
 
-サンプルでは認証に [Microsoft 認証ライブラリ (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) を使用します。MSAL SDK には、[Azure AD v2 0 エンドポイント](https://azure.microsoft.com/en-us/documentation/articles/active-directory-appmodel-v2-overview)を操作するための機能が用意されており、開発者は職場または学校 (Azure Active Directory) アカウント、および個人用 (Microsoft) アカウントの両方に対する認証を処理する 1 つのコード フローを記述することができます。
+サンプルでは認証に [Microsoft 認証ライブラリ (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) を使用します。MSAL SDK には、[Azure AD v2 0 エンドポイント](https://docs.microsoft.com/ja-jp/azure/active-directory/develop/active-directory-appmodel-v2-overview)を操作するための機能が用意されており、開発者は職場または学校 (Azure Active Directory) アカウント、および個人用 (Microsoft) アカウントの両方に対する認証を処理する 1 つのコード フローを記述することができます。
 
 またサンプルでは、トークンを段階的に要求する方法を示します。この方法は Azure AD v2.0 エンドポイントによってサポートされている機能です。ユーザーは、サインイン中にアクセス許可の適用範囲の最初のセットに同意することになりますが、後で他の適用範囲にも同意することができます。このサンプルの場合、すべての有効なユーザーがサインインできますが、管理者は後で特定の操作に必要な管理レベルの適用範囲に同意することができます。
 
@@ -24,8 +24,9 @@
 
 このサンプルを実行するには次のものが必要です:  
 
-  * [Visual Studio 2015](https://www.visualstudio.com/en-us/downloads) 
-  * [Microsoft アカウント](https://www.outlook.com)または [Office 365 for Business アカウント](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account)のいずれか。管理レベルの操作を実行するには、Office 365 の管理者アカウントが必要です。アプリの構築を開始するために必要なリソースを含む、[Office 365 Developer サブスクリプション](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account)にサインアップできます。
+  * [Visual Studio 2015](https://www.visualstudio.com/ja/downloads) 
+  * 
+  [Microsoft アカウント](https://www.outlook.com)または [Office 365 for Business アカウント](https://msdn.microsoft.com/ja-jp/office/office365/howto/setup-development-environment#bk_Office365Account)のいずれか。管理レベルの操作を実行するには、Office 365 の管理者アカウントが必要です。アプリの構築を開始するために必要なリソースを含む、[Office 365 Developer サブスクリプション](https://msdn.microsoft.com/ja-jp/office/office365/howto/setup-development-environment#bk_Office365Account)にサインアップできます。
 
 ## <a name="register-the-application"></a>アプリケーションの登録
 
@@ -39,7 +40,7 @@
 
 4. アプリケーション ID をコピーします。これは、アプリの一意識別子です。 
 
-5. **[アプリケーション シークレット]** で、**[新しいパスワードを生成する]** を選択します。**[新しいパスワードを生成する]** ダイアログからパスワードをコピーします。
+5. **[アプリケーション シークレット]** で、**[新しいパスワードを生成する]** を選びます。**[新しいパスワードが生成されました]** ダイアログからパスワードをコピーします。
 
    サンプル アプリにコピーするアプリ ID とアプリ シークレットの値を入力する必要があります。 
 
@@ -90,7 +91,7 @@
 
 - [Startup.Auth.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/App_Start/Startup.Auth.cs).現在のユーザーを認証して、サンプルのトークン キャッシュを初期化します。
 
-- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs).ユーザーのトークン情報を保存します。これを独自のカスタム トークン キャッシュと置き換えることができます。詳細については、「[マルチテナント アプリケーションのアクセス トークンのキャッシュ](https://azure.microsoft.com/en-us/documentation/articles/guidance-multitenant-identity-token-cache/)」を参照してください。
+- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs).ユーザーのトークン情報を保存します。これを独自のカスタム トークン キャッシュと置き換えることができます。詳細については、「[マルチテナント アプリケーションのアクセス トークンのキャッシュ](https://azure.microsoft.com/ja-jp/documentation/articles/guidance-multitenant-identity-token-cache/)」を参照してください。
 
 - [SampleAuthProvider.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SampleAuthProvider.cs)。ローカルの IAuthProvider インターフェイスを実装して、**AcquireTokenSilentAsync** メソッドを使用してアクセス トークンを取得します。これを独自の承認プロバイダーと置き換えることができます。 
 
@@ -114,9 +115,9 @@
   - [ResultsViewModel.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Models/ResultsViewModel.cs)
   - [_ResultsPartial.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Shared/_ResultsPartial.cshtml)  
 
-- 次のファイルには、段階的な同意を実装するために使用されるコードが含まれています。 
+- 次のファイルには、段階的な同意をサポートするために使用されるコードが含まれています。このサンプルで、ユーザーはサインイン中にアクセス許可の初期セットへの同意を求められ、管理者アクセス許可への同意は別途求められます。 
   - [AdminController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/AdminController.cs)
-  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs)
+  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs)。アクセスの認証コードを使い、サインイン フローの外部のトークンを更新するカスタム ミドルウェアです。段階的な同意の実装の詳細については、https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2 を参照してください。
 
 ## <a name="questions-and-comments"></a>質問とコメント
 
@@ -138,4 +139,4 @@
 - [Office デベロッパー センター](http://dev.office.com/)
 
 ## <a name="copyright"></a>著作権
-Copyright (c) 2016 Microsoft.All rights reserved.
+Copyright (c) 2016 Microsoft. All rights reserved.

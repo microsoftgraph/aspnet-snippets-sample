@@ -1,4 +1,4 @@
-# <a name="microsoft-graph-snippets-sample-for-asp.net-4.6"></a>Microsoft Graph-Codeausschnittbeispiel für ASP.NET 4.6 
+# <a name="microsoft-graph-snippets-sample-for-aspnet-46"></a>Microsoft Graph-Codeausschnittbeispiel für ASP.NET 4.6 
 
 ## <a name="table-of-contents"></a>Inhalt
 
@@ -8,11 +8,11 @@
 * [Relevanter Code](#code-of-note)
 * [Fragen und Kommentare](#questions-and-comments)
 * [Mitwirkung](#contributing)
-* [Weitere Ressourcen](#additional-resources)
+* [Zusätzliche Ressourcen](#additional-resources)
 
 Dieses Beispielprojekt enthält ein Repository von Codeausschnitten, die Microsoft Graph verwenden, um allgemeine Aufgaben, z. B. das Senden von E-Mails, das Verwalten von Gruppen und andere Aktivitäten, aus einer ASP.NET-MVC-App heraus auszuführen. Es verwendet das [Microsoft Graph .NET-Client-SDK](https://github.com/microsoftgraph/msgraph-sdk-dotnet), um mit Daten zu arbeiten, die vom Microsoft Graph zurückgegeben werden. 
 
-Das Beispiel verwendet die [Microsoft-Authentifizierungsbibliothek (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) für die Authentifizierung. Das MSAL-SDK bietet Features für die Arbeit mit dem [Azure AD v2.0-Endpunkt](https://azure.microsoft.com/en-us/documentation/articles/active-directory-appmodel-v2-overview), der es Entwicklern ermöglicht, einen einzelnen Codefluss zu schreiben, der die Authentifizierung sowohl für Geschäfts- oder Schulkonten (Azure Active Directory) als auch für persönliche Konten (Microsoft) verarbeitet. 
+Das Beispiel verwendet die [Microsoft-Authentifizierungsbibliothek (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) für die Authentifizierung. Das MSAL-SDK bietet Features für die Arbeit mit dem [Azure AD v2.0-Endpunkt](https://docs.microsoft.com/de-de/azure/active-directory/develop/active-directory-appmodel-v2-overview), der es Entwicklern ermöglicht, einen einzelnen Codefluss zu schreiben, der die Authentifizierung sowohl für Geschäfts- oder Schulkonten (Azure Active Directory) als auch für persönliche Konten (Microsoft) verarbeitet. 
 
 Darüber hinaus wird in dem Beispiel veranschaulicht, wie Token inkrementell angefordert werden - ein vom Azure AD v2.0-Endpunkt unterstütztes Feature. Der Benutzer stimmt während der Anmeldung einem anfänglichen Satz von Berechtigungsbereichen zu, es ist jedoch möglich, später auch anderen Bereichen zuzustimmen. Bei diesem Beispiel können sich alle gültigen Benutzer anmelden, Administratoren können jedoch später Bereichen auf Administratorebene zustimmen, die für bestimmte Vorgänge erforderlich sind.
 
@@ -20,12 +20,12 @@ Das Beispiel verwendet die [ASP.NET OpenId Connect OWIN-Middleware](https://www.
 
  > **Hinweis** Das MSAL-SDK befindet sich derzeit in der Vorabversion und sollte daher nicht in Produktionscode verwendet werden. Die benutzerdefinierte Middleware und der Tokencache haben Einschränkungen, aufgrund der sie für Produktionscode nicht geeignet sind. Die Middleware weist beispielsweise eine harte Abhängigkeit vom Cache auf und der Cache ist sitzungsbasiert. Der Code dient hier nur zur Veranschaulichung.
 
-## <a name="prerequisites"></a>Anforderungen
+## <a name="prerequisites"></a>Voraussetzungen
 
 Für dieses Beispiel ist Folgendes erforderlich:  
 
-  * [Visual Studio 2015](https://www.visualstudio.com/en-us/downloads) 
-  * Entweder ein [Microsoft-Konto](https://www.outlook.com) oder ein [Office 365 for Business-Konto](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account). Ein Office 365-Administratorkonto ist erforderlich, um die Vorgänge auf Administratorebene auszuführen. Sie können sich für ein [Office 365-Entwicklerabonnement](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account) registrieren. Dieses umfasst die Ressourcen, die Sie zum Erstellen von Apps benötigen.
+  * [Visual Studio 2015](https://www.visualstudio.com/de/downloads) 
+  * Entweder ein [Microsoft-Konto](https://www.outlook.com) oder ein [Office 365 for Business-Konto](https://msdn.microsoft.com/de-de/office/office365/howto/setup-development-environment#bk_Office365Account). Ein Office 365-Administratorkonto ist erforderlich, um die Vorgänge auf Administratorebene auszuführen. Sie können sich für ein [Office 365-Entwicklerabonnement](https://msdn.microsoft.com/de-de/office/office365/howto/setup-development-environment#bk_Office365Account) registrieren. Dieses umfasst die Ressourcen, die Sie zum Erstellen von Apps benötigen.
 
 ## <a name="register-the-application"></a>Registrieren der App
 
@@ -35,7 +35,7 @@ Für dieses Beispiel ist Folgendes erforderlich:
 
 3. Geben Sie einen Namen für die App ein, und wählen Sie **Anwendung erstellen** aus. 
     
-   Die Registrierungsseite wird angezeigt wird, und die Eigenschaften der App werden aufgeführt.
+   Die Registrierungsseite wird angezeigt, und die Eigenschaften der App werden aufgeführt.
 
 4. Kopieren Sie die Anwendungs-ID: Dies ist der eindeutige Bezeichner für Ihre App. 
 
@@ -79,7 +79,7 @@ Für dieses Beispiel ist Folgendes erforderlich:
    
 Antwortinformationen werden am unteren Rand der Seite angezeigt.
 
-### <a name="how-the-sample-affects-your-account-data"></a>Wie sich das Beispiel auf Ihre Mandantendaten auswirkt
+### <a name="how-the-sample-affects-your-account-data"></a>Wie sich das Beispiel auf Ihre Kontodaten auswirkt
 
 In diesem Beispiel werden Entitäten und Daten erstellt, aktualisiert und gelöscht (z. B. Benutzer oder Dateien). Je nachdem, wie Sie das Beispiel verwenden, **bearbeiten oder löschen Sie tatsächliche Entitäten und Daten** und hinterlassen Datenartefakte. 
 
@@ -90,7 +90,7 @@ Um das Beispiel zu verwenden, ohne die tatsächlichen Kontodaten zu ändern, mü
 
 - [Startup.Auth.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/App_Start/Startup.Auth.cs). Authentifiziert den aktuellen Benutzer und initialisiert den Tokencache des Beispiels.
 
-- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs). Speichert die Tokeninformationen des Benutzers. Sie können dies durch Ihren eigenen benutzerdefinierten Tokencache ersetzen. Weitere Informationen finden Sie unter [Zwischenspeichern von Zugriffstoken in einer Anwendung für mehrere Mandanten](https://azure.microsoft.com/en-us/documentation/articles/guidance-multitenant-identity-token-cache/).
+- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs). Speichert die Tokeninformationen des Benutzers. Sie können dies durch Ihren eigenen benutzerdefinierten Tokencache ersetzen. Weitere Informationen finden Sie unter [Zwischenspeichern von Zugriffstoken in einer Anwendung für mehrere Mandanten](https://azure.microsoft.com/de-de/documentation/articles/guidance-multitenant-identity-token-cache/).
 
 - [SampleAuthProvider.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SampleAuthProvider.cs). Implementiert die lokale IAuthProvider-Schnittstelle und ruft ein Zugriffstoken mithilfe der **AcquireTokenSilentAsync**-Methode ab. Sie können dies durch Ihren eigenen Autorisierungsanbieter ersetzen. 
 
@@ -114,9 +114,9 @@ Um das Beispiel zu verwenden, ohne die tatsächlichen Kontodaten zu ändern, mü
   - [ResultsViewModel.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Models/ResultsViewModel.cs)
   - [_ResultsPartial.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Shared/_ResultsPartial.cshtml)  
 
-- Die folgenden Dateien enthalten Code, der zum Implementieren der inkrementellen Zustimmung verwendet wird. 
+- Die folgenden Dateien enthalten Code zur Unterstützung der inkrementellen Zustimmung. In diesem Beispiel werden Benutzer aufgefordert, einem anfänglichen Satz von Berechtigungen während der Anmeldung zu Administratorberechtigungen separat zuzustimmen. 
   - [AdminController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/AdminController.cs)
-  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs)
+  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs) Benutzerdefinierte Middleware, um einen Autorisierungscode für Zugriffs- und Aktualisierungstoken außerhalb des Anmeldungsflusses einzulösen. Weitere Informationen zum Implementieren der inkrementellen Zustimmung finden Sie unter „https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2“.
 
 ## <a name="questions-and-comments"></a>Fragen und Kommentare
 

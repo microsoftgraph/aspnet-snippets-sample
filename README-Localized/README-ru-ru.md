@@ -1,4 +1,4 @@
-# <a name="microsoft-graph-snippets-sample-for-asp.net-4.6"></a>Пример фрагментов кода Microsoft Graph для ASP.NET 4.6
+# <a name="microsoft-graph-snippets-sample-for-aspnet-46"></a>Пример фрагментов кода Microsoft Graph для ASP.NET 4.6
 
 ## <a name="table-of-contents"></a>Содержание
 
@@ -12,7 +12,7 @@
 
 В этом примере представлены фрагменты кода, использующие Microsoft Graph для отправки электронной почты, управления группами и выполнения других стандартных задач из приложения ASP.NET MVC. Для работы с данными, возвращаемыми Microsoft Graph, используется [клиентский пакет SDK .NET Microsoft Graph](https://github.com/microsoftgraph/msgraph-sdk-dotnet). 
 
-Для проверки подлинности в этом примере используется библиотека [Microsoft Authentication Library (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/). В пакете SDK MSAL предусмотрены функции для работы с [конечной точкой Azure AD версии 2.0](https://azure.microsoft.com/en-us/documentation/articles/active-directory-appmodel-v2-overview), которая позволяет разработчикам создать единый поток кода для проверки подлинности как рабочих или учебных (Azure Active Directory), так и личных учетных записей Майкрософт.
+Для проверки подлинности в этом примере используется библиотека [Microsoft Authentication Library (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/). В пакете SDK MSAL предусмотрены функции для работы с [конечной точкой Azure AD версии 2.0](https://docs.microsoft.com/ru-ru/azure/active-directory/develop/active-directory-appmodel-v2-overview), которая позволяет разработчикам создать единый поток кода для проверки подлинности как рабочих или учебных (Azure Active Directory), так и личных учетных записей Майкрософт.
 
 Кроме того, в примере показано, как запрашивать маркеры пошагово. Эта функция поддерживается конечной точкой Azure AD версии 2.0. Пользователи предоставляют начальный набор разрешений при входе, но могут предоставить другие разрешения позже. Любой действительный пользователь может войти в это приложение, но администраторы могут позже предоставить разрешения, необходимые для определенных операций.
 
@@ -20,12 +20,12 @@
 
  > **Примечание.** Сейчас доступна предварительная версия пакета SDK MSAL, поэтому его не следует использовать в рабочем коде. Из-за ряда ограничений специальное ПО промежуточного слоя и кэш токенов непригодны для рабочего кода. Например, ПО промежуточного слоя сильно зависит от кэша, а кэш очищается после сеанса. Код используется здесь только в демонстрационных целях.
 
-## <a name="prerequisites"></a>Необходимые компоненты
+## <a name="prerequisites"></a>Необходимые условия
 
 Для этого примера требуются следующие компоненты:  
 
-  * [Visual Studio 2015](https://www.visualstudio.com/en-us/downloads) 
-  * [Учетная запись Майкрософт](https://www.outlook.com) или [учетная запись Office 365 для бизнеса](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account). Для выполнения административных операций требуется учетная запись администратора Office 365. Вы можете подписаться на [план Office 365 для разработчиков](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account), который включает ресурсы, необходимые для создания приложений.
+  * [Visual Studio 2015](https://www.visualstudio.com/ru/downloads) 
+  * [Учетная запись Майкрософт](https://www.outlook.com) или [учетная запись Office 365 для бизнеса](https://msdn.microsoft.com/ru-ru/office/office365/howto/setup-development-environment#bk_Office365Account). Для выполнения административных операций требуется учетная запись администратора Office 365. Вы можете подписаться на [план Office 365 для разработчиков](https://msdn.microsoft.com/ru-ru/office/office365/howto/setup-development-environment#bk_Office365Account), который включает ресурсы, необходимые для создания приложений.
 
 ## <a name="register-the-application"></a>Регистрация приложения
 
@@ -90,7 +90,7 @@
 
 - [Startup.Auth.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/App_Start/Startup.Auth.cs). Проверяет подлинность текущего пользователя и инициализирует кэш маркеров примера.
 
-- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs). Хранит информацию о маркере пользователя. Вы можете заменить его на собственный кэш маркеров. Дополнительные сведения см. в статье [Кэширование маркеров доступа в мультитенантном приложении](https://azure.microsoft.com/en-us/documentation/articles/guidance-multitenant-identity-token-cache/).
+- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs). Хранит информацию о маркере пользователя. Вы можете заменить его на собственный кэш маркеров. Дополнительные сведения см. в статье [Кэширование маркеров доступа в мультитенантном приложении](https://azure.microsoft.com/ru-ru/documentation/articles/guidance-multitenant-identity-token-cache/).
 
 - [SampleAuthProvider.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SampleAuthProvider.cs). Реализует локальный интерфейс IAuthProvider и получает маркер доступа с помощью метода **AcquireTokenSilentAsync**. Вы можете заменить его на собственного поставщика услуг авторизации. 
 
@@ -114,9 +114,9 @@
   - [ResultsViewModel.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Models/ResultsViewModel.cs)
   - [_ResultsPartial.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Shared/_ResultsPartial.cshtml)  
 
-- Файлы ниже содержат код, используемый для предоставления дополнительных разрешений. 
+- Файлы ниже содержат код, используемый для поддержки дополнительных разрешений. В этом примере при входе пользователям предлагается принять начальный набор разрешений и отдельно выбрать разрешения администратора. 
   - [AdminController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/AdminController.cs)
-  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs)
+  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs). Настраиваемое ПО промежуточного слоя, которое использует код авторизации для маркеров обновления и доступа после входа. Дополнительные сведения о внедрении дополнительного согласия см. по адресу: https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2.
 
 ## <a name="questions-and-comments"></a>Вопросы и комментарии
 

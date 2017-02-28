@@ -1,4 +1,4 @@
-# <a name="microsoft-graph-snippets-sample-for-asp.net-4.6"></a>Ejemplo de fragmentos de código de muestra de Microsoft Graph para ASP.NET 4.6
+# <a name="microsoft-graph-snippets-sample-for-aspnet-46"></a>Ejemplo de fragmentos de código de muestra de Microsoft Graph para ASP.NET 4.6
 
 ## <a name="table-of-contents"></a>Tabla de contenido
 
@@ -12,7 +12,7 @@
 
 Este proyecto de ejemplo proporciona un repositorio de fragmentos de código que usa Microsoft Graph para realizar tareas comunes, como enviar correos electrónicos, administrar grupos y otras actividades desde una aplicación de ASP.NET MVC. Usa el [SDK del cliente de Microsoft Graph .NET](https://github.com/microsoftgraph/msgraph-sdk-dotnet) para trabajar con los datos devueltos por Microsoft Graph. 
 
-El ejemplo usa la [biblioteca de autenticación de Microsoft (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) para la autenticación. El SDK de MSAL ofrece características para trabajar con el [punto de conexión v2.0 de Azure AD](https://azure.microsoft.com/en-us/documentation/articles/active-directory-appmodel-v2-overview), lo que permite a los desarrolladores escribir un flujo de código único que controla la autenticación para las cuentas profesionales, educativas (Azure Active Directory) o las cuentas personales (Microsoft).
+El ejemplo usa la [biblioteca de autenticación de Microsoft (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) para la autenticación. El SDK de MSAL ofrece características para trabajar con el [punto de conexión v2.0 de Azure AD](https://docs.microsoft.com/es-es/azure/active-directory/develop/active-directory-appmodel-v2-overview), lo que permite a los desarrolladores escribir un flujo de código único que controla la autenticación para las cuentas profesionales, educativas (Azure Active Directory) o las cuentas personales (Microsoft).
 
 Además, el ejemplo muestra cómo solicitar tokens gradualmente, una característica compatible con el punto de conexión v2.0 de Azure AD. Los usuarios consienten un conjunto inicial de ámbitos de permiso durante el inicio de sesión, pero pueden consentir otros ámbitos más adelante. En el caso de este ejemplo, cualquier usuario válido puede iniciar sesión, pero los administradores pueden consentir más tarde los ámbitos de nivel de administrador necesarios para determinadas operaciones.
 
@@ -24,8 +24,8 @@ El ejemplo usa el [software intermedio OWIN OpenId Connect de ASP.NET](https://w
 
 Este ejemplo necesita lo siguiente:  
 
-  * [Visual Studio 2015](https://www.visualstudio.com/en-us/downloads) 
-  * Una [cuenta de Microsoft](https://www.outlook.com) o bien una [cuenta de Office 365 para empresas](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account) Es necesaria una cuenta de administrador de Office 365 para ejecutar operaciones de nivel de administrador. Puede registrarse para [una suscripción a Office 365 Developer](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account), que incluye los recursos que necesita para comenzar a crear aplicaciones.
+  * [Visual Studio 2015](https://www.visualstudio.com/es/downloads) 
+  * Una [cuenta de Microsoft](https://www.outlook.com) o bien una [cuenta de Office 365 para empresas](https://msdn.microsoft.com/es-es/office/office365/howto/setup-development-environment#bk_Office365Account) Es necesaria una cuenta de administrador de Office 365 para ejecutar operaciones de nivel de administrador. Puede registrarse para [una suscripción a Office 365 Developer](https://msdn.microsoft.com/es-es/office/office365/howto/setup-development-environment#bk_Office365Account), que incluye los recursos que necesita para comenzar a crear aplicaciones.
 
 ## <a name="register-the-application"></a>Registrar la aplicación
 
@@ -39,7 +39,7 @@ Este ejemplo necesita lo siguiente:
 
 4. Copie el Id. de aplicación. Se trata del identificador único para su aplicación. 
 
-5. En **Secretos de aplicación**, seleccione **Generar nueva contraseña**. Copie la contraseña del cuadro de diálogo de **Nueva contraseña generada**.
+5. En **Secretos de aplicación**, seleccione **Generar nueva contraseña**. Copie la contraseña del cuadro de diálogo **Nueva contraseña generada**.
 
    Deberá escribir los valores secretos de la aplicación y el Id. de la aplicación que ha copiado en la aplicación del ejemplo. 
 
@@ -51,7 +51,7 @@ Este ejemplo necesita lo siguiente:
 
    La opción **Permitir flujo implícito** permite el flujo híbrido. Durante la autenticación, esto permite que la aplicación reciba la información de inicio de sesión (id_token) y artefactos (en este caso, un código de autorización) que la aplicación puede usar para obtener un token de acceso.
 
-9. Seleccione **Guardar**.
+9. Elija **Guardar**.
  
  
 ## <a name="build-and-run-the-sample"></a>Compilar y ejecutar el ejemplo
@@ -79,7 +79,7 @@ Este ejemplo necesita lo siguiente:
    
 La información de la respuesta se muestra en la parte inferior de la página.
 
-### <a name="how-the-sample-affects-your-account-data"></a>Repercusión de la muestra en los datos de la cuenta
+### <a name="how-the-sample-affects-your-account-data"></a>Repercusión de la muestra en los datos en su cuenta
 
 Este ejemplo crea, actualiza y elimina entidades y datos, como por ejemplo, usuarios o archivos. Dependiendo del uso que haga, **puede modificar o eliminar entidades reales y datos** y dejar artefactos de datos. 
 
@@ -90,7 +90,7 @@ Para usar el ejemplo sin modificar los datos reales de la cuenta, asegúrese de 
 
 - [Startup.Auth.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/App_Start/Startup.Auth.cs). Autentica al usuario actual e inicializa la memoria caché de token del ejemplo.
 
-- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs). Almacena información de token del usuario. Se puede reemplazar por su memoria caché de token personalizada. Más información en [Almacenamiento en la memoria caché de los tokens de acceso en una aplicación de varios inquilinos](https://azure.microsoft.com/en-us/documentation/articles/guidance-multitenant-identity-token-cache/).
+- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs). Almacena información de token del usuario. Se puede reemplazar por su memoria caché de token personalizada. Más información en [Almacenamiento en la memoria caché de los tokens de acceso en una aplicación de varios inquilinos](https://azure.microsoft.com/es-es/documentation/articles/guidance-multitenant-identity-token-cache/).
 
 - [SampleAuthProvider.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SampleAuthProvider.cs). Implementa la interfaz IAuthProvider local y obtiene un token de acceso usando el método **AcquireTokenSilentAsync**. Se puede reemplazar por su propio proveedor de autorización. 
 
@@ -114,9 +114,9 @@ Para usar el ejemplo sin modificar los datos reales de la cuenta, asegúrese de 
   - [ResultsViewModel.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Models/ResultsViewModel.cs)
   - [_ResultsPartial.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Shared/_ResultsPartial.cshtml)  
 
-- Los archivos siguientes contienen el código usado para implementar el consentimiento incremental. 
+- Los archivos siguientes contienen el código usado para admitir el consentimiento incremental. En este ejemplo, se solicita a los usuarios su consentimiento para usar un conjunto inicial de permisos al iniciar sesión y, por otro lado, permisos de administración. 
   - [AdminController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/AdminController.cs)
-  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs)
+  - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs) Software intermedio personalizado que permite canjear un código de autorización para acceder y actualizar tokens ajenos al flujo de inicio de sesión. Consulte https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2 para obtener más información sobre la implementación del consentimiento incremental.
 
 ## <a name="questions-and-comments"></a>Preguntas y comentarios
 
