@@ -12,7 +12,7 @@
 
 此範例提供程式碼片段的儲存機制，使用 Microsoft Graph 以執行一般工作，例如傳送郵件、管理群組及其他 ASP.NET MVC 應用程式內的活動。它會使用 [Microsoft Graph.NET 用戶端 SDK](https://github.com/microsoftgraph/msgraph-sdk-dotnet)，使用 Microsoft Graph 所傳回的資料。 
 
-範例會使用 [Microsoft 驗證程式庫 (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) 進行驗證。MSAL SDK 提供功能以使用 [Azure AD v2.0 端點](https://azure.microsoft.com/en-us/documentation/articles/active-directory-appmodel-v2-overview)，可讓開發人員撰寫單一程式碼流程，控制工作或學校 (Azure Active Directory) 和個人 (Microsoft) 帳戶的驗證。
+範例會使用 [Microsoft 驗證程式庫 (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) 進行驗證。MSAL SDK 提供功能以使用 [Azure AD v2.0 端點](https://docs.microsoft.com/zh-tw/azure/active-directory/develop/active-directory-appmodel-v2-overview)，可讓開發人員撰寫單一程式碼流程，控制工作或學校 (Azure Active Directory) 和個人 (Microsoft) 帳戶的驗證。
 
 此外，此範例顯示如何以累加方式要求權杖 - Azure AD v2.0 端點所支援的功能。使用者在登入期間同意一組初始的權限範圍，但是稍後可以同意其他範圍。在這個範例中，任何有效的使用者都可以登入，但是系統管理員稍後可以同意特定作業所需的系統管理層級範圍。
 
@@ -24,8 +24,8 @@
 
 此範例需要下列項目：  
 
-  * [Visual Studio 2015](https://www.visualstudio.com/en-us/downloads) 
-  * [Microsoft 帳戶](https://www.outlook.com)或[ 商務用 Office 365 帳戶](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account)。需要 Office 365 系統管理員帳戶，才能執行系統管理層級的作業。您可以註冊 [Office 365 開發人員訂用帳戶](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account)，其中包含開始建置應用程式所需的資源。
+  * [Visual Studio 2015](https://www.visualstudio.com/zh-hant/downloads) 
+  * [Microsoft 帳戶](https://www.outlook.com)或[ 商務用 Office 365 帳戶](https://msdn.microsoft.com/zh-tw/office/office365/howto/setup-development-environment#bk_Office365Account)。需要 Office 365 系統管理員帳戶，才能執行系統管理層級的作業。您可以註冊 [Office 365 開發人員訂用帳戶](https://msdn.microsoft.com/zh-tw/office/office365/howto/setup-development-environment#bk_Office365Account)，其中包含開始建置應用程式所需的資源。
 
 ## <a name="register-the-application"></a>註冊應用程式
 
@@ -90,7 +90,7 @@
 
 - [Startup.Auth.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/App_Start/Startup.Auth.cs).驗證目前使用者，並初始化範例的權杖快取。
 
-- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs).儲存使用者的權杖資訊。您可以將這個項目取代為您自己的自訂權杖快取。在[多租用戶應用程式中的快取存取權杖](https://azure.microsoft.com/en-us/documentation/articles/guidance-multitenant-identity-token-cache/)中深入了解。
+- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs).儲存使用者的權杖資訊。您可以將這個項目取代為您自己的自訂權杖快取。在[多租用戶應用程式中的快取存取權杖](https://azure.microsoft.com/zh-tw/documentation/articles/guidance-multitenant-identity-token-cache/)中深入了解。
 
 - [SampleAuthProvider.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SampleAuthProvider.cs).實作本機 IAuthProvider 介面，並取得存取權杖，方法是使用 **AcquireTokenSilentAsync** 方法。您可以將這個項目取代為您自己的授權提供者。 
 

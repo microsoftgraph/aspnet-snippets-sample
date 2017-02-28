@@ -12,7 +12,7 @@
 
 Cet exemple de projet constitue un référentiel des extraits de code qui utilisent Microsoft Graph pour effectuer des tâches courantes, telles que l’envoi des messages électroniques, la gestion des groupes et d’autres activités au sein d’une application ASP.NET MVC. Il utilise le [kit de développement logiciel Microsoft Graph .NET Client](https://github.com/microsoftgraph/msgraph-sdk-dotnet) pour fonctionner avec les données renvoyées par Microsoft Graph. 
 
-L’exemple utilise la [bibliothèque d’authentification Microsoft (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) pour l’authentification. Le kit de développement logiciel (SDK) MSAL offre des fonctionnalités permettant d’utiliser le [point de terminaison Azure AD v2.0](https://azure.microsoft.com/en-us/documentation/articles/active-directory-appmodel-v2-overview), qui permet aux développeurs d’écrire un flux de code unique qui gère l’authentification des comptes professionnels ou scolaires (Azure Active Directory) et personnels (Microsoft).
+L’exemple utilise la [bibliothèque d’authentification Microsoft (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) pour l’authentification. Le kit de développement logiciel (SDK) MSAL offre des fonctionnalités permettant d’utiliser le [point de terminaison Azure AD v2.0](https://docs.microsoft.com/fr-fr/azure/active-directory/develop/active-directory-appmodel-v2-overview), qui permet aux développeurs d’écrire un flux de code unique qui gère l’authentification des comptes professionnels ou scolaires (Azure Active Directory) et personnels (Microsoft).
 
 En outre, l’exemple montre comment demander des jetons de façon incrémentielle, une fonctionnalité prise en charge par le point de terminaison Azure AD v2.0. Les utilisateurs consentent à un ensemble initial d’étendues d’autorisations lors de la connexion, mais peuvent consentir à d’autres étendues ultérieurement. Dans le cas de cet exemple, tout utilisateur valide peut se connecter, mais les administrateurs peuvent ultérieurement consentir aux étendues de niveau administrateur obligatoire pour certaines opérations.
 
@@ -24,8 +24,8 @@ L’exemple utilise l’[intergiciel ASP.NET OpenId Connect OWIN](https://www.nu
 
 Cet exemple nécessite les éléments suivants :  
 
-  * [Visual Studio 2015](https://www.visualstudio.com/en-us/downloads) 
-  * Soit un [compte Microsoft](https://www.outlook.com), soit un [compte Office 365 pour entreprise](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account). Un compte d’administrateur Office 365 est obligatoire pour exécuter des opérations de niveau administrateur. Vous pouvez vous inscrire à [Office 365 Developer](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account) pour accéder aux ressources dont vous avez besoin pour commencer à créer des applications.
+  * [Visual Studio 2015](https://www.visualstudio.com/fr/downloads) 
+  * Soit un [compte Microsoft](https://www.outlook.com), soit un [compte Office 365 pour entreprise](https://msdn.microsoft.com/fr-fr/office/office365/howto/setup-development-environment#bk_Office365Account). Un compte d’administrateur Office 365 est obligatoire pour exécuter des opérations de niveau administrateur. Vous pouvez vous inscrire à [Office 365 Developer](https://msdn.microsoft.com/fr-fr/office/office365/howto/setup-development-environment#bk_Office365Account) pour accéder aux ressources dont vous avez besoin pour commencer à créer des applications.
 
 ## <a name="register-the-application"></a>Inscription de l’application
 
@@ -90,7 +90,7 @@ Pour utiliser l’exemple sans modifier vos données de compte réelles, veillez
 
 - [Startup.Auth.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/App_Start/Startup.Auth.cs). Authentifie l’utilisateur actuel et initialise le cache de jetons de l’exemple.
 
-- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs). Stocke les informations du jeton de l’utilisateur. Vous pouvez le remplacer par votre propre cache de jetons personnalisé. Pour plus d’informations, voir [Mise en cache des jetons d’accès dans une application mutualisée](https://azure.microsoft.com/en-us/documentation/articles/guidance-multitenant-identity-token-cache/).
+- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs). Stocke les informations du jeton de l’utilisateur. Vous pouvez le remplacer par votre propre cache de jetons personnalisé. Pour plus d’informations, voir [Mise en cache des jetons d’accès dans une application mutualisée](https://azure.microsoft.com/fr-fr/documentation/articles/guidance-multitenant-identity-token-cache/).
 
 - [SampleAuthProvider.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SampleAuthProvider.cs). Implémente l’interface IAuthProvider locale et obtient un jeton d’accès à l’aide de la méthode **AcquireTokenSilentAsync**. Vous pouvez utiliser, à la place, votre propre fournisseur d’autorisation. 
 

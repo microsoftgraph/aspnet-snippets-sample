@@ -12,7 +12,7 @@
 
 此示例项目提供使用 Microsoft Graph 执行常见任务的代码段存储库，例如发送电子邮件、管理组和 ASP.NET MVC 应用内的其他活动。它使用 [Microsoft Graph .NET Client SDK](https://github.com/microsoftgraph/msgraph-sdk-dotnet) 以结合使用由 Microsoft Graph 返回的数据。 
 
-此示例使用 [Microsoft 身份验证库 (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) 进行身份验证。MSAL SDK 提供可使用 [Azure AD v2.0 终结点](https://azure.microsoft.com/en-us/documentation/articles/active-directory-appmodel-v2-overview)的功能，借助该终结点，开发人员可以编写单个代码流来处理对工作或学校 (Azure Active Directory) 帐户或个人 (Microsoft) 帐户的身份验证。
+此示例使用 [Microsoft 身份验证库 (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) 进行身份验证。MSAL SDK 提供可使用 [Azure AD v2.0 终结点](https://docs.microsoft.com/zh-cn/azure/active-directory/develop/active-directory-appmodel-v2-overview)的功能，借助该终结点，开发人员可以编写单个代码流来处理对工作或学校 (Azure Active Directory) 帐户或个人 (Microsoft) 帐户的身份验证。
 
 此外，该示例演示如何以增量方式请求令牌，这是受 Azure AD v2.0 终结点支持的功能。用户可在登录过程中同意一组初始权限范围，还可在稍后同意其他范围。在本示例中，任何有效的用户均可登录，但只有管理员可在稍后同意某些操作所需的管理员级别范围。
 
@@ -24,8 +24,8 @@
 
 此示例需要以下各项：  
 
-  * [Visual Studio 2015](https://www.visualstudio.com/en-us/downloads) 
-  * [Microsoft 帐户](https://www.outlook.com)或 [Office 365 商业版帐户](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account)。需要 Office 365 管理员帐户才能运行管理员级别的操作。可以注册 [Office 365 开发人员订阅](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account)，其中包含你开始生成应用所需的资源。
+  * [Visual Studio 2015](https://www.visualstudio.com/zh-hans/downloads) 
+  * [Microsoft 帐户](https://www.outlook.com)或 [Office 365 商业版帐户](https://msdn.microsoft.com/zh-cn/office/office365/howto/setup-development-environment#bk_Office365Account)。需要 Office 365 管理员帐户才能运行管理员级别的操作。可以注册 [Office 365 开发人员订阅](https://msdn.microsoft.com/zh-cn/office/office365/howto/setup-development-environment#bk_Office365Account)，其中包含你开始生成应用所需的资源。
 
 ## <a name="register-the-application"></a>注册应用程序
 
@@ -90,7 +90,7 @@
 
 - [Startup.Auth.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/App_Start/Startup.Auth.cs).对当前用户进行身份验证并初始化该示例的令牌缓存。
 
-- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs).存储用户的令牌信息。可以使用你自己的自定义令牌缓存来替换此信息。从[在多租户应用程序中缓存访问令牌](https://azure.microsoft.com/en-us/documentation/articles/guidance-multitenant-identity-token-cache/)了解详细信息。
+- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs).存储用户的令牌信息。可以使用你自己的自定义令牌缓存来替换此信息。从[在多租户应用程序中缓存访问令牌](https://azure.microsoft.com/zh-cn/documentation/articles/guidance-multitenant-identity-token-cache/)了解详细信息。
 
 - [SampleAuthProvider.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SampleAuthProvider.cs)。实现本地 IAuthProvider 接口，并通过使用 **AcquireTokenSilentAsync** 方法获取一个访问令牌。可以使用你自己的授权提供程序来替换此方法。 
 

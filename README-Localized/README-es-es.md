@@ -12,7 +12,7 @@
 
 Este proyecto de ejemplo proporciona un repositorio de fragmentos de código que usa Microsoft Graph para realizar tareas comunes, como enviar correos electrónicos, administrar grupos y otras actividades desde una aplicación de ASP.NET MVC. Usa el [SDK del cliente de Microsoft Graph .NET](https://github.com/microsoftgraph/msgraph-sdk-dotnet) para trabajar con los datos devueltos por Microsoft Graph. 
 
-El ejemplo usa la [biblioteca de autenticación de Microsoft (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) para la autenticación. El SDK de MSAL ofrece características para trabajar con el [punto de conexión v2.0 de Azure AD](https://azure.microsoft.com/en-us/documentation/articles/active-directory-appmodel-v2-overview), lo que permite a los desarrolladores escribir un flujo de código único que controla la autenticación para las cuentas profesionales, educativas (Azure Active Directory) o las cuentas personales (Microsoft).
+El ejemplo usa la [biblioteca de autenticación de Microsoft (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) para la autenticación. El SDK de MSAL ofrece características para trabajar con el [punto de conexión v2.0 de Azure AD](https://docs.microsoft.com/es-es/azure/active-directory/develop/active-directory-appmodel-v2-overview), lo que permite a los desarrolladores escribir un flujo de código único que controla la autenticación para las cuentas profesionales, educativas (Azure Active Directory) o las cuentas personales (Microsoft).
 
 Además, el ejemplo muestra cómo solicitar tokens gradualmente, una característica compatible con el punto de conexión v2.0 de Azure AD. Los usuarios consienten un conjunto inicial de ámbitos de permiso durante el inicio de sesión, pero pueden consentir otros ámbitos más adelante. En el caso de este ejemplo, cualquier usuario válido puede iniciar sesión, pero los administradores pueden consentir más tarde los ámbitos de nivel de administrador necesarios para determinadas operaciones.
 
@@ -24,8 +24,8 @@ El ejemplo usa el [software intermedio OWIN OpenId Connect de ASP.NET](https://w
 
 Este ejemplo necesita lo siguiente:  
 
-  * [Visual Studio 2015](https://www.visualstudio.com/en-us/downloads) 
-  * Una [cuenta de Microsoft](https://www.outlook.com) o bien una [cuenta de Office 365 para empresas](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account) Es necesaria una cuenta de administrador de Office 365 para ejecutar operaciones de nivel de administrador. Puede registrarse para [una suscripción a Office 365 Developer](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account), que incluye los recursos que necesita para comenzar a crear aplicaciones.
+  * [Visual Studio 2015](https://www.visualstudio.com/es/downloads) 
+  * Una [cuenta de Microsoft](https://www.outlook.com) o bien una [cuenta de Office 365 para empresas](https://msdn.microsoft.com/es-es/office/office365/howto/setup-development-environment#bk_Office365Account) Es necesaria una cuenta de administrador de Office 365 para ejecutar operaciones de nivel de administrador. Puede registrarse para [una suscripción a Office 365 Developer](https://msdn.microsoft.com/es-es/office/office365/howto/setup-development-environment#bk_Office365Account), que incluye los recursos que necesita para comenzar a crear aplicaciones.
 
 ## <a name="register-the-application"></a>Registrar la aplicación
 
@@ -90,7 +90,7 @@ Para usar el ejemplo sin modificar los datos reales de la cuenta, asegúrese de 
 
 - [Startup.Auth.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/App_Start/Startup.Auth.cs). Autentica al usuario actual e inicializa la memoria caché de token del ejemplo.
 
-- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs). Almacena información de token del usuario. Se puede reemplazar por su memoria caché de token personalizada. Más información en [Almacenamiento en la memoria caché de los tokens de acceso en una aplicación de varios inquilinos](https://azure.microsoft.com/en-us/documentation/articles/guidance-multitenant-identity-token-cache/).
+- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs). Almacena información de token del usuario. Se puede reemplazar por su memoria caché de token personalizada. Más información en [Almacenamiento en la memoria caché de los tokens de acceso en una aplicación de varios inquilinos](https://azure.microsoft.com/es-es/documentation/articles/guidance-multitenant-identity-token-cache/).
 
 - [SampleAuthProvider.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SampleAuthProvider.cs). Implementa la interfaz IAuthProvider local y obtiene un token de acceso usando el método **AcquireTokenSilentAsync**. Se puede reemplazar por su propio proveedor de autorización. 
 
