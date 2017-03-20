@@ -178,6 +178,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Accept a meeting.
+        /// </summary>
+        internal static string Event_AcceptMeeting {
+            get {
+                return ResourceManager.GetString("Event_AcceptMeeting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create an event.
         /// </summary>
         internal static string Event_CreateEvent {
@@ -201,6 +210,15 @@ namespace Resources {
         internal static string Event_GetEvent {
             get {
                 return ResourceManager.GetString("Event_GetEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get my calendar view.
+        /// </summary>
+        internal static string Event_GetMyCalendarView {
+            get {
+                return ResourceManager.GetString("Event_GetMyCalendarView", resourceCulture);
             }
         }
         
@@ -349,6 +367,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Get sharing link.
+        /// </summary>
+        internal static string File_GetSharingLink {
+            get {
+                return ResourceManager.GetString("File_GetSharingLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update file contents (.txt file only).
         /// </summary>
         internal static string File_UpdateFileContent {
@@ -372,6 +399,15 @@ namespace Resources {
         internal static string Folder {
             get {
                 return ResourceManager.GetString("Folder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Some text content..
+        /// </summary>
+        internal static string GenericText {
+            get {
+                return ResourceManager.GetString("GenericText", resourceCulture);
             }
         }
         
@@ -511,6 +547,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Get my Inbox messages with attachments.
+        /// </summary>
+        internal static string Mail_GetMyInboxMessagesThatHaveAttachments {
+            get {
+                return ResourceManager.GetString("Mail_GetMyInboxMessagesThatHaveAttachments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Get my messages.
         /// </summary>
         internal static string Mail_GetMyMessages {
@@ -520,11 +565,38 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Move a message.
+        /// </summary>
+        internal static string Mail_MoveMessage {
+            get {
+                return ResourceManager.GetString("Mail_MoveMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reply to a message.
+        /// </summary>
+        internal static string Mail_ReplyToMessage {
+            get {
+                return ResourceManager.GetString("Mail_ReplyToMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Send mail.
         /// </summary>
         internal static string Mail_SendMessage {
             get {
                 return ResourceManager.GetString("Mail_SendMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send mail with attachment.
+        /// </summary>
+        internal static string Mail_SendMessageWithAttachment {
+            get {
+                return ResourceManager.GetString("Mail_SendMessageWithAttachment", resourceCulture);
             }
         }
         
@@ -570,6 +642,42 @@ namespace Resources {
         internal static string No_Return_Data {
             get {
                 return ResourceManager.GetString("No_Return_Data", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First attachment&apos;s name.
+        /// </summary>
+        internal static string Prop_AttachmentName {
+            get {
+                return ResourceManager.GetString("Prop_AttachmentName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attachment count.
+        /// </summary>
+        internal static string Prop_AttachmentsCount {
+            get {
+                return ResourceManager.GetString("Prop_AttachmentsCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First attachment&apos;s size.
+        /// </summary>
+        internal static string Prop_AttachmentSize {
+            get {
+                return ResourceManager.GetString("Prop_AttachmentSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First attachment&apos;s type.
+        /// </summary>
+        internal static string Prop_AttachmentType {
+            get {
+                return ResourceManager.GetString("Prop_AttachmentType", resourceCulture);
             }
         }
         
@@ -673,6 +781,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to IsDraft.
+        /// </summary>
+        internal static string Prop_IsDraft {
+            get {
+                return ResourceManager.GetString("Prop_IsDraft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Member count.
         /// </summary>
         internal static string Prop_MemberCount {
@@ -714,6 +831,15 @@ namespace Resources {
         internal static string Prop_Received {
             get {
                 return ResourceManager.GetString("Prop_Received", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response status.
+        /// </summary>
+        internal static string Prop_ResponseStatus {
+            get {
+                return ResourceManager.GetString("Prop_ResponseStatus", resourceCulture);
             }
         }
         

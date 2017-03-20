@@ -137,8 +137,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
         // This snippet requires an admin work account. 
         public async Task<ActionResult> GetMembers(string id)
         {
-            ResultsViewModel results = new ResultsViewModel();
-            results.Selectable = false;
+            ResultsViewModel results = new ResultsViewModel(false);
             try
             {
 
@@ -160,8 +159,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
         // This snippet requires an admin work account. 
         public async Task<ActionResult> GetOwners(string id)
         {
-            ResultsViewModel results = new ResultsViewModel();
-            results.Selectable = false;
+            ResultsViewModel results = new ResultsViewModel(false);
             try
             {
 
@@ -184,8 +182,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
         // This snippet requires an admin work account. 
         public async Task<ActionResult> UpdateGroup(string id, string name)
         {
-            ResultsViewModel results = new ResultsViewModel();
-            results.Selectable = false;
+            ResultsViewModel results = new ResultsViewModel(false);
             try
             {
 
@@ -207,8 +204,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
         // This snippet requires an admin work account. 
         public async Task<ActionResult> DeleteGroup(string id)
         {
-            ResultsViewModel results = new ResultsViewModel();
-            results.Selectable = false;
+            ResultsViewModel results = new ResultsViewModel(false);
             try
             {
 

@@ -37,6 +37,32 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             return items;
         }
 
+        // Get user's calendar view.
+        // This snippets gets events for the next seven days.
+        public async Task<List<ResultsItem>> GetMyCalendarView(GraphServiceClient graphClient)
+        {
+            List<ResultsItem> items = new List<ResultsItem>();
+
+            // Define the time span for the calendar view.
+            List<QueryOption> options = new List<QueryOption>();
+            options.Add(new QueryOption("startDateTime", DateTime.Now.ToString("o")));
+            options.Add(new QueryOption("endDateTime", DateTime.Now.AddDays(7).ToString("o")));
+
+            ICalendarCalendarViewCollectionPage calendar = await graphClient.Me.Calendar.CalendarView.Request(options).GetAsync();
+
+            if (calendar?.Count > 0)
+            {
+                foreach (Event current in calendar)
+                {
+                    items.Add(new ResultsItem
+                    {
+                        Display = current.Subject,
+                        Id = current.Id
+                    });
+                }
+            }
+            return items;
+        }
 
         // Create an event.
         public async Task<List<ResultsItem>> CreateEvent(GraphServiceClient graphClient)
@@ -134,6 +160,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
                         { Resource.Prop_Attendees, retrievedEvent.Attendees.Count() },
                         { Resource.Prop_Start, retrievedEvent.Start.DateTime },
                         { Resource.Prop_End, retrievedEvent.End.DateTime },
+                        { Resource.Prop_ResponseStatus, retrievedEvent.ResponseStatus.Response },
                         { Resource.Prop_Id, retrievedEvent.Id }
                     }
                 });
@@ -208,6 +235,26 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 
             // Delete the event.
             await graphClient.Me.Events[id].Request().DeleteAsync();
+
+            items.Add(new ResultsItem
+            {
+
+                // This operation doesn't return anything.
+                Properties = new Dictionary<string, object>
+                {
+                    { Resource.No_Return_Data, "" }
+                }
+            });
+            return items;
+        }
+
+        // Accept a meeting request.
+        public async Task<List<ResultsItem>> AcceptMeetingRequest(GraphServiceClient graphClient, string id)
+        {
+            List<ResultsItem> items = new List<ResultsItem>();
+
+            // Accept the meeting.
+            await graphClient.Me.Events[id].Accept(Resource.GenericText).Request().PostAsync();
 
             items.Add(new ResultsItem
             {

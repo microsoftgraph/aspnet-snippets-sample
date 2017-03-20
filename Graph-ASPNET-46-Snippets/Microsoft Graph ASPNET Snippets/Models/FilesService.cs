@@ -248,6 +248,12 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             DriveItem fileOrFolder = await graphClient.Me.Drive.Items[id].Request().UpdateAsync(new DriveItem
             {
                 Name = Resource.Updated + name.TrimEnd()
+
+                // The following example moves an item by updating the item's ParentReference.Id property.
+                //ParentReference = new ItemReference 
+                //{
+                //    Id = {destination-folder-id}
+                //}
             });
 
             if (fileOrFolder != null)
@@ -340,5 +346,28 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             });
             return items;
         }
+
+        // Get a sharing link.
+        // This snippet gets a link that has `view` permissions to the file.
+        public async Task<List<ResultsItem>> GetSharingLink(GraphServiceClient graphClient, string id)
+        {
+            List<ResultsItem> items = new List<ResultsItem>();
+
+            // Get a sharing link for the file.
+            Permission permission = await graphClient.Me.Drive.Items[id].CreateLink("view").Request().PostAsync();
+
+            if (permission != null)
+            {
+
+                // Get permission properties.
+                items.Add(new ResultsItem
+                {
+                    Display = permission.Link.WebUrl,
+                    Id = permission.Id
+                });
+            }
+            return items;
+        }
     }
 }
+ 

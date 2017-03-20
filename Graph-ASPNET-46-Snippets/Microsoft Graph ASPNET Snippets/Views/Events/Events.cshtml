@@ -17,6 +17,10 @@
         {
             <button class="btn btn-link" id="get-my-events">@Resource.Event_GetMyEvents</button>
         }
+        @using (Html.BeginForm("GetMyCalendarView", "Events"))
+        {
+            <button class="btn btn-link" id="get-my-calendar-view">@Resource.Event_GetMyCalendarView</button>
+        }
         @using (Html.BeginForm("CreateEvent", "Events"))
         {
             <button class="btn btn-link" id="create-event">@Resource.Event_CreateEvent</button>
@@ -39,6 +43,11 @@
         {
             <button class="btn btn-link needs-id" id="delete-event" disabled>@Resource.Event_DeleteEvent</button>
             <span class="alert-warning">@Html.Raw(Resource.Delete_Warning)</span>
+            <input class="selected-id" name="id" type="hidden" />
+        }
+        @using (Html.BeginForm("AcceptMeetingRequest", "Events"))
+        {
+            <button class="btn btn-link needs-id" id="accept-meeting" disabled>@Resource.Event_AcceptMeeting</button>
             <input class="selected-id" name="id" type="hidden" />
         }
     </div>

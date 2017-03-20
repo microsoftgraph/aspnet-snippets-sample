@@ -42,6 +42,11 @@
             <button class="btn btn-link needs-id" id="get-file-metadata" disabled>@Resource.File_GetFileOrFolderMetadata</button>
             <input class="selected-id" name="id" type="hidden" />
         }
+        @using (Html.BeginForm("GetSharingLink", "Files"))
+        {
+            <button class="btn btn-link needs-id" id="get-sharing-link" disabled>Get sharing link for file</button>
+            <input class="selected-id" name="id" type="hidden" />
+        }
         @using (Html.BeginForm("DownloadFile", "Files"))
         {
             <button class="btn btn-link needs-id file-only" id="download-file" disabled>@Resource.File_DownloadFile</button>

@@ -7,6 +7,7 @@ using Microsoft.Graph;
 using Microsoft_Graph_ASPNET_Snippets.Helpers;
 using Microsoft_Graph_ASPNET_Snippets.Models;
 using Resources;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -47,8 +48,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
         // Get the items that are shared with the current user.
         public async Task<ActionResult> GetSharedWithMe()
         {
-            ResultsViewModel results = new ResultsViewModel();
-            results.Selectable = false;
+            ResultsViewModel results = new ResultsViewModel(false);
             try
             {
 
@@ -70,8 +70,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
         // Get the current user's default drive.
         public async Task<ActionResult> GetMyDrive()
         {
-            ResultsViewModel results = new ResultsViewModel();
-            results.Selectable = false;
+            ResultsViewModel results = new ResultsViewModel(false);
             try
             {
 
@@ -235,8 +234,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
         // Delete a file in the user's root directory.
         public async Task<ActionResult> DeleteFileOrFolder(string id)
         {
-            ResultsViewModel results = new ResultsViewModel();
-            results.Selectable = false;
+            ResultsViewModel results = new ResultsViewModel(false);
             try
             {
 
@@ -245,6 +243,26 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
 
                 // Delete the item.
                 results.Items = await filesService.DeleteFileOrFolder(graphClient, id);
+            }
+            catch (ServiceException se)
+            {
+                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
+            }
+            return View("Files", results);
+        }
+
+        // Get a sharing link for a file in the current user's drive.
+        public async Task<ActionResult> GetSharingLink(string id)
+        {
+            ResultsViewModel results = new ResultsViewModel(false);
+            try
+            {
+
+                // Initialize the GraphServiceClient.
+                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
+
+                results.Items = await filesService.GetSharingLink(graphClient, id);
             }
             catch (ServiceException se)
             {
