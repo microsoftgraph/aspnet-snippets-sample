@@ -34,6 +34,10 @@
         {
             <button class="btn btn-link" id="create-folder">@Resource.File_CreateFolder</button>
         }
+        @using (Html.BeginForm("UploadLargeFile", "Files"))
+        {
+            <button class="btn btn-link" id="upload-large-file">@Resource.File_UploadLargeFile</button>
+        }
     </div>
     <p>@Resource.Needs_Id</p>
     <div class="form-group">

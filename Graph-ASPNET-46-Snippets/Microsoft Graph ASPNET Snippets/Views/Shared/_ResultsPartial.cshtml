@@ -21,6 +21,12 @@
                             &nbsp;@item.Display
                         </label><br />
                     }
+                    else
+                    {
+                        <label>
+                            @item.Display
+                        </label><br />
+                    }
                     if (item.Properties.Count > 0)
                     {
                         <table id="entity">
@@ -40,14 +46,14 @@
                             }
                         </table>
                         <br />
+                        }
                     }
                 }
-            }
-            else
-            {
+                else
+                {
                 <p>@Resource.No_Results</p>
+                }
             }
-        }
-        <br />
-    </div>
+            <br />
+</div>
 </div>

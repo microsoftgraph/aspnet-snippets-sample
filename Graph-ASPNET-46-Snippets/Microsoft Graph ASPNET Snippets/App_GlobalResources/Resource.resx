@@ -471,7 +471,7 @@
   </data>
   <data name="File_ChooseFile" xml:space="preserve">
     <value>Please choose a file. This snippet only works with a file.</value>
-    <comment>Instruction when a folder is selected for DownloadFile in File view</comment>
+    <comment>Instruction when a folder is selected for DownloadFile in Files view</comment>
   </data>
   <data name="File_ChooseTextFile" xml:space="preserve">
     <value>Please choose a .txt file. This snippet only works with a .txt file.</value>
@@ -556,5 +556,13 @@
   <data name="Mail_SendMessageWithAttachment" xml:space="preserve">
     <value>Send mail with attachment</value>
     <comment>SendMessageWithAttachment button text for Mail view</comment>
+  </data>
+  <data name="Event_CannotAcceptOwnMeeting" xml:space="preserve">
+    <value>Please choose a meeting for which you are not the organizer. Organizers cannot accept their own invitations.</value>
+    <comment>Instruction when an unsupported item is selected for AcceptMeetingRequest in Events view</comment>
+  </data>
+  <data name="File_UploadLargeFile" xml:space="preserve">
+    <value>Upload a large file</value>
+    <comment>UploadLargeFile button text for Files view</comment>
   </data>
 </root>

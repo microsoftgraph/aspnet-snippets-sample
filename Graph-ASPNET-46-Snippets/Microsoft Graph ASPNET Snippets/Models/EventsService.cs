@@ -65,6 +65,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
         }
 
         // Create an event.
+        // This snippet creates an hour-long event three days from now. 
         public async Task<List<ResultsItem>> CreateEvent(GraphServiceClient graphClient)
         {
             List<ResultsItem> items = new List<ResultsItem>();
@@ -89,14 +90,15 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             };
 
             // Event start and end time
+            // Another example date format: `new DateTime(2017, 12, 1, 9, 30, 0).ToString("o")`
             DateTimeTimeZone startTime = new DateTimeTimeZone
             {
-                DateTime = new DateTime(2016, 12, 1, 9, 30, 0).ToString("o"),
+                DateTime = DateTime.Now.AddDays(3).ToString("o"),
                 TimeZone = TimeZoneInfo.Local.Id
             };
             DateTimeTimeZone endTime = new DateTimeTimeZone
             {
-                DateTime = new DateTime(2016, 12, 1, 10, 0, 0).ToString("o"),
+                DateTime = DateTime.Now.AddDays(3).AddHours(1).ToString("o"),
                 TimeZone = TimeZoneInfo.Local.Id
             };
 
@@ -253,18 +255,37 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
         {
             List<ResultsItem> items = new List<ResultsItem>();
 
-            // Accept the meeting.
-            await graphClient.Me.Events[id].Accept(Resource.GenericText).Request().PostAsync();
-
-            items.Add(new ResultsItem
+            // This snippet first checks whether the selected event originates with an invitation from the current user. If it did, 
+            // the SDK would throw an ErrorInvalidRequest exception because organizers can't accept their own invitations.
+            Event myEvent = await graphClient.Me.Events[id].Request().Select("ResponseStatus").GetAsync();
+            if (myEvent.ResponseStatus.Response != ResponseType.Organizer)
             {
 
-                // This operation doesn't return anything.
-                Properties = new Dictionary<string, object>
+                // Accept the meeting.
+                await graphClient.Me.Events[id].Accept(Resource.GenericText).Request().PostAsync();
+
+                items.Add(new ResultsItem
                 {
-                    { Resource.No_Return_Data, "" }
-                }
-            });
+
+                    // This operation doesn't return anything.
+                    Properties = new Dictionary<string, object>
+                    {
+                        { Resource.No_Return_Data, "" }
+                    }
+                });
+            }
+            else
+            {
+                items.Add(new ResultsItem
+                {
+
+                    // Let the user know the operation isn't supported for this event.
+                    Properties = new Dictionary<string, object>
+                    {
+                        { Resource.Event_CannotAcceptOwnMeeting, "" }
+                    }
+                });
+            }
             return items;
         }
     }

@@ -201,6 +201,7 @@
     <Compile Include="Utils\OAuth2CodeRedeemerMiddleware.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\LargeFileUploadResource.bmp" />
     <Content Include="Content\test.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />

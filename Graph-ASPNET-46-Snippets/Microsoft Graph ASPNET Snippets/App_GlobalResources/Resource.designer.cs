@@ -187,6 +187,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please choose a meeting for which you are not the organizer. Organizers cannot accept their own invitations..
+        /// </summary>
+        internal static string Event_CannotAcceptOwnMeeting {
+            get {
+                return ResourceManager.GetString("Event_CannotAcceptOwnMeeting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create an event.
         /// </summary>
         internal static string Event_CreateEvent {
@@ -390,6 +399,15 @@ namespace Resources {
         internal static string File_UpdateFileOrFolderMetadata {
             get {
                 return ResourceManager.GetString("File_UpdateFileOrFolderMetadata", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload a large file.
+        /// </summary>
+        internal static string File_UploadLargeFile {
+            get {
+                return ResourceManager.GetString("File_UploadLargeFile", resourceCulture);
             }
         }
         

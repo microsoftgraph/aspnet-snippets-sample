@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Hosting;
 
 namespace Microsoft_Graph_ASPNET_Snippets.Models
 {
@@ -158,6 +159,64 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
                         { Resource.Prop_Id, folder.Id }
                     }
                 });
+            }
+            return items;
+        }
+
+
+        // Uploads a large file to the current user's root directory.
+        public async Task<List<ResultsItem>> UploadLargeFile(GraphServiceClient graphClient)
+        {
+            List<ResultsItem> items = new List<ResultsItem>();
+
+            using (Stream fileStream = System.IO.File.OpenRead(HostingEnvironment.MapPath("/Content/LargeFileUploadResource.bmp")))
+            {
+                // Create the upload session. The access token is no longer required as you have session established for the upload.  
+                // POST /v1.0/drive/root:/UploadLargeFile.bmp:/microsoft.graph.createUploadSession
+                UploadSession uploadSession = await graphClient.Me.Drive.Root.ItemWithPath("LargeFileUploadResource.bmp").CreateUploadSession().Request().PostAsync();
+
+                int maxChunkSize = 320 * 1024; // 320 KB - Change this to your chunk size. 5MB is the default.
+                ChunkedUploadProvider provider = new ChunkedUploadProvider(uploadSession, graphClient, fileStream, maxChunkSize);
+
+                // Set up the chunk request necessities.
+                IEnumerable<UploadChunkRequest> chunkRequests = provider.GetUploadChunkRequests();
+                byte[] readBuffer = new byte[maxChunkSize];
+                List<Exception> trackedExceptions = new List<Exception>();
+                DriveItem uploadedFile = null;
+
+                // Upload the chunks.
+                foreach (var request in chunkRequests)
+                {
+                    // Do your updates here: update progress bar, etc.
+                    // ...
+                    // Send chunk request
+                    UploadChunkResult result = await provider.GetChunkRequestResponseAsync(request, readBuffer, trackedExceptions);
+
+                    if (result.UploadSucceeded)
+                    {
+                        uploadedFile = result.ItemResponse;
+                        
+                        // Get file properties.
+                        items.Add(new ResultsItem
+                        {
+                            Display = uploadedFile.Name,
+                            Id = uploadedFile.Id,
+                            Properties = new Dictionary<string, object>
+                            {
+                                { Resource.Prop_Created, uploadedFile.CreatedDateTime.Value.ToLocalTime() },
+                                { Resource.Prop_Url, uploadedFile.WebUrl },
+                                { Resource.Prop_Id, uploadedFile.Id }
+                            }
+                        });
+                    }
+                }
+
+                // Check that upload succeeded.
+                if (uploadedFile == null)
+                {
+                    // Retry the upload
+                    // ...
+                }
             }
             return items;
         }

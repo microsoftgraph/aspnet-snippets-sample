@@ -176,7 +176,6 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
                 ODataType = "#microsoft.graph.fileAttachment",
                 ContentBytes = System.IO.File.ReadAllBytes(HostingEnvironment.MapPath("/Content/test.png")),
                 ContentType = "image/png",
-                ContentId = "test-image",
                 Name = "test.png"
             });
 

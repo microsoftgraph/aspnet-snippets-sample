@@ -131,6 +131,28 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             return View("Files", results);
         }
 
+        // Upload a BMP file to the current user's root directory.
+        public async Task<ActionResult> UploadLargeFile()
+        {
+            ResultsViewModel results = new ResultsViewModel();
+
+            try
+            {
+
+                // Initialize the GraphServiceClient.
+                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
+
+                // Add the file.
+                results.Items = await filesService.UploadLargeFile(graphClient);
+            }
+            catch (ServiceException se)
+            {
+                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
+            }
+            return View("Files", results);
+        }
+
         // Get a file or folder (metadata) in the current user's drive.
         public async Task<ActionResult> GetFileOrFolderMetadata(string id)
         {

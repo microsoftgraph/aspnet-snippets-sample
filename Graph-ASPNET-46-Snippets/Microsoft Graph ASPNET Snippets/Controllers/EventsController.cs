@@ -71,6 +71,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
         }
 
         // Create an event.
+        // This snippet creates an hour-long event three days from now. 
         public async Task<ActionResult> CreateEvent()
         {
             ResultsViewModel results = new ResultsViewModel();    
@@ -164,6 +165,8 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
         }
 
         // Accept a meeting request.
+        // If the current user is the organizer of the meeting, the snippet will not work since organizers can't accept their
+        // own invitations.
         public async Task<ActionResult> AcceptMeetingRequest(string id)
         {
             ResultsViewModel results = new ResultsViewModel(false);
@@ -172,7 +175,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
                 // Initialize the GraphServiceClient.
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
 
-                // Delete the event.
+                // Accept the meeting.
                 results.Items = await eventsService.AcceptMeetingRequest(graphClient, id);
             }
             catch (ServiceException se)
