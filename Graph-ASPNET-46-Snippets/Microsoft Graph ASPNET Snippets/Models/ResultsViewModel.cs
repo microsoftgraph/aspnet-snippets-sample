@@ -35,11 +35,13 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 
         // The list of entities to display.
         public IEnumerable<ResultsItem> Items { get; set; }
-        public ResultsViewModel()
+        public ResultsViewModel(bool selectable = true)
         {
-        
+
+            // Indicates whether the results should display radio buttons.
             // This is how an entity ID is passed to methods that require it.
-            Selectable = true;
+            Selectable = selectable;
+
             Items = Enumerable.Empty<ResultsItem>();
         }
     }

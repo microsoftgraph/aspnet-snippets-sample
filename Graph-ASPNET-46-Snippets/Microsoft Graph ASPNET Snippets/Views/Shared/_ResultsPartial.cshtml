@@ -21,21 +21,27 @@
                             &nbsp;@item.Display
                         </label><br />
                     }
+                    else
+                    {
+                        <label>
+                            @item.Display
+                        </label><br />
+                    }
                     if (item.Properties.Count > 0)
                     {
-                        if (item.Properties.ContainsKey("Stream"))
-                        {
-                            <img src="@String.Format("data:image;base64,{0}", Convert.ToBase64String(item.Properties["Stream"] as byte[]))" />
-                            <br />
-                        }
-                        else
-                        {
                         <table id="entity">
                             @foreach (var property in item.Properties)
                             {
                                 <tr>
-                                    <td class="pad">@property.Key</td>
-                                    <td>@property.Value</td>
+                                    @if (property.Key != "Stream")
+                                    {
+                                        <td class="pad">@property.Key</td>
+                                        <td>@property.Value</td>
+                                    }
+                                    else if (property.Value != null)
+                                    {
+                                        <td><img src="@String.Format("data:image;base64,{0}", Convert.ToBase64String(property.Value as byte[]))" /></td>
+                                    }
                                 </tr>
                             }
                         </table>
@@ -43,12 +49,11 @@
                         }
                     }
                 }
-            }
-            else
-            {
+                else
+                {
                 <p>@Resource.No_Results</p>
+                }
             }
-        }
-        <br />
-    </div>
+            <br />
+</div>
 </div>

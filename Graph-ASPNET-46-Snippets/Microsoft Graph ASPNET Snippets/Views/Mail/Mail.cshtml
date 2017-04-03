@@ -21,16 +21,34 @@
         {
             <button class="btn btn-link" id="get-inbox-messages">@Resource.Mail_GetMyInboxMessages</button>
         }
+        @using (Html.BeginForm("GetMyInboxMessagesThatHaveAttachments", "Mail"))
+        {
+            <button class="btn btn-link" id="get-inbox-messages">@Resource.Mail_GetMyInboxMessagesThatHaveAttachments</button>
+        }
         @using (Html.BeginForm("SendMessage", "Mail"))
         {
             <button class="btn btn-link" id="send-mail">@Resource.Mail_SendMessage</button>
         }
-    </div>
+        @using (Html.BeginForm("SendMessageWithAttachment", "Mail"))
+        {
+            <button class="btn btn-link" id="send-mail">@Resource.Mail_SendMessageWithAttachment</button>
+        }
+</div>
     <p>@Resource.Needs_Id</p>
     <div class="form-group">
         @using (Html.BeginForm("GetMessage", "Mail"))
         {
             <button class="btn btn-link needs-id" id="get-message" disabled="disabled">@Resource.Mail_GetMessage</button>
+            <input class="selected-id" name="id" type="hidden" />
+        }
+        @using (Html.BeginForm("ReplyToMessage", "Mail"))
+        {
+            <button class="btn btn-link needs-id" id="reply-to-message" disabled="disabled">@Resource.Mail_ReplyToMessage</button>
+            <input class="selected-id" name="id" type="hidden" />
+        }
+        @using (Html.BeginForm("MoveMessage", "Mail"))
+        {
+            <button class="btn btn-link needs-id" id="move-message" disabled="disabled">@Resource.Mail_MoveMessage</button>
             <input class="selected-id" name="id" type="hidden" />
         }
         @using (Html.BeginForm("DeleteMessage", "Mail"))

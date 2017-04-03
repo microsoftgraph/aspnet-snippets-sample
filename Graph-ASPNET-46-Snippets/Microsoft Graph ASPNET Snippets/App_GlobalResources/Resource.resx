@@ -471,7 +471,7 @@
   </data>
   <data name="File_ChooseFile" xml:space="preserve">
     <value>Please choose a file. This snippet only works with a file.</value>
-    <comment>Instruction when a folder is selected for DownloadFile in File view</comment>
+    <comment>Instruction when a folder is selected for DownloadFile in Files view</comment>
   </data>
   <data name="File_ChooseTextFile" xml:space="preserve">
     <value>Please choose a .txt file. This snippet only works with a .txt file.</value>
@@ -500,5 +500,69 @@
   <data name="NoConsentRequired" xml:space="preserve">
     <value>You have consented to the admin-only scopes.</value>
     <comment>Text that appears when user has already consented to admin scopes</comment>
+  </data>
+  <data name="Mail_MoveMessage" xml:space="preserve">
+    <value>Move a message</value>
+    <comment>MoveMessage button text for Mail view</comment>
+  </data>
+  <data name="GenericText" xml:space="preserve">
+    <value>Some text content.</value>
+    <comment>Generic text content</comment>
+  </data>
+  <data name="Mail_ReplyToMessage" xml:space="preserve">
+    <value>Reply to a message</value>
+    <comment>ReplyToMessage button text for Mail view</comment>
+  </data>
+  <data name="Prop_IsDraft" xml:space="preserve">
+    <value>IsDraft</value>
+    <comment>Property display name for Results view</comment>
+  </data>
+  <data name="Event_AcceptMeeting" xml:space="preserve">
+    <value>Accept a meeting</value>
+    <comment>AcceptMeeting button text for Events view</comment>
+  </data>
+  <data name="Event_GetMyCalendarView" xml:space="preserve">
+    <value>Get my calendar view</value>
+    <comment>GetMyCalendarView button text for Events view</comment>
+  </data>
+  <data name="File_GetSharingLink" xml:space="preserve">
+    <value>Get sharing link</value>
+    <comment>GetSharingLink button text for Files view</comment>
+  </data>
+  <data name="Mail_GetMyInboxMessagesThatHaveAttachments" xml:space="preserve">
+    <value>Get my Inbox messages with attachments</value>
+    <comment>GetMyInboxMessagesThatHaveAttachments button text for Mail view</comment>
+  </data>
+  <data name="Prop_AttachmentName" xml:space="preserve">
+    <value>First attachment's name</value>
+    <comment>Property display name for Results view</comment>
+  </data>
+  <data name="Prop_AttachmentsCount" xml:space="preserve">
+    <value>Attachment count</value>
+    <comment>Property display name for Results view</comment>
+  </data>
+  <data name="Prop_AttachmentSize" xml:space="preserve">
+    <value>First attachment's size</value>
+    <comment>Property display name for Results view</comment>
+  </data>
+  <data name="Prop_AttachmentType" xml:space="preserve">
+    <value>First attachment's type</value>
+    <comment>Property display name for Results view</comment>
+  </data>
+  <data name="Prop_ResponseStatus" xml:space="preserve">
+    <value>Response status</value>
+    <comment>Property display name for Results view</comment>
+  </data>
+  <data name="Mail_SendMessageWithAttachment" xml:space="preserve">
+    <value>Send mail with attachment</value>
+    <comment>SendMessageWithAttachment button text for Mail view</comment>
+  </data>
+  <data name="Event_CannotAcceptOwnMeeting" xml:space="preserve">
+    <value>Please choose a meeting for which you are not the organizer. Organizers cannot accept their own invitations.</value>
+    <comment>Instruction when an unsupported item is selected for AcceptMeetingRequest in Events view</comment>
+  </data>
+  <data name="File_UploadLargeFile" xml:space="preserve">
+    <value>Upload a large file</value>
+    <comment>UploadLargeFile button text for Files view</comment>
   </data>
 </root>

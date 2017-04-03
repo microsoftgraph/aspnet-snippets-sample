@@ -95,8 +95,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
         // Get the current user's photo. 
         public async Task<ActionResult> GetMyPhoto()
         {
-            ResultsViewModel results = new ResultsViewModel();
-            results.Selectable = false;
+            ResultsViewModel results = new ResultsViewModel(false);
             try
             {
 
@@ -162,8 +161,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
         // Get a specified user's photo.
         public async Task<ActionResult> GetUserPhoto(string id)
         {
-            ResultsViewModel results = new ResultsViewModel();
-            results.Selectable = false;
+            ResultsViewModel results = new ResultsViewModel(false);
             try
             {
 
@@ -209,8 +207,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
         // This snippet requires an admin work account. 
         public async Task<ActionResult> UpdateUser(string id, string name)
         {
-            ResultsViewModel results = new ResultsViewModel();
-            results.Selectable = false;
+            ResultsViewModel results = new ResultsViewModel(false);
             try
             {
 
@@ -232,8 +229,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
         // This snippet requires an admin work account. 
         public async Task<ActionResult> DeleteUser(string id)
         {
-            ResultsViewModel results = new ResultsViewModel();
-            results.Selectable = false;
+            ResultsViewModel results = new ResultsViewModel(false);
             try
             {
 

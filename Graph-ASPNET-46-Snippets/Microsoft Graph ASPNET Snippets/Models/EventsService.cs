@@ -37,8 +37,35 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             return items;
         }
 
+        // Get user's calendar view.
+        // This snippets gets events for the next seven days.
+        public async Task<List<ResultsItem>> GetMyCalendarView(GraphServiceClient graphClient)
+        {
+            List<ResultsItem> items = new List<ResultsItem>();
+
+            // Define the time span for the calendar view.
+            List<QueryOption> options = new List<QueryOption>();
+            options.Add(new QueryOption("startDateTime", DateTime.Now.ToString("o")));
+            options.Add(new QueryOption("endDateTime", DateTime.Now.AddDays(7).ToString("o")));
+
+            ICalendarCalendarViewCollectionPage calendar = await graphClient.Me.Calendar.CalendarView.Request(options).GetAsync();
+
+            if (calendar?.Count > 0)
+            {
+                foreach (Event current in calendar)
+                {
+                    items.Add(new ResultsItem
+                    {
+                        Display = current.Subject,
+                        Id = current.Id
+                    });
+                }
+            }
+            return items;
+        }
 
         // Create an event.
+        // This snippet creates an hour-long event three days from now. 
         public async Task<List<ResultsItem>> CreateEvent(GraphServiceClient graphClient)
         {
             List<ResultsItem> items = new List<ResultsItem>();
@@ -63,14 +90,15 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             };
 
             // Event start and end time
+            // Another example date format: `new DateTime(2017, 12, 1, 9, 30, 0).ToString("o")`
             DateTimeTimeZone startTime = new DateTimeTimeZone
             {
-                DateTime = new DateTime(2016, 12, 1, 9, 30, 0).ToString("o"),
+                DateTime = DateTime.Now.AddDays(3).ToString("o"),
                 TimeZone = TimeZoneInfo.Local.Id
             };
             DateTimeTimeZone endTime = new DateTimeTimeZone
             {
-                DateTime = new DateTime(2016, 12, 1, 10, 0, 0).ToString("o"),
+                DateTime = DateTime.Now.AddDays(3).AddHours(1).ToString("o"),
                 TimeZone = TimeZoneInfo.Local.Id
             };
 
@@ -134,6 +162,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
                         { Resource.Prop_Attendees, retrievedEvent.Attendees.Count() },
                         { Resource.Prop_Start, retrievedEvent.Start.DateTime },
                         { Resource.Prop_End, retrievedEvent.End.DateTime },
+                        { Resource.Prop_ResponseStatus, retrievedEvent.ResponseStatus.Response },
                         { Resource.Prop_Id, retrievedEvent.Id }
                     }
                 });
@@ -218,6 +247,45 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
                     { Resource.No_Return_Data, "" }
                 }
             });
+            return items;
+        }
+
+        // Accept a meeting request.
+        public async Task<List<ResultsItem>> AcceptMeetingRequest(GraphServiceClient graphClient, string id)
+        {
+            List<ResultsItem> items = new List<ResultsItem>();
+
+            // This snippet first checks whether the selected event originates with an invitation from the current user. If it did, 
+            // the SDK would throw an ErrorInvalidRequest exception because organizers can't accept their own invitations.
+            Event myEvent = await graphClient.Me.Events[id].Request().Select("ResponseStatus").GetAsync();
+            if (myEvent.ResponseStatus.Response != ResponseType.Organizer)
+            {
+
+                // Accept the meeting.
+                await graphClient.Me.Events[id].Accept(Resource.GenericText).Request().PostAsync();
+
+                items.Add(new ResultsItem
+                {
+
+                    // This operation doesn't return anything.
+                    Properties = new Dictionary<string, object>
+                    {
+                        { Resource.No_Return_Data, "" }
+                    }
+                });
+            }
+            else
+            {
+                items.Add(new ResultsItem
+                {
+
+                    // Let the user know the operation isn't supported for this event.
+                    Properties = new Dictionary<string, object>
+                    {
+                        { Resource.Event_CannotAcceptOwnMeeting, "" }
+                    }
+                });
+            }
             return items;
         }
     }

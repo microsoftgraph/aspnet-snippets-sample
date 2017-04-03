@@ -7,6 +7,8 @@ using Microsoft.Graph;
 using Microsoft_Graph_ASPNET_Snippets.Helpers;
 using Microsoft_Graph_ASPNET_Snippets.Models;
 using Resources;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -46,7 +48,30 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             return View("Events", results);
         }
 
+        // Get user's calendar view.
+        public async Task<ActionResult> GetMyCalendarView()
+        {
+            ResultsViewModel results = new ResultsViewModel();
+            try
+            {
+                // Initialize the GraphServiceClient.
+                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
+
+                // Get a calendar view.
+                results.Items = await eventsService.GetMyCalendarView(graphClient);
+            }
+            catch (ServiceException se)
+            {
+                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+
+                // Personal accounts that aren't enabled for the Outlook REST API get a "MailboxNotEnabledForRESTAPI" or "MailboxNotSupportedForRESTAPI" error.
+                return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
+            }
+            return View("Events", results);
+        }
+
         // Create an event.
+        // This snippet creates an hour-long event three days from now. 
         public async Task<ActionResult> CreateEvent()
         {
             ResultsViewModel results = new ResultsViewModel();    
@@ -119,8 +144,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
         // Delete an event.
         public async Task<ActionResult> DeleteEvent(string id)
         {
-            ResultsViewModel results = new ResultsViewModel();
-            results.Selectable = false;
+            ResultsViewModel results = new ResultsViewModel(false);
             try
             {
 
@@ -129,6 +153,30 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
 
                 // Delete the event.
                 results.Items = await eventsService.DeleteEvent(graphClient, id);
+            }
+            catch (ServiceException se)
+            {
+                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+
+                // Personal accounts that aren't enabled for the Outlook REST API get a "MailboxNotEnabledForRESTAPI" or "MailboxNotSupportedForRESTAPI" error.
+                return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
+            }
+            return View("Events", results);
+        }
+
+        // Accept a meeting request.
+        // If the current user is the organizer of the meeting, the snippet will not work since organizers can't accept their
+        // own invitations.
+        public async Task<ActionResult> AcceptMeetingRequest(string id)
+        {
+            ResultsViewModel results = new ResultsViewModel(false);
+            try
+            {
+                // Initialize the GraphServiceClient.
+                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
+
+                // Accept the meeting.
+                results.Items = await eventsService.AcceptMeetingRequest(graphClient, id);
             }
             catch (ServiceException se)
             {
