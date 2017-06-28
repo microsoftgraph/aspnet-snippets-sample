@@ -3,6 +3,7 @@
 *  See LICENSE in the source repository root for complete license information. 
 */
 
+using System.Threading;
 using System.Web;
 using Microsoft.Identity.Client;
 
@@ -10,69 +11,82 @@ namespace Microsoft_Graph_ASPNET_Snippets.TokenStorage
 {
 
     // Store the user's token information.
-    public class SessionTokenCache : TokenCache
+    // Store the user's token information.
+    public class SessionTokenCache
     {
-        private HttpContextBase context;
-        private static readonly object FileLock = new object();
-        private readonly string CacheId = string.Empty;
-        public string UserObjectId = string.Empty;
+        private static ReaderWriterLockSlim SessionLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
+        string UserId = string.Empty;
+        string CacheId = string.Empty;
+        HttpContextBase httpContext = null;
 
-        public SessionTokenCache(string userId, HttpContextBase context)
+        TokenCache cache = new TokenCache();
+
+        public SessionTokenCache(string userId, HttpContextBase httpcontext)
         {
-            this.context = context;
-            this.UserObjectId = userId;
-            this.CacheId = UserObjectId + "_TokenCache";
-
-            AfterAccess = AfterAccessNotification;
-            BeforeAccess = BeforeAccessNotification;
+            // not object, we want the SUB
+            UserId = userId;
+            CacheId = UserId + "_TokenCache";
+            httpContext = httpcontext;
             Load();
         }
 
+        public TokenCache GetMsalCacheInstance()
+        {
+            cache.SetBeforeAccess(BeforeAccessNotification);
+            cache.SetAfterAccess(AfterAccessNotification);
+            Load();
+            return cache;
+        }
+
+        public void SaveUserStateValue(string state)
+        {
+            SessionLock.EnterWriteLock();
+            httpContext.Session[CacheId + "_state"] = state;
+            SessionLock.ExitWriteLock();
+        }
+        public string ReadUserStateValue()
+        {
+            string state = string.Empty;
+            SessionLock.EnterReadLock();
+            state = (string)httpContext.Session[CacheId + "_state"];
+            SessionLock.ExitReadLock();
+            return state;
+        }
         public void Load()
         {
-            lock (FileLock)
-            {
-                Deserialize((byte[])context.Session[CacheId]);
-            }
+            SessionLock.EnterReadLock();
+            cache.Deserialize((byte[])httpContext.Session[CacheId]);
+            SessionLock.ExitReadLock();
         }
 
         public void Persist()
         {
-            lock (FileLock)
-            {
+            SessionLock.EnterWriteLock();
 
-                // Reflect changes in the persistent store.
-                var bytes = Serialize();
-                var x = System.Text.Encoding.UTF8.GetString(bytes);
-                context.Session[CacheId] = Serialize();
+            // Optimistically set HasStateChanged to false. We need to do it early to avoid losing changes made by a concurrent thread.
+            cache.HasStateChanged = false;
 
-                // After the write operation takes place, restore the HasStateChanged bit to false.
-                HasStateChanged = false;
-            }
-        }
-
-        // Empties the persistent store.
-        public override void Clear(string clientId)
-        {
-            base.Clear(clientId);
-            context.Session.Remove(CacheId);
+            // Reflect changes in the persistent store
+            httpContext.Session[CacheId] = cache.Serialize();
+            SessionLock.ExitWriteLock();
         }
 
         // Triggered right before MSAL needs to access the cache.
         // Reload the cache from the persistent store in case it changed since the last access.
-        private void BeforeAccessNotification(TokenCacheNotificationArgs args)
+        void BeforeAccessNotification(TokenCacheNotificationArgs args)
         {
             Load();
         }
 
         // Triggered right after MSAL accessed the cache.
-        private void AfterAccessNotification(TokenCacheNotificationArgs args)
+        void AfterAccessNotification(TokenCacheNotificationArgs args)
         {
             // if the access operation resulted in a cache update
-            if (HasStateChanged)
+            if (cache.HasStateChanged)
             {
                 Persist();
             }
         }
+
     }
 }

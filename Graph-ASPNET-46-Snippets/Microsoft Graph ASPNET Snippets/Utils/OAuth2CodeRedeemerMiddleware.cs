@@ -48,9 +48,9 @@ namespace Microsoft_Graph_ASPNET_Snippets.Utils
 
                 string signedInUserID = context.Authentication.User.FindFirst(System.IdentityModel.Claims.ClaimTypes.NameIdentifier).Value;
                 HttpContextBase hcb = context.Environment["System.Web.HttpContextBase"] as HttpContextBase;
-                SessionTokenCache theCache = new SessionTokenCache(signedInUserID, hcb);
+                TokenCache theCache = new SessionTokenCache(signedInUserID, hcb).GetMsalCacheInstance();
                 ConfidentialClientApplication cca = new ConfidentialClientApplication(options.ClientId, options.RedirectUri,
-   new ClientCredential(options.ClientSecret), theCache);
+   new ClientCredential(options.ClientSecret), theCache, null);
 
                 //validate state
                 CodeRedemptionData crd = OAuth2RequestManager.ValidateState(state, hcb);
@@ -60,7 +60,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Utils
                  //redeem code                   
                     try
                     {
-                        AuthenticationResult result = await cca.AcquireTokenByAuthorizationCodeAsync(crd.Scopes, code);
+                        AuthenticationResult result = await cca.AcquireTokenByAuthorizationCodeAsync(code, crd.Scopes);
                         HttpContext.Current.Session.Add("IsAdmin", true);
 
                     }
@@ -203,8 +203,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Utils
                 preferredUsername,
                 state == null ? null : "&state=" + state + "&domain_hint=" + domain_hint,
                 null,
-                cca.Authority,
-                null);
+                cca.Authority);
 
             return authzMessageUri.ToString();
 

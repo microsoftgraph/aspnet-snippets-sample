@@ -9,10 +9,13 @@ using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Microsoft_Graph_ASPNET_Snippets.TokenStorage;
 using Resources;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
+using System;
 
 namespace Microsoft_Graph_ASPNET_Snippets.Helpers
 {
@@ -25,7 +28,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Helpers
         private string appSecret = ConfigurationManager.AppSettings["ida:AppSecret"];
         private string nonAdminScopes = ConfigurationManager.AppSettings["ida:NonAdminScopes"];
         private string adminScopes = ConfigurationManager.AppSettings["ida:AdminScopes"];
-        private SessionTokenCache tokenCache { get; set; }
+        private TokenCache tokenCache { get; set; }
         private string url { get; set; }
 
         private static readonly SampleAuthProvider instance = new SampleAuthProvider();
@@ -47,7 +50,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Helpers
             HttpContextBase context = HttpContext.Current.GetOwinContext().Environment["System.Web.HttpContextBase"] as HttpContextBase;
             tokenCache = new SessionTokenCache(
                 ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier).Value,
-                context);
+                context).GetMsalCacheInstance();
             //var cachedItems = tokenCache.ReadItems(appId); // see what's in the cache
 
             if (!redirectUri.EndsWith("/")) redirectUri = redirectUri + "/";
@@ -56,7 +59,8 @@ namespace Microsoft_Graph_ASPNET_Snippets.Helpers
                 appId,
                 redirectUri + segments[1],
                 new ClientCredential(appSecret),
-                tokenCache);
+                tokenCache,
+                null);
             bool? isAdmin = HttpContext.Current.Session["IsAdmin"] as bool?;
 
             string allScopes = nonAdminScopes;
@@ -67,17 +71,17 @@ namespace Microsoft_Graph_ASPNET_Snippets.Helpers
             string[] scopes = allScopes.Split(new char[] { ' ' });
             try
             {
-                AuthenticationResult result = await cca.AcquireTokenSilentAsync(scopes);
-                return result.Token;
+                AuthenticationResult result = await cca.AcquireTokenSilentAsync(scopes,cca.Users.First());
+                return result.AccessToken;
             }
 
             // Unable to retrieve the access token silently.
-            catch (MsalSilentTokenAcquisitionException)
+            catch (Exception)
             {
                 HttpContext.Current.Request.GetOwinContext().Authentication.Challenge(
                   new AuthenticationProperties() { RedirectUri = redirectUri + segments[1] },
                   OpenIdConnectAuthenticationDefaults.AuthenticationType);
-                
+
                 throw new ServiceException(
                     new Error
                     {

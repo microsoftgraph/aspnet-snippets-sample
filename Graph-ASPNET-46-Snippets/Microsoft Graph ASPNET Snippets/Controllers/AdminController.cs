@@ -29,16 +29,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
         {
             // try to get token silently
             string signedInUserID = ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier).Value;
-            SessionTokenCache theCache = new SessionTokenCache(signedInUserID, this.HttpContext);
+            TokenCache theCache = new SessionTokenCache(signedInUserID, this.HttpContext).GetMsalCacheInstance();
 
             ConfidentialClientApplication cca = new ConfidentialClientApplication(clientId, redirectUri,
-                new ClientCredential(appKey), theCache);
+                new ClientCredential(appKey), theCache, null);
             string[] scopes = adminScopes.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             try
             {
-                AuthenticationResult result = await cca.AcquireTokenSilentAsync(scopes);
+                AuthenticationResult result = await cca.AcquireTokenSilentAsync(scopes, cca.Users.First());
             }
-            catch (MsalSilentTokenAcquisitionException)
+            catch (Exception)
             {
                 try
                 {// when failing, manufacture the URL and assign it
