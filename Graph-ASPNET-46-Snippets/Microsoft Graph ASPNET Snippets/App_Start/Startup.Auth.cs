@@ -82,16 +82,16 @@ namespace Microsoft_Graph_ASPNET_Snippets
                             string signedInUserID = context.AuthenticationTicket.Identity.FindFirst(ClaimTypes.NameIdentifier).Value;
                             string graphScopes = nonAdminScopes;
                             string[] scopes = graphScopes.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                            
+
                             ConfidentialClientApplication cca = new ConfidentialClientApplication(appId, redirectUri,
                                new ClientCredential(appSecret),
-                               new SessionTokenCache(signedInUserID, context.OwinContext.Environment["System.Web.HttpContextBase"] as HttpContextBase));
-                            AuthenticationResult result = await cca.AcquireTokenByAuthorizationCodeAsync(scopes, code);
+                               new SessionTokenCache(signedInUserID, context.OwinContext.Environment["System.Web.HttpContextBase"] as HttpContextBase).GetMsalCacheInstance(), null);
+                            AuthenticationResult result = await cca.AcquireTokenByAuthorizationCodeAsync(code, scopes);
 
                             // Check whether the login is from the MSA tenant. 
                             // The sample uses this attribute to disable UI buttons for unsupported operations when the user is logged in with an MSA account.
                             var currentTenantId = context.AuthenticationTicket.Identity.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
-                            if (currentTenantId == "9188040d-6c67-4c5b-b112-36a304b66dad") 
+                            if (currentTenantId == "9188040d-6c67-4c5b-b112-36a304b66dad")
                             {
                                 HttpContext.Current.Session.Add("AccountType", "msa");
                             }

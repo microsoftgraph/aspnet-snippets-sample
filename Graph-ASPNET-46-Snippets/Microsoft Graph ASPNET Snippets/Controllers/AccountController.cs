@@ -27,6 +27,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             }
         }
 
+        // Here we just clear the token cache, sign out the GraphServiceClient, and end the session with the web app.  
         public void SignOut()
         {
             if (Request.IsAuthenticated)
@@ -35,11 +36,9 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
                 string userObjectId = ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier).Value;
 
                 SessionTokenCache tokenCache = new SessionTokenCache(userObjectId, HttpContext);
-                tokenCache.Clear(userObjectId);
+                HttpContext.GetOwinContext().Authentication.SignOut(OpenIdConnectAuthenticationDefaults.AuthenticationType, CookieAuthenticationDefaults.AuthenticationType);
             }
 
-            SDKHelper.SignOutClient();
-            Session.Clear();
 
             // Send an OpenID Connect sign-out request. 
             HttpContext.GetOwinContext().Authentication.SignOut(
