@@ -1,6 +1,8 @@
-# <a name="microsoft-graph-snippets-sample-for-aspnet-46"></a>ASP.NET 4.6 用 Microsoft Graph スニペットのサンプル
+# ASP.NET 4.6 用 Microsoft Graph スニペットのサンプル
+<a id="microsoft-graph-snippets-sample-for-aspnet-46" class="xliff"></a>
 
-## <a name="table-of-contents"></a>目次
+## 目次
+<a id="table-of-contents" class="xliff"></a>
 
 * [前提条件](#prerequisites)
 * [アプリケーションの登録](#register-the-application)
@@ -12,23 +14,28 @@
 
 このサンプル プロジェクトには、ASP.NET MVC アプリ内からのメール送信、グループ管理、および他のアクティビティなどの一般的なタスクを実行するために Microsoft Graph を使用する、コード スニペットのリポジトリが用意されています。[Microsoft Graph .NET クライアント SDK](https://github.com/microsoftgraph/msgraph-sdk-dotnet) を使用して、Microsoft Graph が返すデータを操作します。 
 
-サンプルでは認証に [Microsoft 認証ライブラリ (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) を使用します。MSAL SDK には、[Azure AD v2 0 エンドポイント](https://docs.microsoft.com/ja-jp/azure/active-directory/develop/active-directory-appmodel-v2-overview)を操作するための機能が用意されており、開発者は職場または学校 (Azure Active Directory) アカウント、および個人用 (Microsoft) アカウントの両方に対する認証を処理する 1 つのコード フローを記述することができます。
+サンプルでは認証に [Microsoft 認証ライブラリ (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) を使用します。MSAL SDK には、[Azure AD v2 0 エンドポイント](https://azure.microsoft.com/en-us/documentation/articles/active-directory-appmodel-v2-overview)を操作するための機能が用意されており、開発者は職場または学校 (Azure Active Directory) アカウント、および個人用 (Microsoft) アカウントの両方に対する認証を処理する 1 つのコード フローを記述することができます。
 
 またサンプルでは、トークンを段階的に要求する方法を示します。この方法は Azure AD v2.0 エンドポイントによってサポートされている機能です。ユーザーは、サインイン中にアクセス許可の適用範囲の最初のセットに同意することになりますが、後で他の適用範囲にも同意することができます。このサンプルの場合、すべての有効なユーザーがサインインできますが、管理者は後で特定の操作に必要な管理レベルの適用範囲に同意することができます。
 
 サンプルでは、サインインと最初のトークン取得中に [ASP.NET OpenId Connect OWIN ミドルウェア](https://www.nuget.org/packages/Microsoft.Owin.Security.OpenIdConnect/) を使用します。またサンプルでは、カスタム Owin ミドルウェアも実装して、アクセスの認証コードを交換し、サインイン フローの外部のトークンを更新します。カスタム ミドルウェアは、MSAL を呼び出して承認要求 URI を作成して、リダイレクトを処理します。段階的な同意の詳細については、「[OpenID Connect を使用して、Microsoft Identity と Microsoft Graph を Web アプリケーションに統合する](https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2)」を参照してください。
 
- > **注** 現在、MSAL SDK はプレリリース段階であるため、運用コードでは使用できません。カスタム ミドルウェアとトークン キャッシュには、これらを運用コードに対して不適切にする制限があります。たとえば、ミドルウェアにはキャッシュ上にハードの依存関係があり、キャッシュはセッション ベースです。ここでは、コードは例示目的のみに使用されています
+## MSAL プレビューに関する重要な注意事項
+<a id="important-note-about-the-msal-preview" class="xliff"></a>
 
-## <a name="prerequisites"></a>前提条件
+このライブラリは、運用環境での使用に適しています。 このライブラリに対しては、現在の運用ライブラリと同じ運用レベルのサポートを提供します。 プレビュー中にこのライブラリの API、内部キャッシュの形式、および他のメカニズムを変更する場合があります。これは、バグの修正や機能強化の際に実行する必要があります。 これは、アプリケーションに影響を与える場合があります。 例えば、キャッシュ形式を変更すると、再度サインインが要求されるなどの影響をユーザーに与えます。 API を変更すると、コードの更新が要求される場合があります。 一般提供リリースが実施されると、プレビュー バージョンを使って作成されたアプリケーションは動作しなくなるため、6 か月以内に一般提供バージョンに更新することが求められます。
+
+
+## 前提条件
+<a id="prerequisites" class="xliff"></a>
 
 このサンプルを実行するには次のものが必要です:  
 
-  * [Visual Studio 2015](https://www.visualstudio.com/ja/downloads) 
-  * 
-  [Microsoft アカウント](https://www.outlook.com)または [Office 365 for Business アカウント](https://msdn.microsoft.com/ja-jp/office/office365/howto/setup-development-environment#bk_Office365Account)のいずれか。管理レベルの操作を実行するには、Office 365 の管理者アカウントが必要です。アプリの構築を開始するために必要なリソースを含む、[Office 365 Developer サブスクリプション](https://msdn.microsoft.com/ja-jp/office/office365/howto/setup-development-environment#bk_Office365Account)にサインアップできます。
+  * [Visual Studio 2015](https://www.visualstudio.com/en-us/downloads) 
+  * [Microsoft アカウント](https://www.outlook.com)または [Office 365 for Business アカウント](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account)のいずれか。管理レベルの操作を実行するには、Office 365 の管理者アカウントが必要です。アプリの構築を開始するために必要なリソースを含む、[Office 365 Developer サブスクリプション](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account)にサインアップできます。
 
-## <a name="register-the-application"></a>アプリケーションの登録
+## アプリケーションの登録
+<a id="register-the-application" class="xliff"></a>
 
 1. 個人用アカウント、あるいは職場または学校アカウントのいずれかを使用して、[アプリ登録ポータル](https://apps.dev.microsoft.com/)にサインインします。
 
@@ -40,7 +47,7 @@
 
 4. アプリケーション ID をコピーします。これは、アプリの一意識別子です。 
 
-5. **[アプリケーション シークレット]** で、**[新しいパスワードを生成する]** を選びます。**[新しいパスワードが生成されました]** ダイアログからパスワードをコピーします。
+5. **[アプリケーション シークレット]** で、**[新しいパスワードを生成する]** を選びます。**[新しいパスワードを生成する]** ダイアログからパスワードをコピーします。
 
    サンプル アプリにコピーするアプリ ID とアプリ シークレットの値を入力する必要があります。 
 
@@ -55,7 +62,8 @@
 9. **[保存]** を選択します。
  
  
-## <a name="build-and-run-the-sample"></a>サンプルの構築と実行
+## サンプルの構築と実行
+<a id="build-and-run-the-sample" class="xliff"></a>
 
 1. ASP.NET 4.6 用 Microsoft Graph スニペットのサンプルをダウンロードするか、クローンを作成します。
 
@@ -80,18 +88,20 @@
    
 応答情報は、ページの下部に表示されます。
 
-### <a name="how-the-sample-affects-your-account-data"></a>サンプルによるアカウント データへの影響
+### サンプルによるアカウント データへの影響
+<a id="how-the-sample-affects-your-account-data" class="xliff"></a>
 
 このサンプルでは、エンティティとデータ (ユーザーまたはファイルなど) を作成、更新、および削除します。使用方法によっては、**実際のエンティティとデータを編集または削除して**、データの成果物をそのまま残す場合があります。 
 
 実際のアカウント データを変更せずにサンプルを使用するには、必ずサンプルで作成されるエンティティ上でのみ操作の更新と削除を実行します。 
 
 
-## <a name="code-of-note"></a>ノートのコード
+## ノートのコード
+<a id="code-of-note" class="xliff"></a>
 
 - [Startup.Auth.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/App_Start/Startup.Auth.cs).現在のユーザーを認証して、サンプルのトークン キャッシュを初期化します。
 
-- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs).ユーザーのトークン情報を保存します。これを独自のカスタム トークン キャッシュと置き換えることができます。詳細については、「[マルチテナント アプリケーションのアクセス トークンのキャッシュ](https://azure.microsoft.com/ja-jp/documentation/articles/guidance-multitenant-identity-token-cache/)」を参照してください。
+- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs).ユーザーのトークン情報を保存します。これを独自のカスタム トークン キャッシュと置き換えることができます。詳細については、「[マルチテナント アプリケーションのアクセス トークンのキャッシュ](https://azure.microsoft.com/en-us/documentation/articles/guidance-multitenant-identity-token-cache/)」を参照してください。
 
 - [SampleAuthProvider.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SampleAuthProvider.cs)。ローカルの IAuthProvider インターフェイスを実装して、**AcquireTokenSilentAsync** メソッドを使用してアクセス トークンを取得します。これを独自の承認プロバイダーと置き換えることができます。 
 
@@ -119,24 +129,28 @@
   - [AdminController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/AdminController.cs)
   - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs)。アクセスの認証コードを使い、サインイン フローの外部のトークンを更新するカスタム ミドルウェアです。段階的な同意の実装の詳細については、https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2 を参照してください。
 
-## <a name="questions-and-comments"></a>質問とコメント
+## 質問とコメント
+<a id="questions-and-comments" class="xliff"></a>
 
 このサンプルに関するフィードバックをお寄せください。質問や提案につきましては、このリポジトリの「[問題](https://github.com/microsoftgraph/aspnet-snippets-sample/issues)」セクションで送信できます。
 
-お客様からのフィードバックを重視しています。[Stack Overflow](http://stackoverflow.com/questions/tagged/microsoftgraph)でご連絡いただけます。ご質問には [MicrosoftGraph] のタグを付けてください。
+お客様からのフィードバックを重視しています。[スタック オーバーフロー](http://stackoverflow.com/questions/tagged/microsoftgraph)でご連絡いただけます。ご質問には [MicrosoftGraph] のタグを付けてください。
 
-## <a name="contributing"></a>投稿
+## 投稿
+<a id="contributing" class="xliff"></a>
 
 このサンプルに投稿する場合は、[CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
 
 このプロジェクトでは、[Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/) が採用されています。詳細については、「[規範に関する FAQ](https://opensource.microsoft.com/codeofconduct/faq/)」を参照してください。または、その他の質問やコメントがあれば、[opencode@microsoft.com](mailto:opencode@microsoft.com) までにお問い合わせください。 
 
-## <a name="additional-resources"></a>追加リソース
+## 追加リソース
+<a id="additional-resources" class="xliff"></a>
 
 - [他の Microsoft Graph スニペットのサンプル](https://github.com/MicrosoftGraph?utf8=%E2%9C%93&query=snippets)
 - [Microsoft Graph の概要](http://graph.microsoft.io)
 - [Office 開発者向けコード サンプル](http://dev.office.com/code-samples)
 - [Office デベロッパー センター](http://dev.office.com/)
 
-## <a name="copyright"></a>著作権
+## 著作権
+<a id="copyright" class="xliff"></a>
 Copyright (c) 2016 Microsoft. All rights reserved.

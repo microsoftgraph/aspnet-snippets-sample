@@ -1,6 +1,8 @@
-# <a name="microsoft-graph-snippets-sample-for-aspnet-46"></a>Exemple d’extraits de code Microsoft Graph pour ASP.NET 4.6
+# Exemple d’extraits de code Microsoft Graph pour ASP.NET 4.6
+<a id="microsoft-graph-snippets-sample-for-aspnet-46" class="xliff"></a>
 
-## <a name="table-of-contents"></a>Sommaire
+## Sommaire
+<a id="table-of-contents" class="xliff"></a>
 
 * [Conditions préalables](#prerequisites)
 * [Inscription de l’application](#register-the-application)
@@ -12,22 +14,28 @@
 
 Cet exemple de projet constitue un référentiel des extraits de code qui utilisent Microsoft Graph pour effectuer des tâches courantes, telles que l’envoi des messages électroniques, la gestion des groupes et d’autres activités au sein d’une application ASP.NET MVC. Il utilise le [kit de développement logiciel Microsoft Graph .NET Client](https://github.com/microsoftgraph/msgraph-sdk-dotnet) pour fonctionner avec les données renvoyées par Microsoft Graph. 
 
-L’exemple utilise la [bibliothèque d’authentification Microsoft (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) pour l’authentification. Le kit de développement logiciel (SDK) MSAL offre des fonctionnalités permettant d’utiliser le [point de terminaison Azure AD v2.0](https://docs.microsoft.com/fr-fr/azure/active-directory/develop/active-directory-appmodel-v2-overview), qui permet aux développeurs d’écrire un flux de code unique qui gère l’authentification des comptes professionnels ou scolaires (Azure Active Directory) et personnels (Microsoft).
+L’exemple utilise la [bibliothèque d’authentification Microsoft (MSAL)](https://www.nuget.org/packages/Microsoft.Identity.Client/) pour l’authentification. Le kit de développement logiciel (SDK) MSAL offre des fonctionnalités permettant d’utiliser le [point de terminaison Azure AD v2.0](https://azure.microsoft.com/en-us/documentation/articles/active-directory-appmodel-v2-overview), qui permet aux développeurs d’écrire un flux de code unique qui gère l’authentification des comptes professionnels ou scolaires (Azure Active Directory) et personnels (Microsoft).
 
 En outre, l’exemple montre comment demander des jetons de façon incrémentielle, une fonctionnalité prise en charge par le point de terminaison Azure AD v2.0. Les utilisateurs consentent à un ensemble initial d’étendues d’autorisations lors de la connexion, mais peuvent consentir à d’autres étendues ultérieurement. Dans le cas de cet exemple, tout utilisateur valide peut se connecter, mais les administrateurs peuvent ultérieurement consentir aux étendues de niveau administrateur obligatoire pour certaines opérations.
 
 L’exemple utilise l’[intergiciel ASP.NET OpenId Connect OWIN](https://www.nuget.org/packages/Microsoft.Owin.Security.OpenIdConnect/) pour la connexion et pendant l’acquisition initiale des jetons. L’exemple implémente également un intergiciel Owin personnalisé pour échanger un code d’autorisation pour les jetons d’accès et d’actualisation en dehors du flux de connexion. L’intergiciel personnalisé appelle MSAL pour générer l’URI de demande d’autorisation et gère les redirections. Pour plus d’informations sur le consentement incrémentiel, voir [Intégrer l’identité Microsoft et Microsoft Graph dans une application web avec OpenID Connect](https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2).
 
- > **Remarque** Le kit de développement logiciel MSAL se trouve actuellement dans la version préliminaire et en tant que tel, il ne doit pas être utilisé dans le code de production. L’intergiciel personnalisé et le cache de jetons présentent des limitations qui les rendent inappropriés pour le code de production. Par exemple, l’intergiciel contient une dépendance dure sur le cache et le cache est basé sur la session. Le code est utilisé ici à titre indicatif uniquement.
+## Remarque importante à propos de la version d’essai MSAL
+<a id="important-note-about-the-msal-preview" class="xliff"></a>
 
-## <a name="prerequisites"></a>Conditions préalables
+La bibliothèque peut être utilisée dans un environnement de production. Nous fournissons la même prise en charge du niveau de production pour cette bibliothèque que pour nos bibliothèques de production actuelles. Lors de la version d’essai, nous pouvons apporter des modifications à l’API, au format de cache interne et à d’autres mécanismes de cette bibliothèque que vous devrez prendre en compte avec les correctifs de bogues ou les améliorations de fonctionnalités. Cela peut avoir un impact sur votre application. Par exemple, une modification du format de cache peut avoir un impact sur vos utilisateurs. Par exemple, il peut leur être demandé de se connecter à nouveau. Une modification de l’API peut vous obliger à mettre à jour votre code. Lorsque nous fournissons la version de disponibilité générale, vous devez effectuer une mise à jour vers la version de disponibilité générale dans un délai de six mois, car les applications écrites à l’aide de la version d’évaluation de la bibliothèque ne fonctionneront plus.
+
+
+## Conditions préalables
+<a id="prerequisites" class="xliff"></a>
 
 Cet exemple nécessite les éléments suivants :  
 
-  * [Visual Studio 2015](https://www.visualstudio.com/fr/downloads) 
-  * Soit un [compte Microsoft](https://www.outlook.com), soit un [compte Office 365 pour entreprise](https://msdn.microsoft.com/fr-fr/office/office365/howto/setup-development-environment#bk_Office365Account). Un compte d’administrateur Office 365 est obligatoire pour exécuter des opérations de niveau administrateur. Vous pouvez vous inscrire à [Office 365 Developer](https://msdn.microsoft.com/fr-fr/office/office365/howto/setup-development-environment#bk_Office365Account) pour accéder aux ressources dont vous avez besoin pour commencer à créer des applications.
+  * [Visual Studio 2015](https://www.visualstudio.com/en-us/downloads) 
+  * Soit un [compte Microsoft](https://www.outlook.com), soit un [compte Office 365 pour entreprise](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account). Un compte d’administrateur Office 365 est obligatoire pour exécuter des opérations de niveau administrateur. Vous pouvez vous inscrire à [Office 365 Developer](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account) pour accéder aux ressources dont vous avez besoin pour commencer à créer des applications.
 
-## <a name="register-the-application"></a>Inscription de l’application
+## Inscription de l’application
+<a id="register-the-application" class="xliff"></a>
 
 1. Connectez-vous au [portail d’inscription des applications](https://apps.dev.microsoft.com/) en utilisant votre compte personnel, professionnel ou scolaire.
 
@@ -54,7 +62,8 @@ Cet exemple nécessite les éléments suivants :
 9. Cliquez sur **Enregistrer**.
  
  
-## <a name="build-and-run-the-sample"></a>Création et exécution de l’exemple
+## Création et exécution de l’exemple
+<a id="build-and-run-the-sample" class="xliff"></a>
 
 1. Téléchargez ou clonez l’exemple d’extraits de code Microsoft Graph pour ASP.NET 4.6.
 
@@ -79,18 +88,20 @@ Cet exemple nécessite les éléments suivants :
    
 Les informations de réponse s’affichent en bas de la page.
 
-### <a name="how-the-sample-affects-your-account-data"></a>Impact de l’exemple sur les données de votre compte
+### Impact de l’exemple sur les données de votre compte
+<a id="how-the-sample-affects-your-account-data" class="xliff"></a>
 
 Cet exemple crée, met à jour et supprime des entités et données (par exemple, des utilisateurs ou fichiers). En fonction de votre mode d’utilisation, **vous pouvez modifier ou supprimer des entités réelles et des données** et laisser des artefacts de données. 
 
 Pour utiliser l’exemple sans modifier vos données de compte réelles, veillez à effectuer les opérations de mise à jour et de suppression uniquement sur les entités créées par l’exemple. 
 
 
-## <a name="code-of-note"></a>Code de note
+## Code de note
+<a id="code-of-note" class="xliff"></a>
 
 - [Startup.Auth.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/App_Start/Startup.Auth.cs). Authentifie l’utilisateur actuel et initialise le cache de jetons de l’exemple.
 
-- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs). Stocke les informations du jeton de l’utilisateur. Vous pouvez le remplacer par votre propre cache de jetons personnalisé. Pour plus d’informations, voir [Mise en cache des jetons d’accès dans une application mutualisée](https://azure.microsoft.com/fr-fr/documentation/articles/guidance-multitenant-identity-token-cache/).
+- [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs). Stocke les informations du jeton de l’utilisateur. Vous pouvez le remplacer par votre propre cache de jetons personnalisé. Pour plus d’informations, voir [Mise en cache des jetons d’accès dans une application mutualisée](https://azure.microsoft.com/en-us/documentation/articles/guidance-multitenant-identity-token-cache/).
 
 - [SampleAuthProvider.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SampleAuthProvider.cs). Implémente l’interface IAuthProvider locale et obtient un jeton d’accès à l’aide de la méthode **AcquireTokenSilentAsync**. Vous pouvez utiliser, à la place, votre propre fournisseur d’autorisation. 
 
@@ -118,24 +129,28 @@ Pour utiliser l’exemple sans modifier vos données de compte réelles, veillez
   - [AdminController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/AdminController.cs)
   - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs). Intergiciel personnalisé qui échange un code d’autorisation pour les jetons d’accès et d’actualisation en dehors du flux de connexion. Pour plus d’informations sur l’implémentation du consentement incrémentiel, reportez-vous à https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2.
 
-## <a name="questions-and-comments"></a>Questions et commentaires
+## Questions et commentaires
+<a id="questions-and-comments" class="xliff"></a>
 
 Nous serions ravis de connaître votre opinion sur cet exemple. Vous pouvez nous faire part de vos questions et suggestions dans la rubrique [Problèmes](https://github.com/microsoftgraph/aspnet-snippets-sample/issues) de ce référentiel.
 
 Votre avis compte beaucoup pour nous. Communiquez avec nous sur [Stack Overflow](http://stackoverflow.com/questions/tagged/microsoftgraph). Posez vos questions avec la balise [MicrosoftGraph].
 
-## <a name="contributing"></a>Contribution
+## Contribution
+<a id="contributing" class="xliff"></a>
 
 Si vous souhaitez contribuer à cet exemple, voir [CONTRIBUTING.MD](CONTRIBUTING.md).
 
 Ce projet a adopté le [code de conduite Microsoft Open Source](https://opensource.microsoft.com/codeofconduct/). Pour plus d’informations, reportez-vous à la [FAQ relative au code de conduite](https://opensource.microsoft.com/codeofconduct/faq/) ou contactez [opencode@microsoft.com](mailto:opencode@microsoft.com) pour toute question ou tout commentaire. 
 
-## <a name="additional-resources"></a>Ressources supplémentaires
+## Ressources supplémentaires
+<a id="additional-resources" class="xliff"></a>
 
 - [Autres exemples d’extraits de code Microsoft Graph](https://github.com/MicrosoftGraph?utf8=%E2%9C%93&query=snippets)
 - [Présentation de Microsoft Graph](http://graph.microsoft.io)
 - [Exemples de code du développeur Office](http://dev.office.com/code-samples)
 - [Centre de développement Office](http://dev.office.com/)
 
-## <a name="copyright"></a>Copyright
+## Copyright
+<a id="copyright" class="xliff"></a>
 Copyright (c) 2016 Microsoft. Tous droits réservés.
