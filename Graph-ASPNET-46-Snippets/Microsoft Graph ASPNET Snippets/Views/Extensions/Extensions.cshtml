@@ -1,0 +1,43 @@
+﻿<!--  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
+See LICENSE in the source repository root for complete license information. -->
+
+@using Resources;
+
+@model Microsoft_Graph_ASPNET_Snippets.Models.ResultsViewModel
+
+@{
+    ViewBag.Title = string.Format(Resource.Snippets, "Extensions");
+    var accountType = Session["AccountType"] as string;
+}
+
+<div class="split">
+    <h2>@ViewBag.Title</h2>
+</div>
+<div class="col-sm-12">
+    <h3>Open Extensions</h3>
+    <div class="form-group">
+        @using (Html.BeginForm("AddOpenExtensionToMe", "Extensions"))
+        {
+            <button class="btn btn-link" id="add-openextension">Add open extension to me</button>
+        }
+        @using (Html.BeginForm("GetOpenExtensionsForMe", "Extensions"))
+        {
+            <button class="btn btn-link" id="get-openextensions">Get open extensions for me</button>
+        }
+        @using (Html.BeginForm("UpdateOpenExtensionForMe", "Extensions"))
+        {
+            <button class="btn btn-link" id="update-openextension">Update open extension for me</button>
+        }
+        @using (Html.BeginForm("DeleteOpenExtensionForMe", "Extensions"))
+        {
+            <button class="btn btn-link" id="delete-openextension">Delete open extension for me</button>
+        }
+    </div>
+
+    @*<p>Schema Extensions</p>
+    <div class="form-group">
+    </div>*@
+</div>
+
+
+@Html.Partial("_ResultsPartial")
