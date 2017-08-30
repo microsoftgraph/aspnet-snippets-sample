@@ -19,7 +19,7 @@ namespace Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option or rebuild the Visual Studio project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Web.Application.StronglyTypedResourceProxyBuilder", "14.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Web.Application.StronglyTypedResourceProxyBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resource {
@@ -246,6 +246,78 @@ namespace Resources {
         internal static string Event_UpdateEvent {
             get {
                 return ResourceManager.GetString("Event_UpdateEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extensions.
+        /// </summary>
+        internal static string Extensions {
+            get {
+                return ResourceManager.GetString("Extensions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to deleted.
+        /// </summary>
+        internal static string Extensions_deleted {
+            get {
+                return ResourceManager.GetString("Extensions_deleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Extensions.
+        /// </summary>
+        internal static string Extensions_OpenExtensions {
+            get {
+                return ResourceManager.GetString("Extensions_OpenExtensions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add open extension to me.
+        /// </summary>
+        internal static string Extensions_Open_Add {
+            get {
+                return ResourceManager.GetString("Extensions_Open_Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete open extension for me.
+        /// </summary>
+        internal static string Extensions_Open_Delete {
+            get {
+                return ResourceManager.GetString("Extensions_Open_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get open extensions for me.
+        /// </summary>
+        internal static string Extensions_Open_Get {
+            get {
+                return ResourceManager.GetString("Extensions_Open_Get", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update open extension for me.
+        /// </summary>
+        internal static string Extensions_Open_Update {
+            get {
+                return ResourceManager.GetString("Extensions_Open_Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to updated.
+        /// </summary>
+        internal static string Extensions_updated {
+            get {
+                return ResourceManager.GetString("Extensions_updated", resourceCulture);
             }
         }
         

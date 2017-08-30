@@ -565,4 +565,36 @@
     <value>Upload a large file</value>
     <comment>UploadLargeFile button text for Files view</comment>
   </data>
+  <data name="Extensions" xml:space="preserve">
+    <value>Extensions</value>
+    <comment>Name and partial view title</comment>
+  </data>
+  <data name="Extensions_deleted" xml:space="preserve">
+    <value>deleted</value>
+    <comment>Text for feedback on deletion</comment>
+  </data>
+  <data name="Extensions_OpenExtensions" xml:space="preserve">
+    <value>Open Extensions</value>
+    <comment>Open Extensions title text for Extensions view</comment>
+  </data>
+  <data name="Extensions_Open_Add" xml:space="preserve">
+    <value>Add open extension to me</value>
+    <comment>AddOpenExtensionToMe button text for Extensions view</comment>
+  </data>
+  <data name="Extensions_Open_Delete" xml:space="preserve">
+    <value>Delete open extension for me</value>
+    <comment>DeleteOpenExtensionForMe button text for Extensions view</comment>
+  </data>
+  <data name="Extensions_Open_Get" xml:space="preserve">
+    <value>Get open extensions for me</value>
+    <comment>GetOpenExtensionsForMe button text for Extensions view</comment>
+  </data>
+  <data name="Extensions_Open_Update" xml:space="preserve">
+    <value>Update open extension for me</value>
+    <comment>UpdateOpenExtensionForMe button text for Extensions view</comment>
+  </data>
+  <data name="Extensions_updated" xml:space="preserve">
+    <value>updated</value>
+    <comment>Text for feedback on updating</comment>
+  </data>
 </root>
