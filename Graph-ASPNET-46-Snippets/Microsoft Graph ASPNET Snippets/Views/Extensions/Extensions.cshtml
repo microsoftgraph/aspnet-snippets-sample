@@ -6,7 +6,7 @@ See LICENSE in the source repository root for complete license information. -->
 @model Microsoft_Graph_ASPNET_Snippets.Models.ResultsViewModel
 
 @{
-    ViewBag.Title = string.Format(Resource.Snippets, "Extensions");
+    ViewBag.Title = string.Format(Resource.Snippets, Resource.Extensions);
     var accountType = Session["AccountType"] as string;
 }
 
@@ -14,23 +14,23 @@ See LICENSE in the source repository root for complete license information. -->
     <h2>@ViewBag.Title</h2>
 </div>
 <div class="col-sm-12">
-    <h3>Open Extensions</h3>
+    <h3>@Resource.Extensions_OpenExtensions</h3>
     <div class="form-group">
         @using (Html.BeginForm("AddOpenExtensionToMe", "Extensions"))
         {
-            <button class="btn btn-link" id="add-openextension">Add open extension to me</button>
+            <button class="btn btn-link" id="add-openextension">@Resource.Extensions_Open_Add</button>
         }
         @using (Html.BeginForm("GetOpenExtensionsForMe", "Extensions"))
         {
-            <button class="btn btn-link" id="get-openextensions">Get open extensions for me</button>
+            <button class="btn btn-link" id="get-openextensions">@Resource.Extensions_Open_Get</button>
         }
         @using (Html.BeginForm("UpdateOpenExtensionForMe", "Extensions"))
         {
-            <button class="btn btn-link" id="update-openextension">Update open extension for me</button>
+            <button class="btn btn-link" id="update-openextension">@Resource.Extensions_Open_Update</button>
         }
         @using (Html.BeginForm("DeleteOpenExtensionForMe", "Extensions"))
         {
-            <button class="btn btn-link" id="delete-openextension">Delete open extension for me</button>
+            <button class="btn btn-link" id="delete-openextension">@Resource.Extensions_Open_Delete</button>
         }
     </div>
 

@@ -70,10 +70,12 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
                 GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
 
                 // For updating a single dictionary item, you would first need to retrieve & then update the extension
-                results.Items = await extensionsService.UpdateOpenExtensionForMe(graphClient,
+                await extensionsService.UpdateOpenExtensionForMe(graphClient,
                     extensionName,
                     new Dictionary<string, object>()
                         { {"theme", "light"}, {"color","yellow"}, {"lang","Swahili"}});
+
+                results.Items = new List<ResultsItem>() { new ResultsItem() { Display = $"{extensionName} {Resource.Extensions_updated}" } };
             }
             catch (ServiceException se)
             {
@@ -93,7 +95,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
 
                 await extensionsService.DeleteOpenExtensionForMe(graphClient, extensionName);
 
-                results.Items = new List<ResultsItem>() { new ResultsItem() { Display = $"{extensionName} deleted"}};
+                results.Items = new List<ResultsItem>() { new ResultsItem() { Display = $"{extensionName} {Resource.Extensions_deleted}" } };
             }
             catch (ServiceException se)
             {

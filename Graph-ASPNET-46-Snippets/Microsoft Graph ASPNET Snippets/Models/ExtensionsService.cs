@@ -42,7 +42,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             }).ToList();
         }
 
-        public async Task<List<ResultsItem>> UpdateOpenExtensionForMe(GraphServiceClient graphClient, string extensionName,
+        public async Task UpdateOpenExtensionForMe(GraphServiceClient graphClient, string extensionName,
             Dictionary<string, object> data)
         {
             var openExtension = new OpenTypeExtension
@@ -51,15 +51,9 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
                 AdditionalData = data
             };
 
-            // BUG: Returns null instead of Extension
+            // Note: Client SDK returns Extension, whereas REST API only return 204 with No content
+            // Thus result is *always* null (Client SDK is generated, some UpdateAsync calls do return results, this doesn't)
             var result = await graphClient.Me.Extensions[extensionName].Request().UpdateAsync(openExtension);
-
-            return new List<ResultsItem>() { new ResultsItem()
-                {
-                    Display = result.Id,
-                    Properties = (Dictionary<string,object>)result.AdditionalData
-                }
-            };
         }
 
         public async Task DeleteOpenExtensionForMe(GraphServiceClient graphClient, string extensionName)
