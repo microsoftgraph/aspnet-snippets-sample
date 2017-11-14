@@ -11,7 +11,6 @@ namespace Microsoft_Graph_ASPNET_Snippets.Helpers
 {
     public class SDKHelper
     {
-        private static GraphServiceClient graphClient = null;
 
         // Get an authenticated Microsoft Graph Service client.
         public static GraphServiceClient GetAuthenticatedClient()
@@ -34,9 +33,5 @@ namespace Microsoft_Graph_ASPNET_Snippets.Helpers
             return graphClient;
         }
 
-        public static void SignOutClient()
-        {
-            graphClient = null;
-        }
     }
 }
