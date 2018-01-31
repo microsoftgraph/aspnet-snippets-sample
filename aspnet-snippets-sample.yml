@@ -1,0 +1,19 @@
+### YamlMime:Sample
+sample:
+- name: Microsoft Graph Snippets Sample for ASP.NET 4.6
+  path: ''
+  description: A repository of code snippets that use Microsoft Graph to perform common tasks such as sending email, managing groups, and other activities from an ASP.NET MVC app. This sample uses the Microsoft Graph .NET Client Library to work with data, and the Microsoft Authentication Library (MSAL) for authentication on the Azure AD v2.0 endpoint.
+  readme: ''
+  generateZip: FALSE
+  isLive: TRUE
+  technologies:
+  - Microsoft Graph
+  azureDeploy: ''
+  author: jamescro
+  platforms: []
+  languages:
+  - C#
+  extensions:
+    products:
+    - Office 365
+    scenarios: []
