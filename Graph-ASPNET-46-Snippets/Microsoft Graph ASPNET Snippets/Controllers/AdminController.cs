@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Identity.Client;
+using Microsoft_Graph_ASPNET_Snippets.Helpers;
 using Microsoft_Graph_ASPNET_Snippets.TokenStorage;
 using Microsoft_Graph_ASPNET_Snippets.Utils;
 
@@ -31,8 +32,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             string signedInUserID = ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier).Value;
             TokenCache theCache = new SessionTokenCache(signedInUserID, this.HttpContext).GetMsalCacheInstance();
 
-            ConfidentialClientApplication cca = new ConfidentialClientApplication(clientId, redirectUri,
-                new ClientCredential(appKey), theCache, null);
+            ConfidentialClientApplication cca = new ConfidentialClientApplication(
+                clientId,
+                AuthHelper.ConstructAuthority(),
+                redirectUri,
+                new ClientCredential(appKey), 
+                theCache, 
+                null);
+
             string[] scopes = adminScopes.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             try
             {

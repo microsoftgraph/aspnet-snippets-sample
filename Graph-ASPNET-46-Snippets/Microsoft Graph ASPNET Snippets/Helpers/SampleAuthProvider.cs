@@ -57,6 +57,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Helpers
             string[] segments = context.Request.Path.Split(new char[] { '/' });
             ConfidentialClientApplication cca = new ConfidentialClientApplication(
                 appId,
+                AuthHelper.ConstructAuthority(),
                 redirectUri + segments[1],
                 new ClientCredential(appSecret),
                 tokenCache,

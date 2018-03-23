@@ -1,0 +1,36 @@
+﻿<!--  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
+        See LICENSE in the source repository root for complete license information. -->
+
+@using Resources;
+
+@model Microsoft_Graph_ASPNET_Snippets.Models.ResultsViewModel
+
+@{
+    ViewBag.Title = string.Format(Resource.Snippets, Resource.EducationUser);
+    var accountType = Session["AccountType"] as string;
+}
+
+<div class="split">
+    <h2>@ViewBag.Title</h2>
+    <span class="caveats">@Resource.No_MSA<br />@Resource.Admin_Only</span>
+</div>
+<div class="col-sm-12">
+    <h3>@Resource.Choose_Snippet</h3>
+    <div class="form-group">
+        @using (Html.BeginForm("GetMe", "EduUsers"))
+        {
+            <button class="btn btn-link" id="get-me" @if (accountType == "msa") { @("disabled") }>@Resource.EducationUser_GetMe</button>
+        }
+    </div>
+    <p>@Resource.Needs_Id</p>
+    <div class="form-group">
+        @using (Html.BeginForm("GetUser", "EduUsers"))
+        {
+            <button class="btn btn-link needs-id" id="get-user" disabled @if (accountType == "msa") { @("name=not-supported") }>@Resource.EducationUser_GetUser</button>
+            <input class="selected-id" name="id" oninput="onidchanged()"  on/>
+        }
+    </div>
+</div>
+@Html.Partial("_ResultsPartial")
+
+

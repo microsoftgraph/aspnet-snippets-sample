@@ -133,6 +133,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to EducationUser.
+        /// </summary>
+        internal static string EducationUser {
+            get {
+                return ResourceManager.GetString("EducationUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get me*.
+        /// </summary>
+        internal static string EducationUser_GetMe {
+            get {
+                return ResourceManager.GetString("EducationUser_GetMe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get a user*.
+        /// </summary>
+        internal static string EducationUser_GetUser {
+            get {
+                return ResourceManager.GetString("EducationUser_GetUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         internal static string Error {
@@ -318,6 +345,15 @@ namespace Resources {
         internal static string Extensions_updated {
             get {
                 return ResourceManager.GetString("Extensions_updated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to External source.
+        /// </summary>
+        internal static string External_Source {
+            get {
+                return ResourceManager.GetString("External_Source", resourceCulture);
             }
         }
         
@@ -736,6 +772,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Primary role.
+        /// </summary>
+        internal static string Primary_Role {
+            get {
+                return ResourceManager.GetString("Primary_Role", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to First attachment&apos;s name.
         /// </summary>
         internal static string Prop_AttachmentName {
@@ -1020,6 +1065,15 @@ namespace Resources {
         internal static string Snippets {
             get {
                 return ResourceManager.GetString("Snippets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string String1 {
+            get {
+                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
         

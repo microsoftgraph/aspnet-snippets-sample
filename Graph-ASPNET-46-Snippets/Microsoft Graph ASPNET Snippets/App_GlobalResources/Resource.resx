@@ -597,4 +597,27 @@
     <value>updated</value>
     <comment>Text for feedback on updating</comment>
   </data>
+  <data name="EducationUser" xml:space="preserve">
+    <value>EducationUser</value>
+    <comment>User name and partial view title for education</comment>
+  </data>
+  <data name="EducationUser_GetMe" xml:space="preserve">
+    <value>Get me*</value>
+    <comment>GetMe button text for Education Users view</comment>
+  </data>
+  <data name="EducationUser_GetUser" xml:space="preserve">
+    <value>Get a user*</value>
+    <comment>GetUser button text for Education Users view</comment>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="External_Source" xml:space="preserve">
+    <value>External source</value>
+    <comment>External educational source</comment>
+  </data>
+  <data name="Primary_Role" xml:space="preserve">
+    <value>Primary role</value>
+    <comment>Primary educational role</comment>
+  </data>
 </root>

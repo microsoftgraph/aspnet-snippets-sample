@@ -31,14 +31,15 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Users", "Index", "Users")</li>
+                    <li>@Html.ActionLink("EduUsers", "Index", "EduUsers")</li>
                     <li>@Html.ActionLink("Mail", "Index", "Mail")</li>
                     <li>@Html.ActionLink("Events", "Index", "Events")</li>
                     <li>@Html.ActionLink("Files", "Index", "Files")</li>
                     <li>@Html.ActionLink("Groups", "Index", "Groups")</li>
                     @if (accountType != "msa")
-                    {
-                    <li>@Html.ActionLink("Admin scopes", "Index", "Admin")</li>
-                    }
+    {
+                <li>@Html.ActionLink("Admin scopes", "Index", "Admin")</li>
+}
                     <li>@Html.ActionLink("Extensions", "Index", "Extensions")</li>
                 </ul>
                 @Html.Partial("_LoginPartial")
