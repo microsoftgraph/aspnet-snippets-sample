@@ -3,24 +3,28 @@
 *  See LICENSE in the source repository root for complete license information. 
 */
 
-using System;
-using System.Collections.Generic;
 using System.Web.Mvc;
 using System.Threading.Tasks;
 using Microsoft.Graph;
 using Microsoft_Graph_ASPNET_Snippets.Helpers;
 using Microsoft_Graph_ASPNET_Snippets.Models;
-using System.Linq;
-using System.IO;
 using Resources;
+using Microsoft.Graph.Auth;
+using System.Web;
 
 namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
 {
     [Authorize]
     public class UsersController : Controller
     {
-        UsersService usersService = new UsersService();
-
+        GraphServiceClient graphClient;
+        UsersService usersService;
+        public UsersController()
+        {
+            graphClient = SDKHelper.GetAuthenticatedClient();
+            usersService = new UsersService();
+        }
+        
         // Load the view.
         public ActionResult Index()
         {
@@ -33,16 +37,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Get users.
                 results.Items = await usersService.GetUsers(graphClient);
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Users", results);
@@ -54,16 +58,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Get the current user's profile.
                 results.Items = await usersService.GetMe(graphClient);
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Users", results);
@@ -75,10 +79,6 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Get the current user's manager.
                 results.Items = await usersService.GetMyManager(graphClient);
             }
@@ -86,7 +86,12 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             // Throws exception if manager is null, with Request_ResourceNotFound code.
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
+
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Users", results);
@@ -98,10 +103,6 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             ResultsViewModel results = new ResultsViewModel(false);
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Get my photo.
                 results.Items = await usersService.GetMyPhoto(graphClient);
             }
@@ -109,7 +110,11 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             // Throws exception if photo is null, with itemNotFound code.
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Users", results);
@@ -122,16 +127,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Add the user.
                 results.Items = await usersService.CreateUser(graphClient);
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Users", results);
@@ -143,16 +148,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Get the user.
                 results.Items = await usersService.GetUser(graphClient, id);
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Users", results);
@@ -164,10 +169,6 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             ResultsViewModel results = new ResultsViewModel(false);
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Get the user's photo.
                 results.Items = await usersService.GetUserPhoto(graphClient, id);
             }
@@ -175,7 +176,11 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             // Throws an exception when requesting the photo for unlicensed users (such as those created by this sample), with message "The requested user '<user-name>' is invalid."
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Users", results);
@@ -187,16 +192,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Get user's direct reports.
                 results.Items = await usersService.GetDirectReports(graphClient, id);
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Users", results);
@@ -210,16 +215,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             ResultsViewModel results = new ResultsViewModel(false);
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Change user display name.
                 results.Items = await usersService.UpdateUser(graphClient, id, name);
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Users", results);
@@ -232,16 +237,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             ResultsViewModel results = new ResultsViewModel(false);
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Make sure that the current user is not selected.
                 results.Items = await usersService.DeleteUser(graphClient, id);
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Users", results);

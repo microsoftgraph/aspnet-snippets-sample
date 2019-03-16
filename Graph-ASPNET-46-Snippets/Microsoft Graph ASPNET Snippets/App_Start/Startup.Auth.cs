@@ -14,9 +14,9 @@ using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft_Graph_ASPNET_Snippets.TokenStorage;
 using System.IdentityModel.Tokens;
-using System.IdentityModel.Claims;
 using Microsoft.Identity.Client;
 using Microsoft_Graph_ASPNET_Snippets.Utils;
+using Microsoft.Graph.Auth;
 
 namespace Microsoft_Graph_ASPNET_Snippets
 {
@@ -79,14 +79,12 @@ namespace Microsoft_Graph_ASPNET_Snippets
                         AuthorizationCodeReceived = async (context) =>
                         {
                             var code = context.Code;
-                            string signedInUserID = context.AuthenticationTicket.Identity.FindFirst(ClaimTypes.NameIdentifier).Value;
-                            string graphScopes = nonAdminScopes;
-                            string[] scopes = graphScopes.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                            string[] scopes = nonAdminScopes.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                            ConfidentialClientApplication cca = new ConfidentialClientApplication(appId, redirectUri,
-                               new ClientCredential(appSecret),
-                               new SessionTokenCache(signedInUserID, context.OwinContext.Environment["System.Web.HttpContextBase"] as HttpContextBase).GetMsalCacheInstance(), null);
-                            AuthenticationResult result = await cca.AcquireTokenByAuthorizationCodeAsync(code, scopes);
+                            SessionTokenCacheProvider sessionTokenCacheProvider = new SessionTokenCacheProvider(context.OwinContext.Environment["System.Web.HttpContextBase"] as HttpContextBase);
+                            IConfidentialClientApplication cca = AuthorizationCodeProvider.CreateClientApplication(appId, redirectUri, new ClientCredential(appSecret), sessionTokenCacheProvider);
+                            AuthorizationCodeProvider authorizationCodeProvider = new AuthorizationCodeProvider(cca, scopes);
+                            AuthenticationResult result = await authorizationCodeProvider.GetTokenByAuthorizationCodeAsync(code);
 
                             // Check whether the login is from the MSA tenant. 
                             // The sample uses this attribute to disable UI buttons for unsupported operations when the user is logged in with an MSA account.

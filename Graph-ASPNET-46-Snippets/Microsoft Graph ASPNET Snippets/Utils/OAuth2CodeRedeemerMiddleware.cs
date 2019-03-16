@@ -8,7 +8,6 @@ using Microsoft.Owin;
 using Owin;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Claims;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -18,6 +17,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft_Graph_ASPNET_Snippets.TokenStorage;
+using Microsoft.Graph.Auth;
 
 namespace Microsoft_Graph_ASPNET_Snippets.Utils
 {
@@ -46,11 +46,10 @@ namespace Microsoft_Graph_ASPNET_Snippets.Utils
                 string state = context.Request.Query["state"];
                 string session_state = context.Request.Query["session_state"];
 
-                string signedInUserID = context.Authentication.User.FindFirst(System.IdentityModel.Claims.ClaimTypes.NameIdentifier).Value;
                 HttpContextBase hcb = context.Environment["System.Web.HttpContextBase"] as HttpContextBase;
-                TokenCache theCache = new SessionTokenCache(signedInUserID, hcb).GetMsalCacheInstance();
-                ConfidentialClientApplication cca = new ConfidentialClientApplication(options.ClientId, options.RedirectUri,
-   new ClientCredential(options.ClientSecret), theCache, null);
+
+                SessionTokenCacheProvider sessionTokenCacheProvider = new SessionTokenCacheProvider(hcb);
+                IConfidentialClientApplication cca = AuthorizationCodeProvider.CreateClientApplication(options.ClientId, options.RedirectUri, new ClientCredential(options.ClientSecret), sessionTokenCacheProvider);
 
                 //validate state
                 CodeRedemptionData crd = OAuth2RequestManager.ValidateState(state, hcb);
@@ -60,7 +59,9 @@ namespace Microsoft_Graph_ASPNET_Snippets.Utils
                  //redeem code                   
                     try
                     {
-                        AuthenticationResult result = await cca.AcquireTokenByAuthorizationCodeAsync(code, crd.Scopes);
+                        AuthorizationCodeProvider authorizationCodeProvider = new AuthorizationCodeProvider(cca, crd.Scopes);
+                        await authorizationCodeProvider.GetTokenByAuthorizationCodeAsync(code);
+
                         HttpContext.Current.Session.Add("IsAdmin", true);
 
                     }

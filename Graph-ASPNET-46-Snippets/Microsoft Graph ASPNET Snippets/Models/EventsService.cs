@@ -4,24 +4,27 @@
 */
 
 using Microsoft.Graph;
+using Microsoft.Graph.Auth;
 using Resources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Microsoft_Graph_ASPNET_Snippets.Models
 {
     public class EventsService
     {
-
         // Get events in all the current user's mail folders.
         public async Task<List<ResultsItem>> GetMyEvents(GraphServiceClient graphClient)
         {
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Get events.
-            IUserEventsCollectionPage events = await graphClient.Me.Events.Request().GetAsync();
+            IUserEventsCollectionPage events = await graphClient.Me.Events.Request()
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .GetAsync();
 
             if (events?.Count > 0)
             {
@@ -48,7 +51,9 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             options.Add(new QueryOption("startDateTime", DateTime.Now.ToString("o")));
             options.Add(new QueryOption("endDateTime", DateTime.Now.AddDays(7).ToString("o")));
 
-            ICalendarCalendarViewCollectionPage calendar = await graphClient.Me.Calendar.CalendarView.Request(options).GetAsync();
+            ICalendarCalendarViewCollectionPage calendar = await graphClient.Me.Calendar.CalendarView.Request(options)
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .GetAsync();
 
             if (calendar?.Count > 0)
             {
@@ -109,7 +114,9 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             };
 
             // Add the event.
-            Event createdEvent = await graphClient.Me.Events.Request().AddAsync(new Event
+            Event createdEvent = await graphClient.Me.Events.Request()
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .AddAsync(new Event
             {
                 Subject = Resource.Event + guid.Substring(0, 8),
                 Location = location,
@@ -146,7 +153,9 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Get the event.
-            Event retrievedEvent = await graphClient.Me.Events [id].Request().GetAsync();
+            Event retrievedEvent = await graphClient.Me.Events [id].Request()
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .GetAsync();
                 
             if (retrievedEvent != null)
             {
@@ -170,7 +179,6 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             return items;
         }
 
-
         // Update an event. 
         // This snippets updates the event subject, time, and attendees.
         public async Task<List<ResultsItem>> UpdateEvent(GraphServiceClient graphClient, string id, string name)
@@ -190,7 +198,9 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             };
 
             // Get the current list of attendees, and then add an attendee.
-            Event originalEvent = await graphClient.Me.Events[id].Request().Select("attendees").GetAsync();
+            Event originalEvent = await graphClient.Me.Events[id].Request()
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .Select("attendees").GetAsync();
             List<Attendee> attendees = originalEvent.Attendees as List<Attendee>;
             attendees.Add(new Attendee
             {
@@ -202,13 +212,15 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             });
 
             // Update the event.
-            Event updatedEvent = await graphClient.Me.Events[id].Request().UpdateAsync(new Event
-            {
-                Subject = Resource.Updated + name,
-                Attendees = attendees,
-                Start = startTime,
-                End = endTime
-            });
+            Event updatedEvent = await graphClient.Me.Events[id].Request()
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .UpdateAsync(new Event
+                {
+                    Subject = Resource.Updated + name,
+                    Attendees = attendees,
+                    Start = startTime,
+                    End = endTime
+                });
 
             if (updatedEvent != null)
             {
@@ -236,7 +248,9 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Delete the event.
-            await graphClient.Me.Events[id].Request().DeleteAsync();
+            await graphClient.Me.Events[id].Request()
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .DeleteAsync();
 
             items.Add(new ResultsItem
             {
@@ -257,12 +271,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 
             // This snippet first checks whether the selected event originates with an invitation from the current user. If it did, 
             // the SDK would throw an ErrorInvalidRequest exception because organizers can't accept their own invitations.
-            Event myEvent = await graphClient.Me.Events[id].Request().Select("ResponseStatus").GetAsync();
+            Event myEvent = await graphClient.Me.Events[id].Request()
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .Select("ResponseStatus").GetAsync();
             if (myEvent.ResponseStatus.Response != ResponseType.Organizer)
             {
 
                 // Accept the meeting.
-                await graphClient.Me.Events[id].Accept(Resource.GenericText).Request().PostAsync();
+                await graphClient.Me.Events[id].Accept(Resource.GenericText).Request()
+                    .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                    .PostAsync();
 
                 items.Add(new ResultsItem
                 {

@@ -138,7 +138,7 @@
     <comment>Title and heading for Error view</comment>
   </data>
   <data name="Error_AuthChallengeNeeded" xml:space="preserve">
-    <value>Caller needs to authenticate.</value>
+    <value>authenticationChallengeRequired</value>
     <comment>Error message when unable to retrieve the access token silently.</comment>
   </data>
   <data name="Error_Introduction" xml:space="preserve">

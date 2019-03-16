@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Web;
 using Microsoft.Graph;
-using Newtonsoft.Json;
-using Resources;
-using WebGrease.Css.Extensions;
+using Microsoft.Graph.Auth;
 
 namespace Microsoft_Graph_ASPNET_Snippets.Models
 {
@@ -21,7 +18,9 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
                 AdditionalData = data
             };
 
-            var result = await graphClient.Me.Extensions.Request().AddAsync(openExtension);
+            var result = await graphClient.Me.Extensions.Request()
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .AddAsync(openExtension);
 
             return new List<ResultsItem>() { new ResultsItem()
                 {
@@ -33,7 +32,9 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 
         public async Task<List<ResultsItem>> GetOpenExtensionsForMe(GraphServiceClient graphClient)
         {
-            var result = await graphClient.Me.Extensions.Request().GetAsync();
+            var result = await graphClient.Me.Extensions.Request()
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .GetAsync();
 
             return result.CurrentPage.Select(r => new ResultsItem()
             {
@@ -53,12 +54,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 
             // Note: Client SDK returns Extension, whereas REST API only return 204 with No content
             // Thus result is *always* null (Client SDK is generated, some UpdateAsync calls do return results, this doesn't)
-            var result = await graphClient.Me.Extensions[extensionName].Request().UpdateAsync(openExtension);
+            var result = await graphClient.Me.Extensions[extensionName].Request()
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .UpdateAsync(openExtension);
         }
 
         public async Task DeleteOpenExtensionForMe(GraphServiceClient graphClient, string extensionName)
         {
-            await graphClient.Me.Extensions[extensionName].Request().DeleteAsync();
+            await graphClient.Me.Extensions[extensionName].Request()
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .DeleteAsync();
         }
     }
 }

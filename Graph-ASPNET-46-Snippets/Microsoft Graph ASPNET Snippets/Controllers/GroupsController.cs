@@ -4,10 +4,12 @@
 */
 
 using Microsoft.Graph;
+using Microsoft.Graph.Auth;
 using Microsoft_Graph_ASPNET_Snippets.Helpers;
 using Microsoft_Graph_ASPNET_Snippets.Models;
 using Resources;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 
 namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
@@ -15,7 +17,13 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
     [Authorize]
     public class GroupsController : Controller
     {
-        GroupsService groupsService = new GroupsService();
+        GraphServiceClient graphClient;
+        GroupsService groupsService;
+        public GroupsController()
+        {
+            graphClient = SDKHelper.GetAuthenticatedClient();
+            groupsService = new GroupsService();
+        }
 
         public ActionResult Index()
         {
@@ -29,16 +37,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Get groups.
                 results.Items = await groupsService.GetGroups(graphClient);
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Groups", results);
@@ -51,16 +59,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Get unified groups.
                 results.Items = await groupsService.GetUnifiedGroups(graphClient);
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Groups", results);
@@ -73,16 +81,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Get groups the current user is a direct member of.
                 results.Items = await groupsService.GetMyMemberOfGroups(graphClient);
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Groups", results);
@@ -96,16 +104,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Add the group.
                 results.Items = await groupsService.CreateGroup(graphClient);
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Groups", results);
@@ -118,16 +126,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Get the group.
                 results.Items = await groupsService.GetGroup(graphClient, id);
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Groups", results);
@@ -140,16 +148,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
             ResultsViewModel results = new ResultsViewModel(false);
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Get group members.
                 results.Items = await groupsService.GetMembers(graphClient, id);
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Groups", results);
@@ -162,16 +170,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
             ResultsViewModel results = new ResultsViewModel(false);
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Get group owners.
                 results.Items = await groupsService.GetOwners(graphClient, id);
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Groups", results);
@@ -185,16 +193,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
             ResultsViewModel results = new ResultsViewModel(false);
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Update the group.
                 results.Items = await groupsService.UpdateGroup(graphClient, id, name);
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Groups", results);
@@ -207,16 +215,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
             ResultsViewModel results = new ResultsViewModel(false);
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Delete the group.
                 results.Items = await groupsService.DeleteGroup(graphClient, id);
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Groups", results);

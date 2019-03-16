@@ -4,9 +4,11 @@
 */
 
 using Microsoft.Graph;
+using Microsoft.Graph.Auth;
 using Resources;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Hosting;
 
@@ -14,14 +16,13 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 {
     public class MailService
     {
-
         // Get messages in all the current user's mail folders.
         public async Task<List<ResultsItem>> GetMyMessages(GraphServiceClient graphClient)
         {
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Get messages from all mail folders.
-            IUserMessagesCollectionPage messages = await graphClient.Me.Messages.Request().GetAsync();
+            IUserMessagesCollectionPage messages = await graphClient.Me.Messages.Request().WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount()).GetAsync();
 
             if (messages?.Count > 0)
             {
@@ -45,7 +46,9 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             List<ResultsItem> items = new List<ResultsItem>();
             
             // Get messages in the Inbox folder.
-            IMailFolderMessagesCollectionPage messages = await graphClient.Me.MailFolders.Inbox.Messages.Request().GetAsync();
+            IMailFolderMessagesCollectionPage messages = await graphClient.Me.MailFolders.Inbox.Messages.Request()
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .GetAsync();
 
             if (messages?.Count > 0)
             {
@@ -68,7 +71,11 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 
             // Get messages in the Inbox folder that have attachments.
             // Note: Messages that have inline messages don't set the `hasAttachments` property to `true`. To find them, you need to parse the body content.
-            IMailFolderMessagesCollectionPage messages = await graphClient.Me.MailFolders.Inbox.Messages.Request().Filter("hasAttachments eq true").Expand("attachments").GetAsync();
+            IMailFolderMessagesCollectionPage messages = await graphClient.Me.MailFolders.Inbox.Messages.Request()
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .Filter("hasAttachments eq true")
+                .Expand("attachments")
+                .GetAsync();
 
             if (messages?.Count > 0)
             {
@@ -110,7 +117,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             List<ResultsItem> items = new List<ResultsItem>();
             
             // Create the recipient list. This snippet uses the current user as the recipient.
-            User me = await graphClient.Me.Request().Select("Mail, UserPrincipalName").GetAsync();
+            User me = await graphClient.Me.Request().WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount()).Select("Mail, UserPrincipalName").GetAsync();
             string address = me.Mail ?? me.UserPrincipalName;
             string guid = Guid.NewGuid().ToString();
 
@@ -136,7 +143,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             };
 
             // Send the message.
-            await graphClient.Me.SendMail(email, true).Request().PostAsync();
+            await graphClient.Me.SendMail(email, true).Request().WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount()).PostAsync();
 
             items.Add(new ResultsItem
             {
@@ -156,7 +163,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Create the recipient list. This snippet uses the current user as the recipient.
-            User me = await graphClient.Me.Request().Select("Mail, UserPrincipalName").GetAsync();
+            User me = await graphClient.Me.Request().WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount()).Select("Mail, UserPrincipalName").GetAsync();
             string address = me.Mail ?? me.UserPrincipalName;
             string guid = Guid.NewGuid().ToString();
 
@@ -193,7 +200,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             };
 
             // Send the message.
-            await graphClient.Me.SendMail(email, true).Request().PostAsync();
+            await graphClient.Me.SendMail(email, true).Request().WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount()).PostAsync();
 
             items.Add(new ResultsItem
             {
@@ -212,7 +219,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             List<ResultsItem> items = new List<ResultsItem>();
             
             // Get the message.
-            Message message = await graphClient.Me.Messages[id].Request().GetAsync();
+            Message message = await graphClient.Me.Messages[id].Request().WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount()).GetAsync();
 
             if (message != null)
             {
@@ -239,7 +246,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Reply to the message.
-            await graphClient.Me.Messages[id].Reply(Resource.GenericText).Request().PostAsync();
+            await graphClient.Me.Messages[id].Reply(Resource.GenericText).Request().WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount()).PostAsync();
 
             items.Add(new ResultsItem
             {
@@ -260,7 +267,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Move the message.
-            Message message = await graphClient.Me.Messages[id].Move("Drafts").Request().PostAsync();
+            Message message = await graphClient.Me.Messages[id].Move("Drafts").Request().WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount()).PostAsync();
 
             items.Add(new ResultsItem
             {
@@ -285,7 +292,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             List<ResultsItem> items = new List<ResultsItem>();
             
             // Delete the message.
-            await graphClient.Me.Messages[id].Request().DeleteAsync();
+            await graphClient.Me.Messages[id].Request().WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount()).DeleteAsync();
 
             items.Add(new ResultsItem
             {

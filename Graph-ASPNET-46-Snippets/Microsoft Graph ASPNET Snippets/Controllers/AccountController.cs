@@ -8,9 +8,6 @@ using System.Web.Mvc;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
-using Microsoft_Graph_ASPNET_Snippets.TokenStorage;
-using Microsoft_Graph_ASPNET_Snippets.Helpers;
-using System.Security.Claims;
 
 namespace Microsoft_Graph_ASPNET_Snippets.Controllers
 {
@@ -32,10 +29,6 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
         {
             if (Request.IsAuthenticated)
             {
-                // Get the user's token cache and clear it.
-                string userObjectId = ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-                SessionTokenCache tokenCache = new SessionTokenCache(userObjectId, HttpContext);
                 HttpContext.GetOwinContext().Authentication.SignOut(OpenIdConnectAuthenticationDefaults.AuthenticationType, CookieAuthenticationDefaults.AuthenticationType);
             }
 

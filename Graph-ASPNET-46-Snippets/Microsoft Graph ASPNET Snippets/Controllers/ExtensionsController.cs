@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Graph;
+using Microsoft.Graph.Auth;
 using Microsoft_Graph_ASPNET_Snippets.Helpers;
 using Microsoft_Graph_ASPNET_Snippets.Models;
 using Resources;
@@ -14,7 +13,13 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
     [Authorize]
     public class ExtensionsController : Controller
     {
-        ExtensionsService extensionsService = new ExtensionsService();
+        GraphServiceClient graphClient;
+        ExtensionsService extensionsService;
+        public ExtensionsController()
+        {
+            graphClient = SDKHelper.GetAuthenticatedClient();
+            extensionsService = new ExtensionsService();
+        }
 
         // Open extensions sample built around https://developer.microsoft.com/en-us/graph/docs/concepts/extensibility_open_users
         public ActionResult Index()
@@ -28,8 +33,6 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 results.Items = await extensionsService.AddOpenExtensionToMe(graphClient,
                     extensionName,
                     new Dictionary<string, object>()
@@ -37,7 +40,11 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
 
@@ -49,13 +56,15 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 results.Items = await extensionsService.GetOpenExtensionsForMe(graphClient);
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
 
@@ -67,8 +76,6 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // For updating a single dictionary item, you would first need to retrieve & then update the extension
                 await extensionsService.UpdateOpenExtensionForMe(graphClient,
                     extensionName,
@@ -79,7 +86,11 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
 
@@ -91,15 +102,17 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 await extensionsService.DeleteOpenExtensionForMe(graphClient, extensionName);
 
                 results.Items = new List<ResultsItem>() { new ResultsItem() { Display = $"{extensionName} {Resource.Extensions_deleted}" } };
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
 
