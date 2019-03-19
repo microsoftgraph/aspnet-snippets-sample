@@ -27,7 +27,7 @@ This library is suitable for use in a production environment. We provide the sam
 
 This sample requires the following:  
 
-  * [Visual Studio 2015](https://www.visualstudio.com/en-us/downloads) 
+  * [Visual Studio](https://www.visualstudio.com/en-us/downloads) 
   * Either a [Microsoft account](https://www.outlook.com) or an [Office 365 for business account](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account). An Office 365 administrator account is required to run admin-level operations. You can sign up for [an Office 365 Developer subscription](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account) that includes the resources that you need to start building apps.
 
 ## Register the application
