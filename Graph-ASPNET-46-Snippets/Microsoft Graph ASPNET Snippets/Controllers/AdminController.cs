@@ -45,7 +45,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
                     string authReqUrl = await OAuth2RequestManager.GenerateAuthorizationRequestUrl(scopes, cca, this.HttpContext, Url);
                     ViewBag.AuthorizationRequest = authReqUrl;
                 }
-                catch (Exception ee)
+                catch (Exception)
                 {
 
                 }

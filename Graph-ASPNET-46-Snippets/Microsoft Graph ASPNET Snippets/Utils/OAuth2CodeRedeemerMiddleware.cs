@@ -64,7 +64,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Utils
                         HttpContext.Current.Session.Add("IsAdmin", true);
 
                     }
-                    catch (Exception ee)
+                    catch (Exception)
                     {
 
                     }
