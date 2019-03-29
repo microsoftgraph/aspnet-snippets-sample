@@ -17,12 +17,11 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
     [Authorize]
     public class GroupsController : Controller
     {
-        GraphServiceClient graphClient;
         GroupsService groupsService;
         public GroupsController()
         {
-            graphClient = SDKHelper.GetAuthenticatedClient();
-            groupsService = new GroupsService();
+            GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
+            groupsService = new GroupsService(graphClient);
         }
 
         public ActionResult Index()
@@ -38,7 +37,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
             try
             {
                 // Get groups.
-                results.Items = await groupsService.GetGroups(graphClient);
+                results.Items = await groupsService.GetGroups();
             }
             catch (ServiceException se)
             {
@@ -60,7 +59,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
             try
             {
                 // Get unified groups.
-                results.Items = await groupsService.GetUnifiedGroups(graphClient);
+                results.Items = await groupsService.GetUnifiedGroups();
             }
             catch (ServiceException se)
             {
@@ -82,7 +81,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
             try
             {
                 // Get groups the current user is a direct member of.
-                results.Items = await groupsService.GetMyMemberOfGroups(graphClient);
+                results.Items = await groupsService.GetMyMemberOfGroups();
             }
             catch (ServiceException se)
             {
@@ -105,7 +104,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
             try
             {
                 // Add the group.
-                results.Items = await groupsService.CreateGroup(graphClient);
+                results.Items = await groupsService.CreateGroup();
             }
             catch (ServiceException se)
             {
@@ -127,7 +126,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
             try
             {
                 // Get the group.
-                results.Items = await groupsService.GetGroup(graphClient, id);
+                results.Items = await groupsService.GetGroup(id);
             }
             catch (ServiceException se)
             {
@@ -149,7 +148,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
             try
             {
                 // Get group members.
-                results.Items = await groupsService.GetMembers(graphClient, id);
+                results.Items = await groupsService.GetMembers(id);
             }
             catch (ServiceException se)
             {
@@ -171,7 +170,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
             try
             {
                 // Get group owners.
-                results.Items = await groupsService.GetOwners(graphClient, id);
+                results.Items = await groupsService.GetOwners(id);
             }
             catch (ServiceException se)
             {
@@ -194,7 +193,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
             try
             {
                 // Update the group.
-                results.Items = await groupsService.UpdateGroup(graphClient, id, name);
+                results.Items = await groupsService.UpdateGroup(id, name);
             }
             catch (ServiceException se)
             {
@@ -216,7 +215,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Groups
             try
             {
                 // Delete the group.
-                results.Items = await groupsService.DeleteGroup(graphClient, id);
+                results.Items = await groupsService.DeleteGroup(id);
             }
             catch (ServiceException se)
             {

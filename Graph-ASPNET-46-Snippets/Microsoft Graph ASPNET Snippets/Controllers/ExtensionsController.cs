@@ -13,12 +13,11 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
     [Authorize]
     public class ExtensionsController : Controller
     {
-        GraphServiceClient graphClient;
         ExtensionsService extensionsService;
         public ExtensionsController()
         {
-            graphClient = SDKHelper.GetAuthenticatedClient();
-            extensionsService = new ExtensionsService();
+            GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
+            extensionsService = new ExtensionsService(graphClient);
         }
 
         // Open extensions sample built around https://developer.microsoft.com/en-us/graph/docs/concepts/extensibility_open_users
@@ -33,8 +32,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-                results.Items = await extensionsService.AddOpenExtensionToMe(graphClient,
-                    extensionName,
+                results.Items = await extensionsService.AddOpenExtensionToMe(extensionName,
                     new Dictionary<string, object>()
                             { {"theme", "dark"}, {"color","purple"}, {"lang","Japanese"}});
             }
@@ -56,7 +54,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-                results.Items = await extensionsService.GetOpenExtensionsForMe(graphClient);
+                results.Items = await extensionsService.GetOpenExtensionsForMe();
             }
             catch (ServiceException se)
             {
@@ -77,8 +75,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // For updating a single dictionary item, you would first need to retrieve & then update the extension
-                await extensionsService.UpdateOpenExtensionForMe(graphClient,
-                    extensionName,
+                await extensionsService.UpdateOpenExtensionForMe(extensionName,
                     new Dictionary<string, object>()
                         { {"theme", "light"}, {"color","yellow"}, {"lang","Swahili"}});
 
@@ -102,7 +99,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-                await extensionsService.DeleteOpenExtensionForMe(graphClient, extensionName);
+                await extensionsService.DeleteOpenExtensionForMe(extensionName);
 
                 results.Items = new List<ResultsItem>() { new ResultsItem() { Display = $"{extensionName} {Resource.Extensions_deleted}" } };
             }

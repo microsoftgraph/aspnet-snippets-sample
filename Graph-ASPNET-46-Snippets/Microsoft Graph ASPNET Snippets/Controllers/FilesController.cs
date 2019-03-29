@@ -18,12 +18,11 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
     [Authorize]
     public class FilesController : Controller
     {
-        GraphServiceClient graphClient;
         FilesService filesService;
         public FilesController()
         {
-            graphClient = SDKHelper.GetAuthenticatedClient();
-            filesService = new FilesService();
+            GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
+            filesService = new FilesService(graphClient);
         }
 
         public ActionResult Index()
@@ -38,7 +37,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Get the files and folders in the current user's drive.
-                results.Items = await filesService.GetMyFilesAndFolders(graphClient);
+                results.Items = await filesService.GetMyFilesAndFolders();
             }
             catch (ServiceException se)
             {
@@ -59,7 +58,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Get the shared items.
-                results.Items = await filesService.GetSharedWithMe(graphClient);
+                results.Items = await filesService.GetSharedWithMe();
             }
             catch (ServiceException se)
             {
@@ -80,7 +79,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Get the current user's default drive.
-                results.Items = await filesService.GetMyDrive(graphClient);
+                results.Items = await filesService.GetMyDrive();
             }
             catch (ServiceException se)
             {
@@ -102,7 +101,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Add the file.
-                results.Items = await filesService.CreateFile(graphClient);
+                results.Items = await filesService.CreateFile();
             }
             catch (ServiceException se)
             {
@@ -123,7 +122,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Add the folder.
-                results.Items = await filesService.CreateFolder(graphClient);
+                results.Items = await filesService.CreateFolder();
             }
             catch (ServiceException se)
             {
@@ -145,7 +144,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Add the file.
-                results.Items = await filesService.UploadLargeFile(graphClient);
+                results.Items = await filesService.UploadLargeFile();
             }
             catch (ServiceException se)
             {
@@ -166,7 +165,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Get the file or folder object.
-                results.Items = await filesService.GetFileOrFolderMetadata(graphClient, id);
+                results.Items = await filesService.GetFileOrFolderMetadata(id);
             }
             catch (ServiceException se)
             {
@@ -188,7 +187,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Download the file.
-                results.Items = await filesService.DownloadFile(graphClient, id);
+                results.Items = await filesService.DownloadFile(id);
 
                 // Handle selected item is not supported.
                 foreach (var item in results.Items)
@@ -217,7 +216,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Update the item.
-                results.Items = await filesService.UpdateFileOrFolderMetadata(graphClient, id, name);
+                results.Items = await filesService.UpdateFileOrFolderMetadata(id, name);
             }
             catch (ServiceException se)
             {
@@ -239,7 +238,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Get the file. Make sure it's a .txt file (for the purposes of this snippet).
-                results.Items = await filesService.UpdateFileContent(graphClient, id);
+                results.Items = await filesService.UpdateFileContent(id);
 
                 // Handle selected item is not supported.
                 foreach (var item in results.Items)
@@ -266,7 +265,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Delete the item.
-                results.Items = await filesService.DeleteFileOrFolder(graphClient, id);
+                results.Items = await filesService.DeleteFileOrFolder(id);
             }
             catch (ServiceException se)
             {
@@ -286,7 +285,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             ResultsViewModel results = new ResultsViewModel(false);
             try
             {
-                results.Items = await filesService.GetSharingLink(graphClient, id);
+                results.Items = await filesService.GetSharingLink(id);
             }
             catch (ServiceException se)
             {

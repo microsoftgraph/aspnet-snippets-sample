@@ -17,12 +17,11 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
     [Authorize]
     public class UsersController : Controller
     {
-        GraphServiceClient graphClient;
         UsersService usersService;
         public UsersController()
         {
-            graphClient = SDKHelper.GetAuthenticatedClient();
-            usersService = new UsersService();
+            GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
+            usersService = new UsersService(graphClient);
         }
         
         // Load the view.
@@ -38,7 +37,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             try
             {
                 // Get users.
-                results.Items = await usersService.GetUsers(graphClient);
+                results.Items = await usersService.GetUsers();
             }
             catch (ServiceException se)
             {
@@ -59,7 +58,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             try
             {
                 // Get the current user's profile.
-                results.Items = await usersService.GetMe(graphClient);
+                results.Items = await usersService.GetMe();
             }
             catch (ServiceException se)
             {
@@ -80,7 +79,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             try
             {
                 // Get the current user's manager.
-                results.Items = await usersService.GetMyManager(graphClient);
+                results.Items = await usersService.GetMyManager();
             }
 
             // Throws exception if manager is null, with Request_ResourceNotFound code.
@@ -104,7 +103,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             try
             {
                 // Get my photo.
-                results.Items = await usersService.GetMyPhoto(graphClient);
+                results.Items = await usersService.GetMyPhoto();
             }
 
             // Throws exception if photo is null, with itemNotFound code.
@@ -128,7 +127,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             try
             {
                 // Add the user.
-                results.Items = await usersService.CreateUser(graphClient);
+                results.Items = await usersService.CreateUser();
             }
             catch (ServiceException se)
             {
@@ -149,7 +148,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             try
             {
                 // Get the user.
-                results.Items = await usersService.GetUser(graphClient, id);
+                results.Items = await usersService.GetUser(id);
             }
             catch (ServiceException se)
             {
@@ -170,7 +169,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             try
             {
                 // Get the user's photo.
-                results.Items = await usersService.GetUserPhoto(graphClient, id);
+                results.Items = await usersService.GetUserPhoto(id);
             }
 
             // Throws an exception when requesting the photo for unlicensed users (such as those created by this sample), with message "The requested user '<user-name>' is invalid."
@@ -193,7 +192,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             try
             {
                 // Get user's direct reports.
-                results.Items = await usersService.GetDirectReports(graphClient, id);
+                results.Items = await usersService.GetDirectReports(id);
             }
             catch (ServiceException se)
             {
@@ -216,7 +215,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             try
             {
                 // Change user display name.
-                results.Items = await usersService.UpdateUser(graphClient, id, name);
+                results.Items = await usersService.UpdateUser(id, name);
             }
             catch (ServiceException se)
             {
@@ -238,7 +237,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers.Users
             try
             {
                 // Make sure that the current user is not selected.
-                results.Items = await usersService.DeleteUser(graphClient, id);
+                results.Items = await usersService.DeleteUser(id);
             }
             catch (ServiceException se)
             {

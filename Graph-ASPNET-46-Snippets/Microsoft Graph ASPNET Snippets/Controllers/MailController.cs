@@ -17,12 +17,11 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
     [Authorize]
     public class MailController : Controller
     {
-        GraphServiceClient graphClient;
         MailService mailService;
         public MailController()
         {
-            graphClient = SDKHelper.GetAuthenticatedClient();
-            mailService = new MailService();
+            GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
+            mailService = new MailService(graphClient);
         }
 
         public ActionResult Index()
@@ -37,7 +36,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Get the messages.
-                results.Items = await mailService.GetMyMessages(graphClient);
+                results.Items = await mailService.GetMyMessages();
             }
             catch (ServiceException se)
             {
@@ -58,7 +57,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Get the messages.
-                results.Items = await mailService.GetMyInboxMessages(graphClient);
+                results.Items = await mailService.GetMyInboxMessages();
             }
             catch (ServiceException se)
             {
@@ -80,7 +79,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Get messages in the Inbox folder that have file attachments.
-                results.Items = await mailService.GetMyInboxMessagesThatHaveAttachments(graphClient);
+                results.Items = await mailService.GetMyInboxMessagesThatHaveAttachments();
             }
             catch (ServiceException se)
             {
@@ -102,7 +101,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Send the message.
-                results.Items = await mailService.SendMessage(graphClient);
+                results.Items = await mailService.SendMessage();
             }
             catch (ServiceException se)
             {
@@ -124,7 +123,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Send the message.
-                results.Items = await mailService.SendMessageWithAttachment(graphClient);
+                results.Items = await mailService.SendMessageWithAttachment();
             }
             catch (ServiceException se)
             {
@@ -145,7 +144,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Get the message.
-                results.Items = await mailService.GetMessage(graphClient, id);
+                results.Items = await mailService.GetMessage(id);
             }
             catch (ServiceException se)
             {
@@ -165,7 +164,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             ResultsViewModel results = new ResultsViewModel(false);
             try
             {
-                results.Items = await mailService.ReplyToMessage(graphClient, id);
+                results.Items = await mailService.ReplyToMessage(id);
             }
             catch (ServiceException se)
             {
@@ -187,7 +186,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Move the message.
-                results.Items = await mailService.MoveMessage(graphClient, id);
+                results.Items = await mailService.MoveMessage(id);
             }
             catch (ServiceException se)
             {
@@ -208,7 +207,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Delete the message.
-                results.Items = await mailService.DeleteMessage(graphClient, id);
+                results.Items = await mailService.DeleteMessage(id);
             }
             catch (ServiceException se)
             {

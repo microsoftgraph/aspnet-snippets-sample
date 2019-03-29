@@ -16,13 +16,25 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 {
     public class EventsService
     {
+        private GraphServiceClient graphClient;
+        private List<Option> requestOptions;
+
+        public EventsService(GraphServiceClient graphServiceClient)
+        {
+            graphClient = graphServiceClient;
+            requestOptions = new List<Option>()
+            {
+                new HeaderOption("Prefer", "outlook.timezone=\"" + TimeZoneInfo.Local.Id + "\"")
+            };
+        }
+
         // Get events in all the current user's mail folders.
-        public async Task<List<ResultsItem>> GetMyEvents(GraphServiceClient graphClient)
+        public async Task<List<ResultsItem>> GetMyEvents()
         {
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Get events.
-            IUserEventsCollectionPage events = await graphClient.Me.Events.Request()
+            IUserEventsCollectionPage events = await graphClient.Me.Events.Request(requestOptions)
                 .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
                 .GetAsync();
 
@@ -42,12 +54,13 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 
         // Get user's calendar view.
         // This snippets gets events for the next seven days.
-        public async Task<List<ResultsItem>> GetMyCalendarView(GraphServiceClient graphClient)
+        public async Task<List<ResultsItem>> GetMyCalendarView()
         {
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Define the time span for the calendar view.
-            List<QueryOption> options = new List<QueryOption>();
+            List<Option> options = new List<Option>(requestOptions);
+
             options.Add(new QueryOption("startDateTime", DateTime.Now.ToString("o")));
             options.Add(new QueryOption("endDateTime", DateTime.Now.AddDays(7).ToString("o")));
 
@@ -71,7 +84,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 
         // Create an event.
         // This snippet creates an hour-long event three days from now. 
-        public async Task<List<ResultsItem>> CreateEvent(GraphServiceClient graphClient)
+        public async Task<List<ResultsItem>> CreateEvent()
         {
             List<ResultsItem> items = new List<ResultsItem>();
             string guid = Guid.NewGuid().ToString();
@@ -114,7 +127,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             };
 
             // Add the event.
-            Event createdEvent = await graphClient.Me.Events.Request()
+            Event createdEvent = await graphClient.Me.Events.Request(requestOptions)
                 .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
                 .AddAsync(new Event
             {
@@ -148,12 +161,12 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
         }
 
         // Get a specified event.
-        public async Task<List<ResultsItem>> GetEvent(GraphServiceClient graphClient, string id)
+        public async Task<List<ResultsItem>> GetEvent(string id)
         {
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Get the event.
-            Event retrievedEvent = await graphClient.Me.Events [id].Request()
+            Event retrievedEvent = await graphClient.Me.Events [id].Request(requestOptions)
                 .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
                 .GetAsync();
                 
@@ -181,7 +194,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 
         // Update an event. 
         // This snippets updates the event subject, time, and attendees.
-        public async Task<List<ResultsItem>> UpdateEvent(GraphServiceClient graphClient, string id, string name)
+        public async Task<List<ResultsItem>> UpdateEvent(string id, string name)
         {
             List<ResultsItem> items = new List<ResultsItem>();
 
@@ -198,7 +211,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             };
 
             // Get the current list of attendees, and then add an attendee.
-            Event originalEvent = await graphClient.Me.Events[id].Request()
+            Event originalEvent = await graphClient.Me.Events[id].Request(requestOptions)
                 .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
                 .Select("attendees").GetAsync();
             List<Attendee> attendees = originalEvent.Attendees as List<Attendee>;
@@ -212,7 +225,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             });
 
             // Update the event.
-            Event updatedEvent = await graphClient.Me.Events[id].Request()
+            Event updatedEvent = await graphClient.Me.Events[id].Request(requestOptions)
                 .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
                 .UpdateAsync(new Event
                 {
@@ -243,12 +256,12 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
         }
 
         // Delete a specified event.
-        public async Task<List<ResultsItem>> DeleteEvent(GraphServiceClient graphClient, string id)
+        public async Task<List<ResultsItem>> DeleteEvent(string id)
         {
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Delete the event.
-            await graphClient.Me.Events[id].Request()
+            await graphClient.Me.Events[id].Request(requestOptions)
                 .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
                 .DeleteAsync();
 
@@ -265,20 +278,20 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
         }
 
         // Accept a meeting request.
-        public async Task<List<ResultsItem>> AcceptMeetingRequest(GraphServiceClient graphClient, string id)
+        public async Task<List<ResultsItem>> AcceptMeetingRequest(string id)
         {
             List<ResultsItem> items = new List<ResultsItem>();
 
             // This snippet first checks whether the selected event originates with an invitation from the current user. If it did, 
             // the SDK would throw an ErrorInvalidRequest exception because organizers can't accept their own invitations.
-            Event myEvent = await graphClient.Me.Events[id].Request()
+            Event myEvent = await graphClient.Me.Events[id].Request(requestOptions)
                 .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
                 .Select("ResponseStatus").GetAsync();
             if (myEvent.ResponseStatus.Response != ResponseType.Organizer)
             {
 
                 // Accept the meeting.
-                await graphClient.Me.Events[id].Accept(Resource.GenericText).Request()
+                await graphClient.Me.Events[id].Accept(Resource.GenericText).Request(requestOptions)
                     .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
                     .PostAsync();
 

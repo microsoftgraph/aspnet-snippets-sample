@@ -17,15 +17,13 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
     [Authorize]
     public class EventsController : Controller
     {
-        // Initialize the GraphServiceClient.
-        GraphServiceClient graphClient;
         EventsService eventsService;
         
         public EventsController()
         {
             // Initialize the GraphServiceClient.
-            graphClient = SDKHelper.GetAuthenticatedClient();
-            eventsService = new EventsService();
+            GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
+            eventsService = new EventsService(graphClient);
         }
         public ActionResult Index()
         {
@@ -39,7 +37,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Get events.
-                results.Items = await eventsService.GetMyEvents(graphClient);
+                results.Items = await eventsService.GetMyEvents();
             }
             catch (ServiceException se)
             {
@@ -60,7 +58,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Get a calendar view.
-                results.Items = await eventsService.GetMyCalendarView(graphClient);
+                results.Items = await eventsService.GetMyCalendarView();
             }
             catch (ServiceException se)
             {
@@ -82,7 +80,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Create the event.
-                results.Items = await eventsService.CreateEvent(graphClient);
+                results.Items = await eventsService.CreateEvent();
             }
             catch (ServiceException se)
             {
@@ -103,7 +101,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Get the event.
-                results.Items = await eventsService.GetEvent(graphClient, id);
+                results.Items = await eventsService.GetEvent(id);
             }
             catch (ServiceException se)
             {
@@ -125,7 +123,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Update the event.
-                results.Items = await eventsService.UpdateEvent(graphClient, id, name);
+                results.Items = await eventsService.UpdateEvent(id, name);
             }
             catch (ServiceException se)
             {
@@ -146,7 +144,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Delete the event.
-                results.Items = await eventsService.DeleteEvent(graphClient, id);
+                results.Items = await eventsService.DeleteEvent(id);
             }
             catch (ServiceException se)
             {
@@ -169,7 +167,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             try
             {
                 // Accept the meeting.
-                results.Items = await eventsService.AcceptMeetingRequest(graphClient, id);
+                results.Items = await eventsService.AcceptMeetingRequest(id);
             }
             catch (ServiceException se)
             {

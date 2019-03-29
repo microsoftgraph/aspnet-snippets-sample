@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -9,7 +10,18 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 {
     public class ExtensionsService
     {
-        public async Task<List<ResultsItem>> AddOpenExtensionToMe(GraphServiceClient graphClient, string extensionName,
+        private GraphServiceClient graphClient;
+        private List<Option> requestOptions;
+
+        public ExtensionsService(GraphServiceClient graphServiceClient)
+        {
+            graphClient = graphServiceClient;
+            requestOptions = new List<Option>
+            {
+                new HeaderOption("Prefer", "outlook.timezone=\"" + TimeZoneInfo.Local.Id + "\"")
+            };
+        }
+        public async Task<List<ResultsItem>> AddOpenExtensionToMe(string extensionName,
             Dictionary<string, object> data)
         {
             var openExtension = new OpenTypeExtension
@@ -18,7 +30,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
                 AdditionalData = data
             };
 
-            var result = await graphClient.Me.Extensions.Request()
+            var result = await graphClient.Me.Extensions.Request(requestOptions)
                 .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
                 .AddAsync(openExtension);
 
@@ -30,9 +42,9 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             };
         }
 
-        public async Task<List<ResultsItem>> GetOpenExtensionsForMe(GraphServiceClient graphClient)
+        public async Task<List<ResultsItem>> GetOpenExtensionsForMe()
         {
-            var result = await graphClient.Me.Extensions.Request()
+            var result = await graphClient.Me.Extensions.Request(requestOptions)
                 .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
                 .GetAsync();
 
@@ -43,7 +55,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             }).ToList();
         }
 
-        public async Task UpdateOpenExtensionForMe(GraphServiceClient graphClient, string extensionName,
+        public async Task UpdateOpenExtensionForMe(string extensionName,
             Dictionary<string, object> data)
         {
             var openExtension = new OpenTypeExtension
@@ -54,14 +66,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 
             // Note: Client SDK returns Extension, whereas REST API only return 204 with No content
             // Thus result is *always* null (Client SDK is generated, some UpdateAsync calls do return results, this doesn't)
-            var result = await graphClient.Me.Extensions[extensionName].Request()
+            var result = await graphClient.Me.Extensions[extensionName].Request(requestOptions)
                 .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
                 .UpdateAsync(openExtension);
         }
 
-        public async Task DeleteOpenExtensionForMe(GraphServiceClient graphClient, string extensionName)
+        public async Task DeleteOpenExtensionForMe(string extensionName)
         {
-            await graphClient.Me.Extensions[extensionName].Request()
+            await graphClient.Me.Extensions[extensionName].Request(requestOptions)
                 .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
                 .DeleteAsync();
         }
