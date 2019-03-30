@@ -4,24 +4,39 @@
 */
 
 using Microsoft.Graph;
+using Microsoft.Graph.Auth;
 using Resources;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Microsoft_Graph_ASPNET_Snippets.Models
 {
     public class GroupsService
-    {        
-        
+    {
+        private GraphServiceClient graphClient;
+        private IList<Option> requestOptions;
+
+        public GroupsService(GraphServiceClient graphServiceClient)
+        {
+            graphClient = graphServiceClient;
+            requestOptions = new List<Option>
+            {
+                new HeaderOption("Prefer", "outlook.timezone=\"" + TimeZoneInfo.Local.Id + "\"")
+            };
+        }
+
         // Get groups. 
         // This snippet requires an admin work account. 
-        public async Task<List<ResultsItem>> GetGroups(GraphServiceClient graphClient)
+        public async Task<List<ResultsItem>> GetGroups()
         {
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Get groups.
-            IGraphServiceGroupsCollectionPage groups = await graphClient.Groups.Request().GetAsync();
+            IGraphServiceGroupsCollectionPage groups = await graphClient.Groups.Request(requestOptions)
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .GetAsync();
 
             if (groups?.Count > 0)
             {
@@ -39,12 +54,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 
         // Get Office 365 (unified) groups. 
         // This snippet requires an admin work account. 
-        public async Task<List<ResultsItem>> GetUnifiedGroups(GraphServiceClient graphClient)
+        public async Task<List<ResultsItem>> GetUnifiedGroups()
         {
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Get unified groups.
-            IGraphServiceGroupsCollectionPage groups = await graphClient.Groups.Request().Filter("groupTypes/any(a:a%20eq%20'unified')").GetAsync();
+            IGraphServiceGroupsCollectionPage groups = await graphClient.Groups.Request(requestOptions)
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .Filter("groupTypes/any(a:a%20eq%20'unified')").GetAsync();
 
             if (groups?.Count > 0)
             {
@@ -62,12 +79,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 
         // Get the groups that the current user is a direct member of.
         // This snippet requires an admin work account.
-        public async Task<List<ResultsItem>> GetMyMemberOfGroups(GraphServiceClient graphClient)
+        public async Task<List<ResultsItem>> GetMyMemberOfGroups()
         {
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Get groups the current user is a direct member of.
-            IUserMemberOfCollectionWithReferencesPage memberOfGroups = await graphClient.Me.MemberOf.Request().GetAsync();
+            IUserMemberOfCollectionWithReferencesPage memberOfGroups = await graphClient.Me.MemberOf.Request(requestOptions)
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .GetAsync();
 
             if (memberOfGroups?.Count > 0)
             {
@@ -93,13 +112,15 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
         // Create a new group. It can be an Office 365 group, dynamic group, or security group.
         // This snippet creates an Office 365 (unified) group.
         // This snippet requires an admin work account. 
-        public async Task<List<ResultsItem>> CreateGroup(GraphServiceClient graphClient)
+        public async Task<List<ResultsItem>> CreateGroup()
         {
             List<ResultsItem> items = new List<ResultsItem>();
             string guid = Guid.NewGuid().ToString();
 
             // Add the group.
-            Group group = await graphClient.Groups.Request().AddAsync(new Group
+            Group group = await graphClient.Groups.Request(requestOptions)
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .AddAsync(new Group
             {
                 GroupTypes = new List<string> { "Unified" },
                 DisplayName = Resource.Group + guid.Substring(0, 8),
@@ -121,7 +142,6 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
                     {
                         { Resource.Prop_Description, group.Description },
                         { Resource.Prop_Email, group.Mail },
-                        { Resource.Prop_Created, group.AdditionalData["createdDateTime"] }, // Temporary workaround for a known SDK issue.
                         { Resource.Prop_Id, group.Id }
                     }
                 });
@@ -131,12 +151,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 
         // Get a specified group.
         // This snippet requires an admin work account. 
-        public async Task<List<ResultsItem>> GetGroup(GraphServiceClient graphClient, string id)
+        public async Task<List<ResultsItem>> GetGroup(string id)
         {
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Get the group.
-            Group group = await graphClient.Groups[id].Request().Expand("members").GetAsync();
+            Group group = await graphClient.Groups[id].Request(requestOptions)
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .Expand("members").GetAsync();
 
             if (group != null)
             {
@@ -159,12 +181,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 
         // Read properties and relationships of group members.
         // This snippet requires an admin work account. 
-        public async Task<List<ResultsItem>> GetMembers(GraphServiceClient graphClient, string id)
+        public async Task<List<ResultsItem>> GetMembers(string id)
         {
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Get group members. 
-            IGroupMembersCollectionWithReferencesPage members = await graphClient.Groups[id].Members.Request().GetAsync();
+            IGroupMembersCollectionWithReferencesPage members = await graphClient.Groups[id].Members.Request(requestOptions)
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .GetAsync();
 
             if (members?.Count > 0)
             {
@@ -186,12 +210,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 
         // Read properties and relationships of group members.
         // This snippet requires an admin work account. 
-        public async Task<List<ResultsItem>> GetOwners(GraphServiceClient graphClient, string id)
+        public async Task<List<ResultsItem>> GetOwners(string id)
         {
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Get group owners.
-            IGroupOwnersCollectionWithReferencesPage members = await graphClient.Groups[id].Owners.Request().GetAsync();
+            IGroupOwnersCollectionWithReferencesPage members = await graphClient.Groups[id].Owners.Request(requestOptions)
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .GetAsync();
 
             if (members?.Count > 0)
             {
@@ -215,15 +241,17 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
         // Update a group.
         // This snippet changes the group name. 
         // This snippet requires an admin work account. 
-        public async Task<List<ResultsItem>> UpdateGroup(GraphServiceClient graphClient, string id, string name)
+        public async Task<List<ResultsItem>> UpdateGroup(string id, string name)
         {
             List<ResultsItem> items = new List<ResultsItem>();
             
             // Update the group.
-            await graphClient.Groups[id].Request().UpdateAsync(new Group
-            {
-                DisplayName = Resource.Updated + name
-            });
+            await graphClient.Groups[id].Request(requestOptions)
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .UpdateAsync(new Group
+                    {
+                        DisplayName = Resource.Updated + name
+                    });
 
             items.Add(new ResultsItem
             {
@@ -239,12 +267,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 
         // Delete a group. Warning: This operation cannot be undone.
         // This snippet requires an admin work account. 
-        public async Task<List<ResultsItem>> DeleteGroup(GraphServiceClient graphClient, string id)
+        public async Task<List<ResultsItem>> DeleteGroup(string id)
         {
             List<ResultsItem> items = new List<ResultsItem>();
             
             // Delete the group.
-            await graphClient.Groups[id].Request().DeleteAsync();
+            await graphClient.Groups[id].Request(requestOptions)
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .DeleteAsync();
 
             items.Add(new ResultsItem
             {

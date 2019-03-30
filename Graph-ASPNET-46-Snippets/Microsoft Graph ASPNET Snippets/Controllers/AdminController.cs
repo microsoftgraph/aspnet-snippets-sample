@@ -4,13 +4,11 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
+using Microsoft.Graph.Auth;
 using Microsoft.Identity.Client;
 using Microsoft_Graph_ASPNET_Snippets.TokenStorage;
 using Microsoft_Graph_ASPNET_Snippets.Utils;
@@ -27,22 +25,19 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
         // GET: Admin
         public async Task<ActionResult> Index()
         {
-            // try to get token silently
-            string signedInUserID = ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier).Value;
-            TokenCache theCache = new SessionTokenCache(signedInUserID, this.HttpContext).GetMsalCacheInstance();
-
-            ConfidentialClientApplication cca = new ConfidentialClientApplication(clientId, redirectUri,
-                new ClientCredential(appKey), theCache, null);
             string[] scopes = adminScopes.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            SessionTokenCacheProvider sessionTokenCacheProvider = new SessionTokenCacheProvider(this.HttpContext);
+            IConfidentialClientApplication cca = AuthorizationCodeProvider.CreateClientApplication(clientId, redirectUri, new ClientCredential(appKey), sessionTokenCacheProvider);
+
             try
             {
-                AuthenticationResult result = await cca.AcquireTokenSilentAsync(scopes, cca.Users.First());
+                AuthenticationResult result = await cca.AcquireTokenSilentAsync(scopes, (await cca.GetAccountsAsync()).FirstOrDefault());
             }
             catch (Exception)
             {
                 try
                 {// when failing, manufacture the URL and assign it
-                    string authReqUrl = await OAuth2RequestManager.GenerateAuthorizationRequestUrl(scopes, cca, this.HttpContext, Url);
+                    string authReqUrl = await OAuth2RequestManager.GenerateAuthorizationRequestUrl(scopes, cca as ConfidentialClientApplication, this.HttpContext, Url);
                     ViewBag.AuthorizationRequest = authReqUrl;
                 }
                 catch (Exception ee)
@@ -50,6 +45,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
 
                 }
             }
+
             return View("Admin");
 
         }

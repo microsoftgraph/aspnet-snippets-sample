@@ -4,11 +4,12 @@
 */
 
 using Microsoft.Graph;
+using Microsoft.Graph.Auth;
 using Microsoft_Graph_ASPNET_Snippets.Helpers;
 using Microsoft_Graph_ASPNET_Snippets.Models;
 using Resources;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 
 namespace Microsoft_Graph_ASPNET_Snippets.Controllers
@@ -16,7 +17,12 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
     [Authorize]
     public class MailController : Controller
     {
-        MailService mailService = new MailService();
+        MailService mailService;
+        public MailController()
+        {
+            GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
+            mailService = new MailService(graphClient);
+        }
 
         public ActionResult Index()
         {
@@ -29,18 +35,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Get the messages.
-                results.Items = await mailService.GetMyMessages(graphClient);
+                results.Items = await mailService.GetMyMessages();
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
-
-                // Personal accounts that aren't enabled for the Outlook REST API get a "MailboxNotEnabledForRESTAPI" or "MailboxNotSupportedForRESTAPI" error.
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Mail", results);
@@ -52,18 +56,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Get the messages.
-                results.Items = await mailService.GetMyInboxMessages(graphClient);
+                results.Items = await mailService.GetMyInboxMessages();
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
-
-                // Personal accounts that aren't enabled for the Outlook REST API get a "MailboxNotEnabledForRESTAPI" or "MailboxNotSupportedForRESTAPI" error.
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Mail", results);
@@ -76,18 +78,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Get messages in the Inbox folder that have file attachments.
-                results.Items = await mailService.GetMyInboxMessagesThatHaveAttachments(graphClient);
+                results.Items = await mailService.GetMyInboxMessagesThatHaveAttachments();
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
-
-                // Personal accounts that aren't enabled for the Outlook REST API get a "MailboxNotEnabledForRESTAPI" or "MailboxNotSupportedForRESTAPI" error.
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Mail", results);
@@ -100,18 +100,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             ResultsViewModel results = new ResultsViewModel(false);
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Send the message.
-                results.Items = await mailService.SendMessage(graphClient);
+                results.Items = await mailService.SendMessage();
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
-
-                // Personal accounts that aren't enabled for the Outlook REST API get a "MailboxNotEnabledForRESTAPI" or "MailboxNotSupportedForRESTAPI" error.
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Mail", results);
@@ -124,18 +122,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             ResultsViewModel results = new ResultsViewModel(false);
             try
             {
-
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Send the message.
-                results.Items = await mailService.SendMessageWithAttachment(graphClient);
+                results.Items = await mailService.SendMessageWithAttachment();
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
-
-                // Personal accounts that aren't enabled for the Outlook REST API get a "MailboxNotEnabledForRESTAPI" or "MailboxNotSupportedForRESTAPI" error.
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Mail", results);
@@ -147,17 +143,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Get the message.
-                results.Items = await mailService.GetMessage(graphClient, id);
+                results.Items = await mailService.GetMessage(id);
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
-
-                // Personal accounts that aren't enabled for the Outlook REST API get a "MailboxNotEnabledForRESTAPI" or "MailboxNotSupportedForRESTAPI" error.
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Mail", results);
@@ -169,14 +164,15 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             ResultsViewModel results = new ResultsViewModel(false);
             try
             {
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
-                results.Items = await mailService.ReplyToMessage(graphClient, id);
+                results.Items = await mailService.ReplyToMessage(id);
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Mail", results);
@@ -189,15 +185,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             ResultsViewModel results = new ResultsViewModel();
             try
             {
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Move the message.
-                results.Items = await mailService.MoveMessage(graphClient, id);
+                results.Items = await mailService.MoveMessage(id);
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Mail", results);
@@ -209,17 +206,16 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
             ResultsViewModel results = new ResultsViewModel(false);
             try
             {
-                // Initialize the GraphServiceClient.
-                GraphServiceClient graphClient = SDKHelper.GetAuthenticatedClient();
-
                 // Delete the message.
-                results.Items = await mailService.DeleteMessage(graphClient, id);
+                results.Items = await mailService.DeleteMessage(id);
             }
             catch (ServiceException se)
             {
-                if (se.Error.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
-
-                // Personal accounts that aren't enabled for the Outlook REST API get a "MailboxNotEnabledForRESTAPI" or "MailboxNotSupportedForRESTAPI" error.
+                if ((se.InnerException as AuthenticationException)?.Error.Code == Resource.Error_AuthChallengeNeeded)
+                {
+                    HttpContext.Request.GetOwinContext().Authentication.Challenge();
+                    return new EmptyResult();
+                }
                 return RedirectToAction("Index", "Error", new { message = string.Format(Resource.Error_Message, Request.RawUrl, se.Error.Code, se.Error.Message) });
             }
             return View("Mail", results);

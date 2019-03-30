@@ -142,7 +142,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Caller needs to authenticate..
+        ///   Looks up a localized string similar to authenticationChallengeRequired.
         /// </summary>
         internal static string Error_AuthChallengeNeeded {
             get {

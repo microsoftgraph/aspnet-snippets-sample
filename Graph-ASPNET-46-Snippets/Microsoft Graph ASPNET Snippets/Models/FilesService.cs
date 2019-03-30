@@ -4,10 +4,12 @@
 */
 
 using Microsoft.Graph;
+using Microsoft.Graph.Auth;
 using Resources;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Hosting;
@@ -16,14 +18,27 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 {
     public class FilesService
     {
+        private GraphServiceClient graphClient;
+        private IList<Option> requestOptions;
+
+        public FilesService(GraphServiceClient graphServiceClient)
+        {
+            graphClient = graphServiceClient;
+            requestOptions = new List<Option>
+            {
+                new HeaderOption("Prefer", "outlook.timezone=\"" + TimeZoneInfo.Local.Id + "\"")
+            };
+        }
 
         // Get the drive items in the root directory of the current user's default drive.
-        public async Task<List<ResultsItem>> GetMyFilesAndFolders(GraphServiceClient graphClient)
+        public async Task<List<ResultsItem>> GetMyFilesAndFolders()
         {
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Get the files and folders in the current user's drive.
-            IDriveItemChildrenCollectionPage driveItems = await graphClient.Me.Drive.Root.Children.Request().GetAsync();
+            IDriveItemChildrenCollectionPage driveItems = await graphClient.Me.Drive.Root.Children.Request(requestOptions)
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .GetAsync();
 
             if (driveItems?.Count > 0)
             {
@@ -43,12 +58,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
         }
 
         // Get the items that are shared with the current user.
-        public async Task<List<ResultsItem>> GetSharedWithMe(GraphServiceClient graphClient)
+        public async Task<List<ResultsItem>> GetSharedWithMe()
         {
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Get shared items.
-            IDriveSharedWithMeCollectionPage driveItems = await graphClient.Me.Drive.SharedWithMe().Request().GetAsync();
+            IDriveSharedWithMeCollectionPage driveItems = await graphClient.Me.Drive.SharedWithMe().Request(requestOptions)
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .GetAsync();
 
             if (driveItems?.Count > 0)
             {
@@ -71,12 +88,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
         }
 
         // Get the current user's default drive.
-        public async Task<List<ResultsItem>> GetMyDrive(GraphServiceClient graphClient)
+        public async Task<List<ResultsItem>> GetMyDrive()
         {
             List<ResultsItem> items = new List<ResultsItem>();
             
             // Get the current user's default drive.
-            Drive drive = await graphClient.Me.Drive.Request().GetAsync();
+            Drive drive = await graphClient.Me.Drive.Request(requestOptions)
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .GetAsync();
 
             if (drive != null)
             {
@@ -96,7 +115,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
         }
 
         // Create a text file in the current user's root directory.
-        public async Task<List<ResultsItem>> CreateFile(GraphServiceClient graphClient)
+        public async Task<List<ResultsItem>> CreateFile()
         {
             List<ResultsItem> items = new List<ResultsItem>();
             
@@ -109,7 +128,9 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             {
 
                 // Add the file.
-                DriveItem file = await graphClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request().PutAsync<DriveItem>(fileContentStream);
+                DriveItem file = await graphClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request(requestOptions)
+                    .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                    .PutAsync<DriveItem>(fileContentStream);
 
                 if (file != null)
                 {
@@ -132,13 +153,15 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
         }
 
         // Create a folder in the current user's root directory. 
-        public async Task<List<ResultsItem>> CreateFolder(GraphServiceClient graphClient)
+        public async Task<List<ResultsItem>> CreateFolder()
         {
             List<ResultsItem> items = new List<ResultsItem>();
             string guid = Guid.NewGuid().ToString();
 
             // Add the folder.
-            DriveItem folder = await graphClient.Me.Drive.Root.Children.Request().AddAsync(new DriveItem
+            DriveItem folder = await graphClient.Me.Drive.Root.Children.Request(requestOptions)
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .AddAsync(new DriveItem
             {
                 Name = Resource.Folder + guid.Substring(0, 8),
                 Folder = new Folder()
@@ -165,7 +188,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 
 
         // Uploads a large file to the current user's root directory.
-        public async Task<List<ResultsItem>> UploadLargeFile(GraphServiceClient graphClient)
+        public async Task<List<ResultsItem>> UploadLargeFile()
         {
             List<ResultsItem> items = new List<ResultsItem>();
 
@@ -173,13 +196,15 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             {
                 // Create the upload session. The access token is no longer required as you have session established for the upload.  
                 // POST /v1.0/drive/root:/UploadLargeFile.bmp:/microsoft.graph.createUploadSession
-                UploadSession uploadSession = await graphClient.Me.Drive.Root.ItemWithPath("LargeFileUploadResource.bmp").CreateUploadSession().Request().PostAsync();
+                UploadSession uploadSession = await graphClient.Me.Drive.Root.ItemWithPath("LargeFileUploadResource.bmp").CreateUploadSession().Request(requestOptions)
+                    .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                    .PostAsync();
 
                 int maxChunkSize = 320 * 1024; // 320 KB - Change this to your chunk size. 5MB is the default.
                 ChunkedUploadProvider provider = new ChunkedUploadProvider(uploadSession, graphClient, fileStream, maxChunkSize);
 
                 // Set up the chunk request necessities.
-                IEnumerable<UploadChunkRequest> chunkRequests = provider.GetUploadChunkRequests();
+                IEnumerable<UploadChunkRequest> chunkRequests = provider.GetUploadChunkRequests(requestOptions);
                 byte[] readBuffer = new byte[maxChunkSize];
                 List<Exception> trackedExceptions = new List<Exception>();
                 DriveItem uploadedFile = null;
@@ -187,6 +212,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
                 // Upload the chunks.
                 foreach (var request in chunkRequests)
                 {
+                    request.WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount());
                     // Do your updates here: update progress bar, etc.
                     // ...
                     // Send chunk request
@@ -222,16 +248,17 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
         }
 
         // Get a file or folder (metadata) in the current user's drive.
-        public async Task<List<ResultsItem>> GetFileOrFolderMetadata(GraphServiceClient graphClient, string id)
+        public async Task<List<ResultsItem>> GetFileOrFolderMetadata(string id)
         {
             List<ResultsItem> items = new List<ResultsItem>();
             
             // Get the file or folder object.
-            DriveItem fileOrFolder = await graphClient.Me.Drive.Items[id].Request().GetAsync();
+            DriveItem fileOrFolder = await graphClient.Me.Drive.Items[id].Request(requestOptions)
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .GetAsync();
 
             if (fileOrFolder != null)
             {
-
                 // Get file or folder properties.
                 items.Add(new ResultsItem
                 {
@@ -250,18 +277,22 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 
         // Download the content of an existing file.
         // This snippet returns the length of the file stream and some file metadata properties.
-        public async Task<List<ResultsItem>> DownloadFile(GraphServiceClient graphClient, string id)
+        public async Task<List<ResultsItem>> DownloadFile(string id)
         {
             List<ResultsItem> items = new List<ResultsItem>();
             
             // Get the item and make sure it's a file.
-            DriveItem file = await graphClient.Me.Drive.Items[id].Request().GetAsync();
+            DriveItem file = await graphClient.Me.Drive.Items[id].Request(requestOptions)
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .GetAsync();
 
             if (file.File != null)
             {
 
                 // Get the file content.
-                using (Stream stream = await graphClient.Me.Drive.Items[id].Content.Request().GetAsync())
+                using (Stream stream = await graphClient.Me.Drive.Items[id].Content.Request(requestOptions)
+                    .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                    .GetAsync())
                 {
                     
                     // Get file properties.
@@ -281,7 +312,6 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             }
             else
             {
-
                 // Selected item is not a file.
                 items.Add(new ResultsItem
                 {
@@ -297,23 +327,25 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
         // Update the metadata of a file or folder. 
         // This snippet updates the item's name. 
         // To move an item, point the ParentReference.Id or ParentReference.Path property to the target destination.
-        public async Task<List<ResultsItem>> UpdateFileOrFolderMetadata(GraphServiceClient graphClient, string id, string name)
+        public async Task<List<ResultsItem>> UpdateFileOrFolderMetadata(string id, string name)
         {
             List<ResultsItem> items = new List<ResultsItem>();
             name = name.Replace(" (" + Resource.File + ")", "");
             name = name.Replace(" (" + Resource.Folder + ")", "");
 
             // Update the item.
-            DriveItem fileOrFolder = await graphClient.Me.Drive.Items[id].Request().UpdateAsync(new DriveItem
-            {
-                Name = Resource.Updated + name.TrimEnd()
+            DriveItem fileOrFolder = await graphClient.Me.Drive.Items[id].Request(requestOptions)
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .UpdateAsync(new DriveItem
+                    {
+                        Name = Resource.Updated + name.TrimEnd()
 
-                // The following example moves an item by updating the item's ParentReference.Id property.
-                //ParentReference = new ItemReference 
-                //{
-                //    Id = {destination-folder-id}
-                //}
-            });
+                        // The following example moves an item by updating the item's ParentReference.Id property.
+                        //ParentReference = new ItemReference 
+                        //{
+                        //    Id = {destination-folder-id}
+                        //}
+                    });
 
             if (fileOrFolder != null)
             {
@@ -336,12 +368,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 
         // Update the content of a file in the user's root directory. 
         // This snippet replaces the text content of a .txt file.
-        public async Task<List<ResultsItem>> UpdateFileContent(GraphServiceClient graphClient, string id)
+        public async Task<List<ResultsItem>> UpdateFileContent(string id)
         {
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Get the file. Make sure it's a .txt file (for the purposes of this snippet).
-            DriveItem selectedFile = await graphClient.Me.Drive.Items[id].Request().GetAsync();
+            DriveItem selectedFile = await graphClient.Me.Drive.Items[id].Request(requestOptions)
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .GetAsync();
 
             if (selectedFile.File != null && selectedFile.Name.EndsWith(".txt"))
             {
@@ -352,7 +386,9 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
                 {
 
                     // Update the file.
-                    DriveItem file = await graphClient.Me.Drive.Items[id].Content.Request().PutAsync<DriveItem>(fileContentStream);
+                    DriveItem file = await graphClient.Me.Drive.Items[id].Content.Request(requestOptions)
+                        .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                        .PutAsync<DriveItem>(fileContentStream);
 
                     if (file.File != null)
                     {
@@ -388,12 +424,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
         }
 
         // Delete a file in the user's root directory.
-        public async Task<List<ResultsItem>> DeleteFileOrFolder(GraphServiceClient graphClient, string id)
+        public async Task<List<ResultsItem>> DeleteFileOrFolder(string id)
         {
             List<ResultsItem> items = new List<ResultsItem>();
             
             // Delete the item.
-            await graphClient.Me.Drive.Items[id].Request().DeleteAsync();
+            await graphClient.Me.Drive.Items[id].Request(requestOptions)
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .DeleteAsync();
 
             // This operation doesn't return anything.
             items.Add(new ResultsItem
@@ -408,12 +446,14 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
 
         // Get a sharing link.
         // This snippet gets a link that has `view` permissions to the file.
-        public async Task<List<ResultsItem>> GetSharingLink(GraphServiceClient graphClient, string id)
+        public async Task<List<ResultsItem>> GetSharingLink(string id)
         {
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Get a sharing link for the file.
-            Permission permission = await graphClient.Me.Drive.Items[id].CreateLink("view").Request().PostAsync();
+            Permission permission = await graphClient.Me.Drive.Items[id].CreateLink("view").Request(requestOptions)
+                .WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount())
+                .PostAsync();
 
             if (permission != null)
             {
