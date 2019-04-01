@@ -9,8 +9,8 @@
                 @*The 'preferred_username' claim can be used for showing the user's primary way of identifying themselves.*@
                 Hello, @(System.Security.Claims.ClaimsPrincipal.Current.FindFirst("preferred_username").Value)
             </li>
-            <li>
-                @Html.ActionLink("Sign out", "SignOut", "Account")
+            <li class="nav-item">
+                @Html.ActionLink("Sign out", "SignOut", "Account", null, new { @class = "nav-link" })
             </li>
         </ul>
     </text>
@@ -44,4 +44,3 @@ else
         </li>
     </ul>
 }
-
