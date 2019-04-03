@@ -22,7 +22,6 @@ The sample uses the [ASP.NET OpenId Connect OWIN middleware](https://www.nuget.o
 
 This library is suitable for use in a production environment. We provide the same production level support for this library as we do our current production libraries. During the preview we may make changes to the API, internal cache format, and other mechanisms of this library, which you will be required to take along with bug fixes or feature improvements. This may impact your application. For instance, a change to the cache format may impact your users, such as requiring them to sign in again. An API change may require you to update your code. When we provide the General Availability release we will require you to update to the General Availability version within six months, as applications written using a preview version of library may no longer work.
 
-
 ## Prerequisites
 
 This sample requires the following:  
@@ -30,32 +29,41 @@ This sample requires the following:
   * [Visual Studio](https://www.visualstudio.com/en-us/downloads) 
   * Either a [Microsoft account](https://www.outlook.com) or an [Office 365 for business account](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account). An Office 365 administrator account is required to run admin-level operations. You can sign up for [an Office 365 Developer subscription](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account) that includes the resources that you need to start building apps.
 
-## Register the application
+## Register the web app
 
-1. Sign into the [App Registration Portal](https://apps.dev.microsoft.com/) using either your personal or work or school account.
+### Choose the Azure AD tenant where you want to create the application
 
-2. Choose **Add an app**.
+As a first step you'll need to:
 
-3. Enter a name for the app, and choose **Create application**. 
-	
-   The registration page displays, listing the properties of your app.
+1. Sign in to the [Azure portal](https://portal.azure.com) using either a work or school account or a personal Microsoft account.
+1. If your account is present in more than one Azure AD tenant, select your profile at the top right corner in the menu on top of the page, and then **switch directory**.
+   Change your portal session to the desired Azure AD tenant.
 
-4. Copy the Application Id. This is the unique identifier for your app. 
+### Register the app
 
-5. Under **Application Secrets**, choose **Generate New Password**. Copy the password from the **New password generated** dialog.
-
-   You'll need to enter the app Id and app secret values that you copied into the sample app. 
-
-6. Under **Platforms**, choose **Add platform**.
-
-7. Choose **Web**.
-
-8. Make sure the **Allow Implicit Flow** check box is selected, and enter *https://localhost:44300/* as the Redirect URI. 
-
-   The **Allow Implicit Flow** option enables the hybrid flow. During authentication, this enables the app to receive both sign-in info (the id_token) and artifacts (in this case, an authorization code) that the app can use to obtain an access token.
-
-9. Choose **Save**.
- 
+1. Navigate to the Microsoft identity platform for developers [App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) page.
+1. Select **New registration**.
+1. When the **Register an application page** appears, enter your application's registration information:
+   - In the **Name** section, enter a meaningful application name that will be displayed to users of the app.
+   - Change **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts (e.g. Skype, Xbox, Outlook.com)**.
+     > Note that there are more than one redirect URIs. You'll need to add them from the **Authentication** tab later after the app has been created successfully.
+1. Select **Register** to create the application.
+1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
+1. From the app's Overview page, select the **Authentication** section.
+   - In the Redirect URIs section, select **Web** in the combo-box and enter the following redirect URIs.
+       - `https://localhost:44300/`
+       - `https://localhost:44300/signin-oidc`
+   - In the **Advanced settings** section set **Logout URL** to `https://localhost:44300/signout-oidc`
+   - In the **Advanced settings** | **Implicit grant** section, check **ID tokens** as this sample requires
+     the [Implicit grant flow](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow) to be enabled to
+     sign-in the user, and call an API.
+1. Select **Save**.
+1. From the **Certificates & secrets** page, in the **Client secrets** section, choose **New client secret**:
+   - Type a key description (for instance `app secret`),
+   - Select a key duration of either **In 1 year**, **In 2 years**, or **Never Expires**.
+   - When you press the **Add** button, the key value will be displayed. Copy and save the value in a safe location.
+   - You'll need this key later to configure the project in Visual Studio. This key value will not be displayed again, nor is it retrievable by any other means,
+     so record it as soon as it's visible from the Azure portal.
  
 ## Build and run the sample
 
@@ -75,10 +83,8 @@ This sample requires the following:
 
 7. Choose an operation you want to run. Note the following:
   - Operations that require an argument (such as ID) are disabled until you run a snippet that lets you select an entity. 
-
-  - Some snippets (marked as *admin-only*) require commercial permission scopes that can only be granted by an administrator. To run these snippets, you need to sign in as an admin and then use the link on the *Admin scopes* tab to consent to the admin-level scopes. This tab is not available for users who are logged in with personal accounts.
-   
-  - If you logged in with a personal account, snippets that aren't supported for Microsoft accounts are disabled..
+  - Some snippets (marked as *admin-only*) require commercial permission scopes that can only be granted by an administrator. To run these snippets, you need to sign into the Azure portal as an admin. Then, use the *API permissions* section of the app's registration to consent to the admin-level scopes. This tab is not available for users who are logged in with personal accounts.
+  - If you logged in with a personal account, snippets that aren't supported for Microsoft accounts are disabled.
    
 Response information is displayed at the bottom of the page.
 
