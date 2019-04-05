@@ -18,6 +18,10 @@ In addition, the sample shows how to request tokens incrementally--a feature sup
 
 The sample uses the [ASP.NET OpenId Connect OWIN middleware](https://www.nuget.org/packages/Microsoft.Owin.Security.OpenIdConnect/) for sign in and during the initial token acquisition. The sample also implements custom Owin middleware to exchange an authorization code for access and refresh tokens outside of the sign-in flow. The custom middleware calls MSAL to build the authorization request URI and handles the redirects. To learn more about incremental consent, see [Integrate Microsoft identity and the Microsoft Graph into a web application using OpenID Connect](https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2).
 
+> This sample uses ASP.NET MVC 4.6. For samples that use ASP.NET Core, see one of these two samples: 
+> - [Microsoft Graph Connect Sample for ASP.NET Core 2.1](https://github.com/microsoftgraph/aspnetcore-connect-sample)
+> - [Enable your Web Apps to sign-in users and call APIs with the Microsoft identity platform for developers](https://github.com/Azure-Samples/active-directory-aspnetcore-webapp-openidconnect-v2)
+
 ## Important Note about the MSAL Preview
 
 This library is suitable for use in a production environment. We provide the same production level support for this library as we do our current production libraries. During the preview we may make changes to the API, internal cache format, and other mechanisms of this library, which you will be required to take along with bug fixes or feature improvements. This may impact your application. For instance, a change to the cache format may impact your users, such as requiring them to sign in again. An API change may require you to update your code. When we provide the General Availability release we will require you to update to the General Availability version within six months, as applications written using a preview version of library may no longer work.
