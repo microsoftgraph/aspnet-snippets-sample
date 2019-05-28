@@ -50,24 +50,30 @@ As a first step you'll need to:
 1. When the **Register an application page** appears, enter your application's registration information:
    - In the **Name** section, enter a meaningful application name that will be displayed to users of the app.
    - Change **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts (e.g. Skype, Xbox, Outlook.com)**.
-     > Note that there are more than one redirect URIs. You'll need to add them from the **Authentication** tab later after the app has been created successfully.
+     > Note that there are more than one redirect URIs. You'll need to add them from the **Authentication** tab later after the app has been created successfully.  
+     ![Application Registration](images/ApplicationRegistration.PNG)
 1. Select **Register** to create the application.
-1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
+1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.  
+![Application ID](images/ApplicationID.PNG)
 1. From the app's Overview page, select the **Authentication** section.
    - In the Redirect URIs section, select **Web** in the combo-box and enter the following redirect URIs.
        - `https://localhost:44300/`
-       - `https://localhost:44300/signin-oidc`
+       - `https://localhost:44300/signin-oidc`  
+       ![RedirectURI](images/RedirectURI.PNG)
    - In the **Advanced settings** section set **Logout URL** to `https://localhost:44300/signout-oidc`
    - In the **Advanced settings** | **Implicit grant** section, check **ID tokens** as this sample requires
      the [Implicit grant flow](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow) to be enabled to
-     sign-in the user, and call an API.
+     sign-in the user, and call an API.  
+     ![Logout URL](images/LogoutURL.PNG)
 1. Select **Save**.
 1. From the **Certificates & secrets** page, in the **Client secrets** section, choose **New client secret**:
    - Type a key description (for instance `app secret`),
-   - Select a key duration of either **In 1 year**, **In 2 years**, or **Never Expires**.
+   - Select a key duration of either **In 1 year**, **In 2 years**, or **Never Expires**.  
+   ![Client Secret Registration](images/ClientSecretRegistration.PNG)
    - When you press the **Add** button, the key value will be displayed. Copy and save the value in a safe location.
    - You'll need this key later to configure the project in Visual Studio. This key value will not be displayed again, nor is it retrievable by any other means,
-     so record it as soon as it's visible from the Azure portal.
+     so record it as soon as it's visible from the Azure portal.  
+     ![Client Secret](images/ClientSecret.PNG)
  
 ## Build and run the sample
 
@@ -83,7 +89,8 @@ As a first step you'll need to:
 
 5. Sign in with your personal account (MSA) or your work or school account, and grant the requested permissions. 
 
-6. Choose a snippets category, such as Users, Files, or Mail. 
+6. Choose a snippets category, such as Users, Files, or Mail.  
+![Snippet Sample](images/SnippetSample.PNG)
 
 7. Choose an operation you want to run. Note the following:
   - Operations that require an argument (such as ID) are disabled until you run a snippet that lets you select an entity. 
