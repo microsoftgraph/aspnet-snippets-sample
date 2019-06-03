@@ -12,39 +12,44 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
+
+    @Scripts.Render("https://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.6.2.js")
+
+    <environment include="Development">
+        @Styles.Render("~/Content/boostrap.css")
+        @Styles.Render("~/Content/Site.css")
+    </environment>
+    <environment exclude="Development">
         @Styles.Render("~/Content/css")
-        @Styles.Render("https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css")
-        @Styles.Render("https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap-theme.min.css")
-        @Scripts.Render("https://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.6.2.js")
+        @Styles.Render("https://ajax.aspnetcdn.com/ajax/bootstrap/4.3.1/css/bootstrap.min.css")
+    </environment>
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark navbar">
         <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Snippets sample", "Index", "Home", null, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Users", "Index", "Users")</li>
-                    <li>@Html.ActionLink("Mail", "Index", "Mail")</li>
-                    <li>@Html.ActionLink("Events", "Index", "Events")</li>
-                    <li>@Html.ActionLink("Files", "Index", "Files")</li>
-                    <li>@Html.ActionLink("Groups", "Index", "Groups")</li>
+            @Html.ActionLink("Snippets sample", "Index", "Home", null, new { @class = "navbar-brand" })
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="navbar-collapse collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">@Html.ActionLink("Users", "Index", "Users", null, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Mail", "Index", "Mail", null, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Events", "Index", "Events", null, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Files", "Index", "Files", null, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Groups", "Index", "Groups", null, new { @class = "nav-link" })</li>
                     @if (accountType != "msa")
                     {
-                    <li>@Html.ActionLink("Admin scopes", "Index", "Admin")</li>
+                        <li class="nav-item">@Html.ActionLink("Admin scopes", "Index", "Admin", null, new { @class = "nav-link" })</li>
                     }
-                    <li>@Html.ActionLink("Extensions", "Index", "Extensions")</li>
+                    <li class="nav-item">@Html.ActionLink("Extensions", "Index", "Extensions", null, new { @class = "nav-link" })</li>
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
         </div>
-    </div>
+    </nav>
     <div class="container body-content">
         @RenderBody()
         <hr />
@@ -52,9 +57,19 @@
             <p>&copy; @DateTime.Now.Year - @ViewBag.AppName</p>
         </footer>
     </div>
+
+    <environment include="Development">
+        @Scripts.Render("~/Scripts/ui-helpers.js")
+        @Scripts.Render("~/Scripts/jquery-{version}.js");
+        @Scripts.Render("~/Scripts/bootstrap.js");
+        @Scripts.Render("~/Scripts/popper.js");
+    </environment>
+    <environment exclude="Development">
+        @Scripts.Render("https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.js");
+        @Scripts.Render("https://ajax.aspnetcdn.com/ajax/bootstrap/4.3.1/bootstrap.bundle.min.js");
+    </environment>
+
     @Scripts.Render("~/Scripts/ui-helpers.js")
-    @Scripts.Render("https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.1.min.js")
-    @Scripts.Render("https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js")
     @RenderSection("scripts", required: false)
 </body>
 </html>
