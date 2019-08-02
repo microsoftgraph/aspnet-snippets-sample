@@ -1,3 +1,22 @@
+---
+page_type: sample
+products:
+- office-365
+- office-outlook
+- ms-graph
+languages:
+- csharp
+- aspx
+extensions:
+  contentType: samples
+  technologies:
+  - Microsoft Graph
+  services:
+  - Office 365
+  - Outlook
+  - Groups
+  createdDate: 8/4/2016 10:31:51 AM
+---
 # Microsoft Graph Snippets Sample for ASP.NET 4.6
 
 ## Table of contents
