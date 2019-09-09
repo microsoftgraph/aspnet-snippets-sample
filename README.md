@@ -8,7 +8,7 @@ languages:
 - csharp
 - aspx
 extensions:
-  contentType: samples
+  contentType: samples 
   technologies:
   - Microsoft Graph
   services:
