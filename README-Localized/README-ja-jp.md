@@ -7,8 +7,9 @@ products:
 languages:
 - csharp
 - aspx
+description: "このサンプルは、Microsoft Graph .NET クライアント ライブラリを使用してデータと連携し、Azure AD v2.0 での認証用に Microsoft Authentication Library (MSAL) を使用します。"
 extensions:
-  contentType: samples
+  contentType: samples 
   technologies:
   - Microsoft Graph
   services:
@@ -37,9 +38,7 @@ extensions:
 
 サンプルでは、サインインと最初のトークン取得中に [ASP.NET OpenId Connect OWIN ミドルウェア](https://www.nuget.org/packages/Microsoft.Owin.Security.OpenIdConnect/)を使用します。またサンプルでは、カスタム Owin ミドルウェアも実装して、アクセスの認証コードを交換し、サインイン フローの外部のトークンを更新します。カスタム ミドルウェアは、MSAL を呼び出して承認要求 URI を作成して、リダイレクトを処理します。段階的な同意の詳細については、「[OpenID Connect を使用して、Microsoft Identity と Microsoft Graph を Web アプリケーションに統合する](https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2)」を参照してください。
 
-> このサンプルでは、ASP.NET MVC 4.6 を使用します。ASP.NET Core を使用するサンプルについては、次の 2 つのサンプルのいずれかを参照してください
-- [ASP.NET Core 2.1 用 Microsoft Graph Connect のサンプル](https://github.com/microsoftgraph/aspnetcore-connect-sample)
-- [開発者向けの Microsoft ID プラットフォームを使用して Web Apps でユーザーをサインインさせ API を呼び出せるようにする](https://github.com/Azure-Samples/active-directory-aspnetcore-webapp-openidconnect-v2)
+> このサンプルでは、ASP.NET MVC 4.6 を使用します。ASP.NET Core を使用するサンプルについては、次の 2 つのサンプルのいずれかを参照してください - [ASP.NET Core 2.1 用 Microsoft Graph Connect のサンプル](https://github.com/microsoftgraph/aspnetcore-connect-sample) - [開発者向けの Microsoft ID プラットフォームを使用して Web Apps でユーザーをサインインさせ API を呼び出せるようにする](https://github.com/Azure-Samples/active-directory-aspnetcore-webapp-openidconnect-v2)
 
 ## MSAL プレビューに関する重要な注意事項
 
@@ -59,8 +58,7 @@ extensions:
 まず、次のことを行う必要があります。
 
 1. 職場または学校のアカウントか、個人の Microsoft アカウントを使用して、[Azure portal](https://portal.azure.com)にサインインします。
-1. ご利用のアカウントが複数の Azure AD テナントに存在する場合は、ページ上部のメニューの右上隅にあるプロフィールを選択してから、
-\[**ディレクトリの切り替え**]を選択します。ポータルのセッションを目的の<b> </b>Azure AD テナントに変更します。
+1. ご利用のアカウントが複数の Azure AD テナントに存在する場合は、ページ上部のメニューの右上隅にあるプロフィールを選択してから、\[**ディレクトリの切り替え**]を選択します。ポータルのセッションを目的の<b> </b>Azure AD テナントに変更します。
 
 ### アプリの登録
 
@@ -77,16 +75,13 @@ extensions:
        - `https://localhost:44300/`
        - `https://localhost:44300/signin-oidc`
    - \[**詳細設定**] セクションの \[**ログアウト URL**] を「`https://localhost:44300/signout-oidc`」に設定します。
-   - \[**詳細設定**] または \[**暗黙的な許可**] セクションで、このサンプルが
-   [暗黙的な許可のフロー](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow)を有効にしてユーザーのサインインができるように、\[**ID トークン**]
-   をチェック ボックスをオンにし、API を呼び出します。
+   - \[**詳細設定**] または \[**暗黙的な許可**] セクションで、このサンプルが[暗黙的な許可のフロー](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow)を有効にしてユーザーのサインインができるように、\[**ID トークン**] をチェック ボックスをオンにし、API を呼び出します。
 1. \[**保存**] を選択します。
 1. \[**証明書とシークレット**] ページの \[**クライアント シークレット**] セクションで、\[**新しいクライアント シークレット**]を選択します。
    - キーの説明を入力します (例 : `アプリ シークレット`)。
    - \[**1 年**]、\[**2 年**]、または \[**有効期限なし**] からキーの期間を選択します。
    - \[**追加**] ボタンを押すと、キー値が表示されます。値をコピーして安全な場所に保存します。
-   - Visual Studio でプロジェクトを構成するには、このキーが必要になります。このキー値は二度と表示されず、他の方法で取得することもできませんので、
-   Azure portal で表示されたらすぐに記録してください。
+   - Visual Studio でプロジェクトを構成するには、このキーが必要になります。このキー値は二度と表示されず、他の方法で取得することもできませんので、Azure portal で表示されたらすぐに記録してください。
  
 ## サンプルのビルドと実行
 

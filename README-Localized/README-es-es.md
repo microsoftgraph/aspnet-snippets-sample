@@ -7,8 +7,9 @@ products:
 languages:
 - csharp
 - aspx
+description: "Este ejemplo utiliza la biblioteca cliente .NET de Microsoft Graph para trabajar con los datos, y la biblioteca de autenticación de Microsoft (MSAL) para la autenticación en el extremo de Azure AD v2.0"
 extensions:
-  contentType: samples
+  contentType: samples 
   technologies:
   - Microsoft Graph
   services:
@@ -38,8 +39,8 @@ Además, el ejemplo muestra cómo solicitar tokens gradualmente, una caracterís
 El ejemplo usa el [software intermedio OWIN OpenId Connect de ASP.NET](https://www.nuget.org/packages/Microsoft.Owin.Security.OpenIdConnect/) para el inicio de sesión y durante la adquisición del token inicial. El ejemplo también implementa el software intermedio Owin personalizado para intercambiar un código de autorización para acceder a los token y actualizarlos fuera del flujo de inicio de sesión. El software intermedio personalizado llama a MSAL para crear el URI de la solicitud de autorización y controla las redirecciones. Para obtener más información acerca del consentimiento incremental, vea [Integrar la identidad de Microsoft y Microsoft Graph en una aplicación web usando OpenID Connect](https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2).
 
 > Este ejemplo usa ASP.NET MVC 4.6. Para obtener ejemplos que usan ASP.NET Core, vea uno de estos dos ejemplos:
-- [Ejemplo de Microsoft Graph Connect para ASP.NET Core 2.1](https://github.com/microsoftgraph/aspnetcore-connect-sample)
-- [Permitir que las aplicaciones web inicien sesión y llamen a las API con la Plataforma de identidad de Microsoft para desarrolladores](https://github.com/Azure-Samples/active-directory-aspnetcore-webapp-openidconnect-v2)
+ - [Microsoft Graph Connect sample for ASP.NET Core 2.1](https://github.com/microsoftgraph/aspnetcore-connect-sample) (Ejemplo de Microsoft Graph Connect para ASP.NET Core 2.1)
+ - [Enable your Web Apps to sign-in users and call APIs with the Microsoft identity platform for developers](https://github.com/Azure-Samples/active-directory-aspnetcore-webapp-openidconnect-v2) (Permitir que las aplicaciones web inicien sesión y llamen a las API con la Plataforma de identidad de Microsoft para desarrolladores)
 
 ## Nota importante acerca de la vista previa MSAL
 
@@ -60,7 +61,7 @@ Como primer paso, tendrá que:
 
 1. Iniciar sesión en [Microsoft Azure Portal](https://portal.azure.com) con una cuenta personal, profesional o educativa de Microsoft.
 1. Si su cuenta se encuentra en más de un espacio empresarial de Azure AD, seleccione su perfil en la esquina superior derecha en el menú de la parte superior de la página y, después, **cambie el directorio**.
-Cambie la sesión del portal al inquilino de Azure AD deseado.
+   Cambie la sesión del portal al inquilino de Azure AD deseado.
 
 ### Registrar la aplicación
 
@@ -77,16 +78,13 @@ Cambie la sesión del portal al inquilino de Azure AD deseado.
        - `https://localhost:44300/`
        - `https://localhost:44300/signin-oidc`
    - En la sección **Configuración avanzada**, establezca **Dirección URL de cierre de sesión** en `https://localhost:44300/signout-oidc`
-   - En la sección **Configuración avanzada** | Sección **Concesiones implícitas**, marque **Tokens de ID** ya que este ejemplo requiere que el
-   [Flujo de concesiones implícitas](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow) se habilite para iniciar sesión por
-   el usuario y llamar a una API.
+   - En la sección **Configuración avanzada** | Sección **Concesiones implícitas**, marque **Tokens de ID** ya que este ejemplo requiere que el [Flujo de concesiones implícitas](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow) se habilite para iniciar sesión por el usuario y llamar a una API.
 1. Seleccione **Guardar**.
 1. En la página **Certificados y secretos**, en la sección **Secretos de cliente**, elija **Nuevo secreto de cliente**:
    - Escriba una descripción de clave (por ejemplo, `secreto de la aplicación`).
    - Seleccione una duración de clave de **En un año**, **En 2 años** o **Nunca expira**.
    - Cuando haga clic en el botón **Agregar**, se mostrará el valor de clave. Copie y guarde el valor en una ubicación segura.
-   - Necesitará esta clave más tarde para configurar el proyecto en Visual Studio. Este valor de clave no se volverá a mostrar, ni se podrá recuperar por cualquier otro medio,
-   por lo que deberá registrarlo tan pronto como sea visible desde Azure Portal.
+   - Necesitará esta clave más tarde para configurar el proyecto en Visual Studio. Este valor de clave no se volverá a mostrar, ni se podrá recuperar por cualquier otro medio, por lo que deberá registrarlo tan pronto como sea visible desde Azure Portal.
  
 ## Compilar y ejecutar el ejemplo
 

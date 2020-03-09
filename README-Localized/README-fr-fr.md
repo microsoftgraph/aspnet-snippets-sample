@@ -7,8 +7,9 @@ products:
 languages:
 - csharp
 - aspx
+description: "Cet exemple utilise la Bibliothèque de client .NET Microsoft Graph pour travailler avec les données et la bibliothèque d’authentification Microsoft (MSAL) pour l’authentification sur le point de terminaison Azure AD v 2.0"
 extensions:
-  contentType: samples
+  contentType: samples 
   technologies:
   - Microsoft Graph
   services:
@@ -37,9 +38,7 @@ En outre, l’exemple montre comment demander des jetons de façon incrémentiel
 
 L’exemple utilise l’[intergiciel ASP.NET OpenId Connect OWIN](https://www.nuget.org/packages/Microsoft.Owin.Security.OpenIdConnect/) pour la connexion et pendant l’acquisition initiale des jetons. L’exemple implémente également un intergiciel Owin personnalisé pour échanger un code d’autorisation pour les jetons d’accès et d’actualisation en dehors du flux de connexion. L’intergiciel personnalisé appelle MSAL pour générer l’URI de demande d’autorisation et gère les redirections. Pour plus d’informations sur le consentement incrémentiel, voir [Intégrer une identité Microsoft et Microsoft Graph dans une application web à l’aide d’OpenID Connect](https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2).
 
-> Cet exemple utilise ASP.NET MVC 4.6. Pour les exemples qui utilisent ASP.net Core, reportez-vous à l’un de ces deux exemples :
-- [Exemple de connexion avec Microsoft Graph pour ASP.NET Core 2.1](https://github.com/microsoftgraph/aspnetcore-connect-sample)
-- [Activez vos applications web pour connecter les utilisateurs et appeler des API avec la plateforme d’identités Microsoft pour développeurs](https://github.com/Azure-Samples/active-directory-aspnetcore-webapp-openidconnect-v2)
+> Cet exemple utilise ASP.NET MVC 4.6. Pour les exemples qui utilisent ASP.net Core, reportez-vous à l’un de ces deux exemples : - [Exemple de connexion avec Microsoft Graph pour ASP.NET Core 2.1](https://github.com/microsoftgraph/aspnetcore-connect-sample) - [Activez vos applications web pour connecter les utilisateurs et appeler des API avec la plateforme d’identités Microsoft pour développeurs](https://github.com/Azure-Samples/active-directory-aspnetcore-webapp-openidconnect-v2)
 
 ## Remarque importante à propos de la préversion MSAL
 
@@ -59,8 +58,7 @@ Cet exemple nécessite les éléments suivants :
 Pour commencer, vous devez effectuer les opérations suivantes :
 
 1. Connectez-vous au [portail Microsoft Azure](https://portal.azure.com) à l’aide d’un compte professionnel ou scolaire, ou d’un compte Microsoft personnel.
-1. Si votre compte est présent dans plusieurs locataires Azure AD, sélectionnez votre profil dans le coin supérieur droit du menu en haut de la page,puis **changez de répertoire.
-**Remplacez votre session de portail par le locataire Azure AD souhaité.
+1. Si votre compte est présent dans plusieurs locataires Azure AD, sélectionnez votre profil dans le coin supérieur droit du menu en haut de la page, puis **changez de répertoire.** Remplacez votre session de portail par le locataire Azure AD souhaité.
 
 ### Inscription de l’application
 
@@ -77,16 +75,13 @@ Pour commencer, vous devez effectuer les opérations suivantes :
        - `https://localhost:44300/`
        - `https://localhost:44300/signin-oidc`
    - Dans la section **Paramètres avancés**, définissez **URL de déconnexion** sur `https://localhost:44300/signout-oidc`
-   - Dans la section **Paramètres avancés** | **Octroi implicite**, cochez **Jetons d’ID** car cet exemple nécessite que le
-   [flux d’octroi implicite](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow)
-   soit activé pour connecter l’utilisateur et appeler une API.
+   - Dans la section **Paramètres avancés** | **Octroi implicite**, cochez **Jetons d’ID** car cet exemple nécessite que le [flux d’octroi implicite](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow) soit activé pour connecter l’utilisateur et appeler une API.
 1. Sélectionnez **Enregistrer**.
 1. Dans la page **Certificats et clés secrètes**, dans la section **Clés secrètes de clients**, sélectionnez **Nouvelle clé secrète client** :
    - Tapez une description de clé (par exemple `clé secrète de l’application`),
    - Sélectionnez une durée de clé : **Dans 1 an**, **Dans 2 ans** ou **N’expire jamais**.
    - Lorsque vous appuyez sur le bouton **Ajouter**, la valeur de la clé s’affiche. Copiez et enregistrez la valeur dans un endroit sûr.
-   - Vous aurez besoin de cette clé ultérieurement pour configurer le projet dans Visual Studio. Cette valeur de clé ne sera plus affichée et ne pourra pas être récupérée par d’autres moyens.
-   Par conséquent, enregistrez-la dès qu’elle est visible depuis le portail Microsoft Azure.
+   - Vous aurez besoin de cette clé ultérieurement pour configurer le projet dans Visual Studio. Cette valeur de clé ne sera plus affichée et ne pourra pas être récupérée par d’autres moyens. Par conséquent, enregistrez-la dès qu’elle est visible depuis le portail Microsoft Azure.
  
 ## Création et exécution de l’exemple
 

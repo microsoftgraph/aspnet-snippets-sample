@@ -7,8 +7,9 @@ products:
 languages:
 - csharp
 - aspx
+description: "Esta amostra usa a Biblioteca de Clientes do Microsoft Graph .NET para trabalhar com os dados e a Biblioteca de Autenticação da Microsoft (MSAL) para autenticação do ponto de extremidade do Azure AD v2.0."
 extensions:
-  contentType: samples
+  contentType: samples 
   technologies:
   - Microsoft Graph
   services:
@@ -37,9 +38,7 @@ Além disso, o exemplo mostra como solicitar tokens de forma incremental, um rec
 
 O exemplo usa o [middleware OWIN do OpenId Connect do ASP.NET](https://www.nuget.org/packages/Microsoft.Owin.Security.OpenIdConnect/) para entrar e durante a aquisição de token inicial. O exemplo também implementa o middleware Owin personalizado para compartilhar um código de autorização para tokens de acesso e de atualização fora do fluxo de entrada. O middleware personalizado chama a MSAL para compilar o URI de solicitação de autorização e manipula os redirecionamentos. Para saber mais sobre o consentimento incremental, consulte [Integrar a identidade da Microsoft e o Microsoft Graph em um aplicativo Web usando o OpenID Connect](https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2).
 
-> Este exemplo usa ASP.NET MVC 4.6. Para obter exemplos que usam ASP.NET Core, confira um desses dois exemplos:
-- [exemplo de conexão do Microsoft Graph para ASP.NET Core 2.1](https://github.com/microsoftgraph/aspnetcore-connect-sample)
-- [Habilite seus aplicativos Web para conectar usuários e chamar APIs com a plataforma de identidade da Microsoft para desenvolvedores](https://github.com/Azure-Samples/active-directory-aspnetcore-webapp-openidconnect-v2)
+> Este exemplo usa ASP.NET MVC 4.6. Para obter exemplos que usam ASP.NET Core, confira um desses dois exemplos: - [exemplo de conexão do Microsoft Graph para ASP.NET Core 2.1](https://github.com/microsoftgraph/aspnetcore-connect-sample) - [Habilite seus aplicativos Web para conectar usuários e chamar APIs com a plataforma de identidade da Microsoft para desenvolvedores](https://github.com/Azure-Samples/active-directory-aspnetcore-webapp-openidconnect-v2)
 
 ## Observação importante sobre a Visualização da MSAL
 
@@ -47,10 +46,10 @@ Esta biblioteca é adequada para uso em um ambiente de produção. Ela recebe o 
 
 ## Pré-requisitos
 
-Esse exemplo requer o seguinte:  
+Este exemplo requer o seguinte:  
 
   * [Visual Studio](https://www.visualstudio.com/en-us/downloads) 
-  * Uma [conta da Microsoft](https://www.outlook.com) ou uma [conta do Office 365 para empresas](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account). Uma conta de administrador do Office 365 é necessária para executar operações de administrador. Você pode se inscrever para uma [assinatura de Desenvolvedor do Office 365](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account)que inclui os recursos necessários para começar a criar aplicativos.
+  * Uma [conta Microsoft](https://www.outlook.com) ou uma [conta do Office 365 para empresas](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account). Uma conta de administrador do Office 365 é necessária para executar operações de administrador. Você pode se inscrever para uma [assinatura de Desenvolvedor do Office 365](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account)que inclui os recursos necessários para começar a criar aplicativos.
 
 ## Registrar o aplicativo Web
 
@@ -58,13 +57,12 @@ Esse exemplo requer o seguinte:
 
 Como primeira etapa, você precisará:
 
-1. Entrar no [portal do Azure](https://portal.azure.com)usando uma conta corporativa, de estudante ou uma conta pessoal da Microsoft.
-1. Se sua conta estiver presente em mais de um locatário do Azure AD, selecione seu perfil no canto superior direito no menu na parte superior da página e, em seguida, selecione **alternar diretório**.
-Alterar a sessão do portal para o locatário do Azure AD desejado.
+1. Entrar no [portal do Azure](https://portal.azure.com)usando uma conta corporativa, de estudante ou uma conta Microsoft pessoal.
+1. Se sua conta estiver presente em mais de um locatário do Azure AD, selecione seu perfil no canto superior direito no menu na parte superior da página e, em seguida, selecione **alternar diretório**. Alterar a sessão do portal para o locatário do Azure AD desejado.
 
 ### Registrar o aplicativo
 
-1. Navegue até a página [Registros do Aplicativo](https://go.microsoft.com/fwlink/?linkid=2083908) da plataforma de identidade da Microsoft para desenvolvedores.
+1. Navegue até a página [Registros do aplicativo](https://go.microsoft.com/fwlink/?linkid=2083908) da plataforma de identidade da Microsoft para desenvolvedores.
 1. Selecione **Novo registro**.
 1. Quando a página **Registrar um aplicativo for exibida**, insira as informações de registro do aplicativo:
    - Na seção **Nome**, insira um nome de aplicativo relevante que será exibido aos usuários do aplicativo.
@@ -77,16 +75,13 @@ Alterar a sessão do portal para o locatário do Azure AD desejado.
        - `https://localhost:44300/`
        - `https://localhost:44300/signin-oidc`
    - Na seção **Configurações avançadas**, defina **URL de saída** como `https://localhost:44300/signout-oidc`
-   - Na seção **Configurações avançadas** | **Concessão implícita**, verifique **tokens de ID**, já que este exemplo requer que o
-   [fluxo de concessão implícita](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow)
-   esteja habilitado para conectar um usuário e chamar uma API.
+   - Na seção **Configurações avançadas** | **Concessão implícita**, verifique **tokens de ID**, já que este exemplo requer que o [fluxo de concessão implícita](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow) esteja habilitado para conectar um usuário e chamar uma API.
 1. Selecione **Salvar**.
 1. Na página **Certificados e segredos**, na seção **Segredos do cliente**, escolha **Novo segredo do cliente**:
    - Digite um descritor da chave (por exemplo, `segredo do aplicativo`),
-   - Selecione uma duração de chave de **1 ano**, **2 anos** ou **nunca expirará**.
+   - Selecione uma duração de chave de **1 ano**, **2 anos** ou **Nunca Expirará**.
    - Quando você pressionar o botão **Adicionar**, o valor da chave será exibido. Copie e salve o valor de chave em uma localização segura.
-   - Você precisará dessa chave mais tarde para configurar o projeto no Visual Studio. Esse valor da chave não será exibido novamente, nem poderá ser recuperado por nenhum outro meio, portanto,
-   grave-o assim que estiver visível no portal do Azure.
+   - Você precisará dessa chave mais tarde para configurar o projeto no Visual Studio. Esse valor da chave não será exibido novamente, nem poderá ser recuperado por nenhum outro meio, portanto, grave-o assim que estiver visível no portal do Azure.
  
 ## Criar e executar o exemplo
 
@@ -124,7 +119,7 @@ Para usar o exemplo sem modificar seus dados reais da conta, certifique-se de ex
 
 - [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs). Armazena as informações de token do usuário. Você pode substituir pelo seu próprio cache de token personalizado. Saiba mais em [Armazenamento de tokens de acesso em cache em um aplicativo de vários locatários](https://azure.microsoft.com/en-us/documentation/articles/guidance-multitenant-identity-token-cache/).
 
-- [SampleAuthProvider.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SampleAuthProvider.cs). Implementa a interface IAuthProvider local e obtém acesso a um token usando o método **AcquireTokenSilentAsync**. Isso pode ser substituído pelo seu próprio provedor de autorização. 
+- [SampleAuthProvider.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SampleAuthProvider.cs). Implementa a interface IAuthProvider local e obtém acesso a um token, usando o método **AcquireTokenSilentAsync**. Isso pode ser substituído pelo seu próprio provedor de autorização. 
 
 - [SDKHelper.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SDKHelper.cs). Inicializa o **GraphServiceClient** na [Biblioteca de Cliente do Microsoft Graph .NET](https://github.com/microsoftgraph/msgraph-sdk-dotnet) usada para interagir com o Microsoft Graph.
 
@@ -146,7 +141,7 @@ Para usar o exemplo sem modificar seus dados reais da conta, certifique-se de ex
   - [ResultsViewModel.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Models/ResultsViewModel.cs)
   - [\_ResultsPartial.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Shared/_ResultsPartial.cshtml)  
 
-- Os arquivos a seguir contêm o código usado para fornecer suporte ao consentimento incremental. Neste exemplo, os usuários são solicitados a consentir um conjunto inicial de permissões durante a entrada e a consentir permissões de administrador separadamente. 
+- Os arquivos a seguir contêm o código usado para fornecer suporte ao consentimento incremental. Neste exemplo, os usuários são solicitados a consentir em um conjunto inicial de permissões durante a entrada e a consentir em permissões de administrador separadamente. 
   - [AdminController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/AdminController.cs)
   - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs). Middleware personalizado que resgata um código de autorização para tokens de acesso e de atualização fora do fluxo de entrada. Confira https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2 para saber mais sobre como implementar o consentimento incremental.
 

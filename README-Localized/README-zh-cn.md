@@ -7,8 +7,9 @@ products:
 languages:
 - csharp
 - aspx
+description: "此示例使用 Microsoft Graph .NET 客户端库来处理数据，并使用 Microsoft 身份验证库 (MSAL) 在Azure AD v2.0 终结点上进行身份验证。"
 extensions:
-  contentType: samples
+  contentType: samples 
   technologies:
   - Microsoft Graph
   services:
@@ -37,9 +38,7 @@ extensions:
 
 此示例在登录和初始令牌获取过程中使用 [ASP.NET OpenId Connect OWIN 中间件](https://www.nuget.org/packages/Microsoft.Owin.Security.OpenIdConnect/)。此示例还实现自定义 Owin 中间件来交换登录流之外的访问令牌和刷新令牌的授权代码。自定义中间件调用 MSAL 来生成授权请求 URI 并处理重定向。有关增量同意的详细信息，请参阅[使用 OpenID Connect 将 Microsoft 标识和 Microsoft Graph 集成到 Web 应用程序中](https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2)。
 
-> 此示例使用 ASP.NET MVC 4.6。有关使用 ASP.NET Core 的示例，请参阅以下两个示例之一：
-- [ASP.NET Core 2.1 的 Microsoft Graph 连接示例](https://github.com/microsoftgraph/aspnetcore-connect-sample)
-- [使 Web 应用能够登录用户并使用 Microsoft 标识平台为开发人员调用 API](https://github.com/Azure-Samples/active-directory-aspnetcore-webapp-openidconnect-v2)
+> 此示例使用 ASP.NET MVC 4.6。有关使用 ASP.NET Core 的示例，请参阅以下两个示例之一： - [ASP.NET Core 2.1 的 Microsoft Graph 连接示例](https://github.com/microsoftgraph/aspnetcore-connect-sample) - [使 Web 应用能够登录用户并使用 Microsoft 标识平台为开发人员调用 API](https://github.com/Azure-Samples/active-directory-aspnetcore-webapp-openidconnect-v2)
 
 ## 有关 MSAL 预览版的重要说明
 
@@ -59,34 +58,30 @@ extensions:
 第一步需要执行以下操作:
 
 1. 使用工作/学校帐户或 Microsoft 个人帐户登录到 [Azure 门户](https://portal.azure.com)。
-1. 如果你的帐户存在于多个 Azure AD 租户中，请在页面顶部菜单的右上角选择你的配置文件，然后**切换目录**。
-将门户会话更改为所需的 Azure AD 租户。
+1. 如果你的帐户存在于多个 Azure AD 租户中，请在页面顶部菜单的右上角选择你的配置文件，然后**切换目录**。将门户会话更改为所需的 Azure AD 租户。
 
 ### 注册应用
 
 1. 导航到“面向开发人员的 Microsoft 标识平台”[应用注册](https://go.microsoft.com/fwlink/?linkid=2083908)页面。
-1. 选择“新注册”。
-1. 出现“注册应用程序页”后，输入应用程序的注册信息：
-   - 在“名称”部分输入一个会显示给应用用户的有意义的应用程序名称。
-   - 将“受支持的帐户类型”更改为“任何组织目录中的帐户和 Microsoft 个人帐户”（例如，Skype、Xbox、Outlook.com）。
-     > 请注意，有多个重定向 URI。成功创建应用后，稍后需要从“身份验证”选项卡中添加这些更新。
-1. 选择“注册”以创建应用程序。
-1. 在应用的“概述”页上，查找“应用程序(客户端) ID”值，并稍后记录下来。你将需要它来为此项目配置 Visual Studio 配置文件。
-1. 在应用的“概览”页中，选择“身份验证”部分。
-   - 在“重定向 URI”部分中，选择组合框中的“Web”，然后输入以下重定向 URI。
+1. 选择“新注册”****。
+1. 出现“注册应用程序页”****后，输入应用程序的注册信息：
+   - 在“名称”****部分输入一个会显示给应用用户的有意义的应用程序名称。
+   - 将“受支持的帐户类型”****更改为“任何组织目录中的帐户和 Microsoft 个人帐户”（例如，Skype、Xbox、Outlook.com）****。
+     > 请注意，有多个重定向 URI。成功创建应用后，稍后需要从“身份验证”****选项卡中添加这些更新。
+1. 选择“注册”****以创建应用程序。
+1. 在应用的“**概述**”页上，查找“**应用程序(客户端) ID**”值，并稍后记录下来。你将需要它来为此项目配置 Visual Studio 配置文件。
+1. 在应用的“概览”页中，选择“身份验证”****部分。
+   - 在“重定向 URI”部分中，选择组合框中的“Web”****，然后输入以下重定向 URI。
        - `https://localhost:44300/`
        - `https://localhost:44300/signin-oidc`
-   - 在“高级设置”部分，将“注销 URL”设置为“https://localhost:44300/signout-oidc”``
-   - 在“高级设置 | 隐式授予”部分，请检查“ID 标记”，
-   因为此示例需要启用[隐式授予流](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow)
-   以登录用户，并调用 API。
-1. 选择“保存”。
-1. 在“证书 & 密钥”页面的“客户端密钥”部分中，选择“新建客户端密码”：
+   - 在“高级设置****”部分，将“注销 URL”****设置为“https://localhost:44300/signout-oidc”``
+   - 在“高级设置**** | 隐式授予”****部分，请检查“ID 标记”****，因为此示例需要启用[隐式授予流](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow)以登录用户，并调用 API。
+1. 选择“保存”****。
+1. 在“证书 & 密钥”****页面的“客户端密钥”****部分中，选择“新建客户端密码”****：
    - 键入密钥说明（例如应用机密``），
-   - 选择“1 年内”、“2 年内”或“永不过期”的一个密钥持续时间。
-   - 按“添加”按钮时，将显示注册表项值。将值复制并保存在安全的位置。
-   - 稍后将需要此密钥来配置 Visual Studio 中的项目。此键值将不再显示，任何其他方式也无法将其检索，
-   因此在 Azure 门户中看到该键值后立即进行录制。
+   - 选择“1 年内”****、“2 年内”****或“永不过期”****的一个密钥持续时间。
+   - 按“添加”****按钮时，将显示注册表项值。将值复制并保存在安全的位置。
+   - 稍后将需要此密钥来配置 Visual Studio 中的项目。此键值将不再显示，任何其他方式也无法将其检索，因此在 Azure 门户中看到该键值后立即进行录制。
  
 ## 生成和运行示例
 
