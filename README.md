@@ -7,8 +7,9 @@ products:
 languages:
 - csharp
 - aspx
+description: "This sample uses the Microsoft Graph .NET Client Library to work with data, and the Microsoft Authentication Library (MSAL) for authentication on the Azure AD v2.0 endpoint."
 extensions:
-  contentType: samples
+  contentType: samples 
   technologies:
   - Microsoft Graph
   services:
