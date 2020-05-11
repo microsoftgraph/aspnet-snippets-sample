@@ -1,0 +1,49 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+<!-- <DailyEventsPartialSnippet> -->
+@model DailyViewModel
+
+@{
+    bool dateCellAdded = false;
+    var timeFormat = User.GetUserGraphTimeFormat();
+    var rowClass = Model.Day.Date.Equals(DateTime.Today.Date) ? "table-warning" : "";
+}
+
+@if (Model.Events.Count() <= 0)
+{
+  // Render an empty row for the day
+  <tr>
+    <td class="calendar-view-date-cell">
+      <div class="calendar-view-date float-left text-right">@Model.Day.Day</div>
+      <div class="calendar-view-day">@Model.Day.ToString("dddd")</div>
+      <div class="calendar-view-month text-muted">@Model.Day.ToString("MMMM, yyyy")</div>
+    </td>
+    <td></td>
+    <td></td>
+  </tr>
+}
+
+@foreach(var item in Model.Events)
+{
+  <tr class="@rowClass">
+    @if (!dateCellAdded)
+    {
+      // Only add the day cell once
+      dateCellAdded = true;
+      <td class="calendar-view-date-cell" rowspan="@Model.Events.Count()">
+        <div class="calendar-view-date float-left text-right">@Model.Day.Day</div>
+        <div class="calendar-view-day">@Model.Day.ToString("dddd")</div>
+        <div class="calendar-view-month text-muted">@Model.Day.ToString("MMMM, yyyy")</div>
+      </td>
+    }
+    <td class="calendar-view-timespan">
+      <div>@item.Start.ToString(timeFormat) - @item.End.ToString(timeFormat)</div>
+    </td>
+    <td>
+      <div class="calendar-view-subject">@item.Subject</div>
+      <div class="calendar-view-organizer">@item.Organizer</div>
+    </td>
+  </tr>
+}
+<!-- </DailyEventsPartialSnippet> -->

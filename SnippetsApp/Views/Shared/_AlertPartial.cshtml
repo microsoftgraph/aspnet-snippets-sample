@@ -1,0 +1,25 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+<!-- <AlertPartialSnippet> -->
+@{
+    var type = $"{TempData["_alertType"]}";
+    var message = $"{TempData["_alertMessage"]}";
+    var debugInfo = $"{TempData["_alertDebugInfo"]}";
+}
+
+@if (!string.IsNullOrEmpty(type))
+{
+    <div class="alert alert-@type" role="alert">
+        @if (string.IsNullOrEmpty(debugInfo))
+        {
+            <p class="mb-0">@message</p>
+        }
+        else
+        {
+            <p class="mb-3">@message</p>
+            <pre class="alert-pre border bg-light p-2"><code>@debugInfo</code></pre>
+        }
+    </div>
+}
+<!-- </AlertPartialSnippet> -->

@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>702a3216-2ff2-4901-be95-13c2feec7d6e</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Graph" Version="3.4.0" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="0.1.2-preview" />
+    <PackageReference Include="Microsoft.Identity.Web.UI" Version="0.1.2-preview" />
+  </ItemGroup>
+</Project>
