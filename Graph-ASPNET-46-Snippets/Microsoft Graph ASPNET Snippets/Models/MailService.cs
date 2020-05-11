@@ -257,7 +257,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
             List<ResultsItem> items = new List<ResultsItem>();
 
             // Reply to the message.
-            await graphClient.Me.Messages[id].Reply(Resource.GenericText).Request(requestOptions).WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount()).PostAsync();
+            await graphClient.Me.Messages[id].Reply(null, Resource.GenericText).Request(requestOptions).WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount()).PostAsync();
 
             items.Add(new ResultsItem
             {

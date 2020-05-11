@@ -8,7 +8,9 @@ using Microsoft_Graph_ASPNET_Snippets.TokenStorage;
 using Microsoft.Graph.Auth;
 using Microsoft.Identity.Client;
 using System.Web;
+using System.Security.Claims;
 using System.Configuration;
+using System.Linq;
 
 namespace Microsoft_Graph_ASPNET_Snippets.Helpers
 {
@@ -33,12 +35,32 @@ namespace Microsoft_Graph_ASPNET_Snippets.Helpers
             }
             string[] scopes = allScopes.Split(new char[] { ' ' });
 
-            HttpContextBase context = HttpContext.Current.GetOwinContext().Environment["System.Web.HttpContextBase"] as HttpContextBase;
-            SessionTokenCacheProvider sessionTokenCacheProvider = new SessionTokenCacheProvider(context);
+            var cca = ConfidentialClientApplicationBuilder.Create(appId)
+                                .WithRedirectUri(redirectUri)
+                                .WithAuthority(AadAuthorityAudience.AzureAdAndPersonalMicrosoftAccount)
+                                .WithClientSecret(appSecret)
+                                .Build();
 
-            IConfidentialClientApplication cca = AuthorizationCodeProvider.CreateClientApplication(appId, redirectUri, new ClientCredential(appSecret), sessionTokenCacheProvider);
+            //cca.UserTokenCache
+            var sessionTokenCache = new SessionTokenStore(cca.UserTokenCache, HttpContext.Current,
+                ClaimsPrincipal.Current);
 
-            return new GraphServiceClient(new AuthorizationCodeProvider(cca, scopes));
+            //return new GraphServiceClient(new AuthorizationCodeProvider(cca, scopes));
+
+            return new GraphServiceClient(new DelegateAuthenticationProvider(async (request) => 
+            {
+                try
+                {
+                    var accounts = await cca.GetAccountsAsync();
+                    var result = await cca.AcquireTokenSilent(scopes, accounts.FirstOrDefault()).ExecuteAsync();
+
+                    request.Headers.Add("Authorization", $"Bearer {result.AccessToken}");
+                }
+                catch (System.Exception ex)
+                {
+                    throw ex;
+                }
+            }));
         }
 
     }

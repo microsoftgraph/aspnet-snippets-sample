@@ -6,6 +6,7 @@
 using System;
 using System.Configuration;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Microsoft.Graph.Auth;
@@ -26,12 +27,21 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
         public async Task<ActionResult> Index()
         {
             string[] scopes = adminScopes.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            SessionTokenCacheProvider sessionTokenCacheProvider = new SessionTokenCacheProvider(this.HttpContext);
-            IConfidentialClientApplication cca = AuthorizationCodeProvider.CreateClientApplication(clientId, redirectUri, new ClientCredential(appKey), sessionTokenCacheProvider);
+
+            var cca = ConfidentialClientApplicationBuilder.Create(clientId)
+                                .WithRedirectUri(redirectUri)
+                                .WithAuthority(AadAuthorityAudience.AzureAdAndPersonalMicrosoftAccount)
+                                .WithClientSecret(appKey)
+                                .Build();
+
+            //cca.UserTokenCache
+            var sessionTokenCache = new SessionTokenStore(cca.UserTokenCache, HttpContext.ApplicationInstance.Context,
+                ClaimsPrincipal.Current);
 
             try
             {
-                AuthenticationResult result = await cca.AcquireTokenSilentAsync(scopes, (await cca.GetAccountsAsync()).FirstOrDefault());
+                var accounts = await cca.GetAccountsAsync();
+                var result = await cca.AcquireTokenSilent(scopes, accounts.FirstOrDefault()).ExecuteAsync();
             }
             catch (Exception)
             {
@@ -40,7 +50,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Controllers
                     string authReqUrl = await OAuth2RequestManager.GenerateAuthorizationRequestUrl(scopes, cca as ConfidentialClientApplication, this.HttpContext, Url);
                     ViewBag.AuthorizationRequest = authReqUrl;
                 }
-                catch (Exception ee)
+                catch (Exception)
                 {
 
                 }

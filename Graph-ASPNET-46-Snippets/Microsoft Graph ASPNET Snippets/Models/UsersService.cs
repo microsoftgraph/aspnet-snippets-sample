@@ -62,9 +62,10 @@ namespace Microsoft_Graph_ASPNET_Snippets.Models
         public async Task<List<ResultsItem>> GetMe()
         {
             List<ResultsItem> items = new List<ResultsItem>();
-            
+
             // Get the current user's profile.
-            User me = await graphClient.Me.Request(requestOptions).WithUserAccount(ClaimsPrincipal.Current.ToGraphUserAccount()).GetAsync();
+            var account = ClaimsPrincipal.Current.ToGraphUserAccount();
+            User me = await graphClient.Me.Request().GetAsync();
 
             if (me != null)
             {

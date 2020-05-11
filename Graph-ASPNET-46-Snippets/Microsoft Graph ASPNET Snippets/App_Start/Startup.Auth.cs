@@ -11,6 +11,7 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
 using System.Configuration;
 using System.Globalization;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft_Graph_ASPNET_Snippets.TokenStorage;
 using System.IdentityModel.Tokens;
@@ -81,10 +82,22 @@ namespace Microsoft_Graph_ASPNET_Snippets
                             var code = context.Code;
                             string[] scopes = nonAdminScopes.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                            SessionTokenCacheProvider sessionTokenCacheProvider = new SessionTokenCacheProvider(context.OwinContext.Environment["System.Web.HttpContextBase"] as HttpContextBase);
-                            IConfidentialClientApplication cca = AuthorizationCodeProvider.CreateClientApplication(appId, redirectUri, new ClientCredential(appSecret), sessionTokenCacheProvider);
-                            AuthorizationCodeProvider authorizationCodeProvider = new AuthorizationCodeProvider(cca, scopes);
-                            AuthenticationResult result = await authorizationCodeProvider.GetTokenByAuthorizationCodeAsync(code);
+                            //SessionTokenCacheProvider sessionTokenCacheProvider = new SessionTokenCacheProvider(context.OwinContext.Environment["System.Web.HttpContextBase"] as HttpContextBase);
+                            //IConfidentialClientApplication cca = AuthorizationCodeProvider.CreateClientApplication(appId, redirectUri, new ClientCredential(appSecret), sessionTokenCacheProvider);
+                            //AuthorizationCodeProvider authorizationCodeProvider = new AuthorizationCodeProvider(cca, scopes);
+                            //AuthenticationResult result = await authorizationCodeProvider.GetTokenByAuthorizationCodeAsync(code);
+
+                            var cca = ConfidentialClientApplicationBuilder.Create(appId)
+                                .WithRedirectUri(redirectUri)
+                                .WithAuthority(AadAuthorityAudience.AzureAdAndPersonalMicrosoftAccount)
+                                .WithClientSecret(appSecret)
+                                .Build();
+
+                            //cca.UserTokenCache
+                            var sessionTokenCache = new SessionTokenStore(cca.UserTokenCache, HttpContext.Current,
+                                new ClaimsPrincipal(context.AuthenticationTicket.Identity));
+
+                            var result = await cca.AcquireTokenByAuthorizationCode(scopes, code).ExecuteAsync();
 
                             // Check whether the login is from the MSA tenant. 
                             // The sample uses this attribute to disable UI buttons for unsupported operations when the user is logged in with an MSA account.

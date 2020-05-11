@@ -46,10 +46,20 @@ namespace Microsoft_Graph_ASPNET_Snippets.Utils
                 string state = context.Request.Query["state"];
                 string session_state = context.Request.Query["session_state"];
 
+                var cca = ConfidentialClientApplicationBuilder.Create(options.ClientId)
+                                .WithRedirectUri(options.RedirectUri)
+                                .WithAuthority(AadAuthorityAudience.AzureAdAndPersonalMicrosoftAccount)
+                                .WithClientSecret(options.ClientSecret)
+                                .Build();
+
+                //cca.UserTokenCache
+                var sessionTokenCache = new SessionTokenStore(cca.UserTokenCache, HttpContext.Current,
+                    new ClaimsPrincipal(context.Authentication.User));
+
                 HttpContextBase hcb = context.Environment["System.Web.HttpContextBase"] as HttpContextBase;
 
-                SessionTokenCacheProvider sessionTokenCacheProvider = new SessionTokenCacheProvider(hcb);
-                IConfidentialClientApplication cca = AuthorizationCodeProvider.CreateClientApplication(options.ClientId, options.RedirectUri, new ClientCredential(options.ClientSecret), sessionTokenCacheProvider);
+                //SessionTokenCacheProvider sessionTokenCacheProvider = new SessionTokenCacheProvider(hcb);
+                //IConfidentialClientApplication cca = AuthorizationCodeProvider.CreateClientApplication(options.ClientId, options.RedirectUri, new ClientCredential(options.ClientSecret), sessionTokenCacheProvider);
 
                 //validate state
                 CodeRedemptionData crd = OAuth2RequestManager.ValidateState(state, hcb);
@@ -65,7 +75,7 @@ namespace Microsoft_Graph_ASPNET_Snippets.Utils
                         HttpContext.Current.Session.Add("IsAdmin", true);
 
                     }
-                    catch (Exception ee)
+                    catch (Exception)
                     {
 
                     }
@@ -199,12 +209,18 @@ namespace Microsoft_Graph_ASPNET_Snippets.Utils
             string state = GenerateState(httpcontext.Request.Url.ToString(), httpcontext, url, scopes);
             string tenantID = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
             string domain_hint = (tenantID == "9188040d-6c67-4c5b-b112-36a304b66dad") ? "consumers" : "organizations";
-            Uri authzMessageUri = await cca.GetAuthorizationRequestUrlAsync(scopes,
-                oauthCodeProcessingPath.ToString(),
-                preferredUsername,
-                state == null ? null : "&state=" + state + "&domain_hint=" + domain_hint,
-                null,
-                cca.Authority);
+
+            var urlBuilder = cca.GetAuthorizationRequestUrl(scopes)
+                .WithRedirectUri(oauthCodeProcessingPath.ToString())
+                .WithLoginHint(preferredUsername);
+
+            if (!string.IsNullOrEmpty(state))
+            {
+                urlBuilder = urlBuilder.WithExtraQueryParameters(
+                    $"&state={state}%domain_hint={domain_hint}");
+            }
+
+            Uri authzMessageUri = await urlBuilder.ExecuteAsync();
 
             return authzMessageUri.ToString();
 
