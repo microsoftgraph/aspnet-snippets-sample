@@ -1,14 +1,25 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
      Licensed under the MIT License. -->
 
-@model IEnumerable<Microsoft.Graph.User>
+@model UsersListDisplayModel
 
 @{
-    ViewData["Title"] = "Admin list users";
+    ViewData["Title"] = "Manage users";
 }
 
+<div class="row">
+  <div class="col-auto mr-auto">
+  @if (!string.IsNullOrEmpty(Model.NextPageUrl))
+  {
+    <a class="btn btn-light mb-2" asp-action="Page" asp-route-pageUrl="@Model.NextPageUrl" asp-route-isAdmin="true">Next page</a>
+  }
+  </div>
+  <div class="col-auto">
+    <a class="btn btn-light mb-2 float-right" asp-action="Create">Create user</a>
+  </div>
+</div>
 <div class="list-group">
-  @foreach (var user in Model)
+  @foreach (var user in Model.UsersList)
   {
     <div class="list-group-item">
       <div class="d-flex">

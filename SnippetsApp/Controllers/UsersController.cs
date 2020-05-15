@@ -32,7 +32,7 @@ namespace SnippetsApp.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("List");
         }
 
         // GET /Users/Display?userId=""
@@ -238,7 +238,7 @@ namespace SnippetsApp.Controllers
         {
             if (string.IsNullOrEmpty(userId))
             {
-                return RedirectToAction("Index")
+                return RedirectToAction("AdminList")
                     .WithError("User ID cannot be empty.");
             }
 
@@ -272,13 +272,12 @@ namespace SnippetsApp.Controllers
         {
             if (string.IsNullOrEmpty(userId))
             {
-                return RedirectToAction("Index")
+                return RedirectToAction("Error", "Home")
                     .WithError("User ID cannot be empty.");
             }
 
             // Initialize model
-            var model = new UsersDisplayModel();
-            model.SelectedUser = new UserWithPhoto();
+            var model = new UserWithPhoto();
 
             try
             {
@@ -290,7 +289,7 @@ namespace SnippetsApp.Controllers
 
                 // Get the requested user
                 // Either GET /me or GET /users/userId
-                model.SelectedUser.User = await userRequestBuilder
+                model.User = await userRequestBuilder
                     .Request()
                     // Select just the fields we will use in the app
                     .Select(u => new
@@ -317,7 +316,7 @@ namespace SnippetsApp.Controllers
                             .Request()
                             .GetAsync();
 
-                        model.SelectedUser.AddUserPhoto(fullSizePhoto);
+                        model.AddUserPhoto(fullSizePhoto);
                     }
                     catch (ServiceException ex)
                     {
@@ -341,14 +340,14 @@ namespace SnippetsApp.Controllers
                             .Select("displayName,id")
                             .GetAsync();
 
-                        model.SelectedUser.Manager = new List<User> { managerObject as User };
+                        model.Manager = new List<User> { managerObject as User };
                     }
                     catch (ServiceException ex)
                     {
                         // If not found, continue
                         if (ex.IsMatch(GraphConstants.RequestResourceNotFound))
                         {
-                            model.SelectedUser.Manager = null;
+                            model.Manager = null;
                         }
                         // If the error is request denied, it means that the token
                         // most likely didn't have an admin scope (User.ReadWriteAll)
@@ -356,7 +355,7 @@ namespace SnippetsApp.Controllers
                         else if (ex.IsMatch(GraphConstants.RequestDenied) &&
                                 !Request.Path.Equals("/Users/AdminDisplay"))
                         {
-                            return View("Index", model)
+                            return View("UserDisplay", model)
                                 .WithInfoActionLink(
                                     "Listing manager and direct reports for this user requires admin consent. " +
                                     "If you are an admin, you can use this link to consent to additional permissions.",
@@ -379,14 +378,14 @@ namespace SnippetsApp.Controllers
                             .GetAsync();
 
                         // Use an iterator to get all reports
-                        model.SelectedUser.DirectReports = new List<User>();
+                        model.DirectReports = new List<User>();
 
                         var pageIterator = PageIterator<DirectoryObject>.CreatePageIterator(
                             graphClient, directReportPage,
                             (drObject) => {
                                 // Executes for each object in the result set
                                 User directReport = drObject as User;
-                                model.SelectedUser.DirectReports.Add(directReport);
+                                model.DirectReports.Add(directReport);
                                 return true;
                             }
                         );
@@ -398,29 +397,28 @@ namespace SnippetsApp.Controllers
                         // If not found, continue
                         if (ex.IsMatch(GraphConstants.RequestResourceNotFound))
                         {
-                            model.SelectedUser.DirectReports = null;
+                            model.DirectReports = null;
                         }
                         else throw ex;
                     }
                 }
+
+                return View("UserDisplay", model);
             }
             catch (ServiceException ex)
             {
                 InvokeAuthIfNeeded(ex);
 
-                return RedirectToAction("Index")
+                return RedirectToAction("Error", "Home")
                     .WithError($"Error getting user with ID {userId}", ex.Error.Message);
             }
-
-            return View("Index", model);
         }
 
         // Builds the UsersDisplayModel and view for listing users
         private async Task<IActionResult> GetViewForUserList(string[] scopes, bool isAdmin, string pageRequestUrl = null)
         {
             // Initialize the model
-            var model = new UsersDisplayModel();
-            model.UseAdminUI = isAdmin;
+            var model = new UsersListDisplayModel();
 
             try
             {
@@ -466,13 +464,13 @@ namespace SnippetsApp.Controllers
                     model.NextPageUrl = userPage.NextPageRequest?.RequestUrl;
                 }
 
-                return View("Index", model);
+                return View(isAdmin ? "AdminList" : "List", model);
             }
             catch (ServiceException ex)
             {
                 InvokeAuthIfNeeded(ex);
 
-                return RedirectToAction("Index")
+                return RedirectToAction("Error", "Home")
                     .WithError($"Error getting user list", ex.Error.Message);
             }
         }
@@ -482,7 +480,7 @@ namespace SnippetsApp.Controllers
         {
             if (string.IsNullOrEmpty(userId))
             {
-                return RedirectToAction("Index")
+                return RedirectToAction("Error", "Home")
                     .WithError("User ID cannot be empty.");
             }
 

@@ -15,6 +15,7 @@
       <h5 class="dropdown-item-text mb-0">@User.GetUserGraphDisplayName()</h5>
       <p class="dropdown-item-text text-muted mb-0">@User.GetUserGraphEmail()</p>
       <div class="dropdown-divider"></div>
+      <a class="dropdown-item" asp-controller="Users" asp-action="Display" asp-route-userId="me">My profile</a>
       <a class="dropdown-item" asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignOut">Sign out</a>
     </div>
   </li>
