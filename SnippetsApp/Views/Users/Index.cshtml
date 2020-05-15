@@ -1,0 +1,46 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model UsersDisplayModel
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<div class="btn-toolbar mb-3" role="toolbar">
+  <div class="btn-group mr-2">
+    <a asp-action="Display" asp-route-userId="me" class="btn btn-secondary">Get me</a>
+  </div>
+  @if (!User.IsPersonalAccount())
+  {
+    <div class="btn-group mr-2">
+      <a asp-action="List" class="btn btn-secondary">List users</a>
+    </div>
+    <div class="btn-group mr-2">
+      <a asp-action="AdminList" class="btn btn-secondary">List users (admin)</a>
+    </div>
+  }
+</div>
+@if (Model != null)
+{
+  if (Model.SelectedUser != null)
+  {
+    <partial name="_UserDisplayPartial" for="SelectedUser" />
+  }
+  else
+  {
+    if (!string.IsNullOrEmpty(Model.NextPageUrl))
+    {
+      <a class="btn btn-light mb-2" asp-action="Page" asp-route-pageUrl="@Model.NextPageUrl" asp-route-isAdmin="@Model.UseAdminUI">Next page</a>
+    }
+    if (Model.UseAdminUI)
+    {
+      <a class="btn btn-light mb-2 float-right" asp-action="Create">Create user</a>
+      <partial name="_AdminUserListPartial", for="UsersList" />
+    }
+    else
+    {
+      <partial name="_UserListPartial", for="UsersList" />
+    }
+  }
+}

@@ -5,6 +5,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using SnippetsApp.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SnippetsApp
@@ -15,19 +18,25 @@ namespace SnippetsApp
     public class WithAlertResult : IActionResult
     {
         public IActionResult Result { get; }
-        public string Type { get; }
-        public string Message { get; }
-        public string DebugInfo { get; }
+
+        public Alert Alert { get; }
 
         public WithAlertResult(IActionResult result,
-                                    string type,
-                                    string message,
-                                    string debugInfo)
+                               string type,
+                               string message,
+                               string debugInfo,
+                               string actionText,
+                               string actionUrl)
         {
             Result = result;
-            Type = type;
-            Message = message;
-            DebugInfo = debugInfo;
+            Alert = new Alert
+            {
+                Type = type,
+                Message = message,
+                DebugInfo = debugInfo,
+                ActionText = actionText,
+                ActionUrl = actionUrl,
+            };
         }
 
         public async Task ExecuteResultAsync(ActionContext context)
@@ -37,9 +46,7 @@ namespace SnippetsApp
 
             var tempData = factory.GetTempData(context.HttpContext);
 
-            tempData["_alertType"] = Type;
-            tempData["_alertMessage"] = Message;
-            tempData["_alertDebugInfo"] = DebugInfo;
+            tempData.AddAlert("_alertData", Alert);
 
             await Result.ExecuteResultAsync(context);
         }

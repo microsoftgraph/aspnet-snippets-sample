@@ -7,23 +7,23 @@
 <ul class="nav navbar-nav">
 @if (User.Identity.IsAuthenticated)
 {
-    <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">
-            <img src="@User.GetUserGraphPhoto()" class="nav-profile-photo rounded-circle align-self-center mr-2">
-        </a>
-        <div class="dropdown-menu dropdown-menu-right">
-            <h5 class="dropdown-item-text mb-0">@User.GetUserGraphDisplayName()</h5>
-            <p class="dropdown-item-text text-muted mb-0">@User.GetUserGraphEmail()</p>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignOut">Sign out</a>
-        </div>
-    </li>
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+      <img src="@User.GetUserGraphPhoto()" class="nav-profile-photo rounded-circle align-self-center mr-2">
+    </a>
+    <div class="dropdown-menu dropdown-menu-right">
+      <h5 class="dropdown-item-text mb-0">@User.GetUserGraphDisplayName()</h5>
+      <p class="dropdown-item-text text-muted mb-0">@User.GetUserGraphEmail()</p>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignOut">Sign out</a>
+    </div>
+  </li>
 }
 else
 {
-    <li class="nav-item">
-        <a class="nav-link" asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignIn">Sign in</a>
-    </li>
+  <li class="nav-item">
+    <a class="nav-link" asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignIn">Sign in</a>
+  </li>
 }
 </ul>
 <!-- </LoginPartialSnippet> -->

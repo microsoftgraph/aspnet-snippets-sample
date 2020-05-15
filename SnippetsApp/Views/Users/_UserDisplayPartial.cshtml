@@ -1,0 +1,54 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model UserWithPhoto
+
+@{
+    ViewData["Title"] = Model.User.DisplayName;
+    string email = User.IsPersonalAccount() ?
+        Model.User.UserPrincipalName : Model.User.Mail;
+}
+
+<div class="card mb-4" id="user-card">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      <img class="card-img" src="@Model.ProfilePhotoUri" />
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h1 class="card-title">@Model.User.DisplayName</h1>
+        <p class="card-text">@email</p>
+        <form id="user-update-form" asp-action="Update">
+          <input type="hidden" form="user-update-form" id="userId" name="userId" value="@Model.User.Id">
+          <div class="form-group">
+            <label for="mobilePhone">Mobile phone</label>
+            <div class="input-group mb-3">
+              <input type="text" form="user-update-form" class="form-control" id="mobilePhone" name="mobilePhone" value="@Model.User.MobilePhone">
+              <div class="input-group-append">
+                <input type="submit" form="user-update-form" value="Update" class="btn btn-primary">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+@if (Model.Manager != null)
+{
+  <div class="card mb-4" id="manager-card">
+    <div class="card-body">
+      <h2 class="card-title">Manager</h2>
+      <partial name="_UserListPartial" for="@Model.Manager" />
+    </div>
+  </div>
+}
+@if (Model.DirectReports != null && Model.DirectReports.Count > 0)
+{
+  <div class="card mb-4" id="direct-reports-card">
+    <div class="card-body">
+      <h2 class="card-title">Direct reports</h2>
+      <partial name="_UserListPartial" for="@Model.DirectReports" />
+    </div>
+  </div>
+}

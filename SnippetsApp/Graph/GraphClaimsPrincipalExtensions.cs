@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 // <GraphClaimsExtensionsSnippet>
+using Microsoft.Identity.Web;
 using Microsoft.Graph;
 using System;
 using System.IO;
@@ -46,6 +47,12 @@ namespace SnippetsApp
             return claimsPrincipal.FindFirstValue(GraphClaimTypes.TimeFormat);
         }
 
+        public static bool IsPersonalAccount(this ClaimsPrincipal claimsPrincipal)
+        {
+            // GetDomainHint returns "consumers" for personal Microsoft accounts
+            return claimsPrincipal.GetDomainHint() == "consumers";
+        }
+
         public static void AddUserGraphInfo(this ClaimsPrincipal claimsPrincipal, User user)
         {
             var identity = claimsPrincipal.Identity as ClaimsIdentity;
@@ -54,7 +61,10 @@ namespace SnippetsApp
                 new Claim(GraphClaimTypes.DisplayName, user.DisplayName));
             identity.AddClaim(
                 new Claim(GraphClaimTypes.Email,
-                    user.Mail ?? user.UserPrincipalName));
+                    // Non-personal accounts store email in the Mail property
+                    // They can have a user principal name but no email address
+                    // Only personal accounts should assume UPN = email
+                    claimsPrincipal.IsPersonalAccount()? user.Mail : user.UserPrincipalName));
             identity.AddClaim(
                 new Claim(GraphClaimTypes.TimeZone,
                     user.MailboxSettings.TimeZone));

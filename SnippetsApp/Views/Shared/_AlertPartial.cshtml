@@ -1,25 +1,27 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
      Licensed under the MIT License. -->
 
-<!-- <AlertPartialSnippet> -->
 @{
     var type = $"{TempData["_alertType"]}";
     var message = $"{TempData["_alertMessage"]}";
     var debugInfo = $"{TempData["_alertDebugInfo"]}";
+    var actionUrl = $"{TempData["_alertActionUrl"]}";
+    var actionText = $"{TempData["_alertActionText"]}";
+
+    var alerts = TempData.GetAlerts("_alertData");
 }
 
-@if (!string.IsNullOrEmpty(type))
+@foreach (var alert in alerts)
 {
-    <div class="alert alert-@type" role="alert">
-        @if (string.IsNullOrEmpty(debugInfo))
-        {
-            <p class="mb-0">@message</p>
-        }
-        else
-        {
-            <p class="mb-3">@message</p>
-            <pre class="alert-pre border bg-light p-2"><code>@debugInfo</code></pre>
-        }
-    </div>
+<div class="alert alert-@alert.Type" role="alert">
+  <p class="mb-0">@alert.Message</p>
+  @if (!string.IsNullOrEmpty(alert.ActionUrl))
+  {
+    <a class="btn btn-secondary mt-3" href="@alert.ActionUrl">@alert.ActionText</a>
+  }
+  @if (!string.IsNullOrEmpty(alert.DebugInfo))
+  {
+    <pre class="alert-pre border bg-light p-2 mt-3"><code>@alert.DebugInfo</code></pre>
+  }
+</div>
 }
-<!-- </AlertPartialSnippet> -->

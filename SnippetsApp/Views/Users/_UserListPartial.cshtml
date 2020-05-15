@@ -1,0 +1,15 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model IEnumerable<Microsoft.Graph.User>
+
+@{
+    ViewData["Title"] = "List users";
+}
+
+<div class="list-group">
+  @foreach (var user in Model)
+  {
+    <a asp-action="Display" asp-route-userId="@user.Id" class="list-group-item list-group-item-action">@user.DisplayName</a>
+  }
+</div>

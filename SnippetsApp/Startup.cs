@@ -54,7 +54,7 @@ namespace SnippetsApp
                         .GetAuthenticatedGraphClient(async () =>
                         {
                             return await tokenAcquisition
-                                .GetAccessTokenForUserAsync(GraphConstants.Scopes);
+                                .GetAccessTokenForUserAsync(GraphConstants.DefaultScopes);
                         }
                     );
 
@@ -69,6 +69,15 @@ namespace SnippetsApp
                         .GetAsync();
 
                     context.Principal.AddUserGraphInfo(user);
+
+                    if (context.Principal.IsPersonalAccount())
+                    {
+                        // Personal accounts do not support getting their
+                        // photo via Graph
+                        // Support is there in the beta API
+                        context.Principal.AddUserGraphPhoto(null);
+                        return;
+                    }
 
                     // Get the user's photo
                     // If the user doesn't have a photo, this throws
@@ -124,7 +133,7 @@ namespace SnippetsApp
             // Add ability to call web API (Graph)
             // and get access tokens
             services.AddWebAppCallsProtectedWebApi(Configuration,
-                GraphConstants.Scopes)
+                GraphConstants.DefaultScopes)
                 // Use in-memory token cache
                 // See https://github.com/AzureAD/microsoft-identity-web/wiki/token-cache-serialization
                 .AddInMemoryTokenCaches();
@@ -140,7 +149,8 @@ namespace SnippetsApp
             // Add the Microsoft Identity UI pages for signin/out
             .AddMicrosoftIdentityUI();
 
-            //services.AddRazorPages();
+            services.AddRazorPages()
+                .AddRazorRuntimeCompilation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

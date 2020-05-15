@@ -13,10 +13,14 @@ using System.Threading.Tasks;
 
 namespace SnippetsApp.Controllers
 {
+    [AuthorizeForScopes(Scopes = new [] { GraphConstants.CalendarReadWrite })]
     public class CalendarController : Controller
     {
         private readonly ITokenAcquisition _tokenAcquisition;
         private readonly ILogger<HomeController> _logger;
+
+        private readonly string[] _calendarScopes =
+            new [] { GraphConstants.CalendarReadWrite };
 
         public CalendarController(
             ITokenAcquisition tokenAcquisition,
@@ -26,9 +30,6 @@ namespace SnippetsApp.Controllers
             _logger = logger;
         }
 
-        // <IndexSnippet>
-        // Minimum permission scope needed for this view
-        [AuthorizeForScopes(Scopes = new[] { "Calendars.Read" })]
         public async Task<IActionResult> Index()
         {
             try
@@ -55,21 +56,14 @@ namespace SnippetsApp.Controllers
                     .WithError("Error getting calendar view", ex.Message);
             }
         }
-        // </IndexSnippet>
 
-        // <CalendarNewGetSnippet>
-        // Minimum permission scope needed for this view
-        [AuthorizeForScopes(Scopes = new[] { "Calendars.ReadWrite" })]
         public IActionResult New()
         {
             return View();
         }
-        // </CalendarNewGetSnippet>
 
-        // <CalendarNewPostSnippet>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [AuthorizeForScopes(Scopes = new[] { "Calendars.ReadWrite" })]
         public async Task<IActionResult> New([Bind("Subject,Attendees,Start,End,Body")] NewEvent newEvent)
         {
             var timeZone = User.GetUserGraphTimeZone();
@@ -128,7 +122,7 @@ namespace SnippetsApp.Controllers
                 .GetAuthenticatedGraphClient(async () =>
                 {
                     return await _tokenAcquisition
-                        .GetAccessTokenForUserAsync(GraphConstants.Scopes);
+                        .GetAccessTokenForUserAsync(_calendarScopes);
                 }
             );
 
@@ -149,16 +143,14 @@ namespace SnippetsApp.Controllers
                     .WithError("Error creating event", ex.Error.Message);
             }
         }
-        // </CalendarNewPostSnippet>
 
-        // <GetCalendarViewSnippet>
         private async Task<IList<Event>> GetUserWeekCalendar(DateTime startOfWeek)
         {
             var graphClient = GraphServiceClientFactory
                 .GetAuthenticatedGraphClient(async () =>
                 {
                     return await _tokenAcquisition
-                        .GetAccessTokenForUserAsync(GraphConstants.Scopes);
+                        .GetAccessTokenForUserAsync(_calendarScopes);
                 }
             );
 
@@ -227,6 +219,5 @@ namespace SnippetsApp.Controllers
             // convert to UTC
             return TimeZoneInfo.ConvertTimeToUtc(unspecifiedStart, timeZone);
         }
-        // </GetCalendarViewSnippet>
     }
 }
