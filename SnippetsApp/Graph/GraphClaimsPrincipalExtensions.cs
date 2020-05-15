@@ -64,7 +64,7 @@ namespace SnippetsApp
                     // Non-personal accounts store email in the Mail property
                     // They can have a user principal name but no email address
                     // Only personal accounts should assume UPN = email
-                    claimsPrincipal.IsPersonalAccount()? user.Mail : user.UserPrincipalName));
+                    claimsPrincipal.IsPersonalAccount()? user.UserPrincipalName : user.Mail));
             identity.AddClaim(
                 new Claim(GraphClaimTypes.TimeZone,
                     user.MailboxSettings.TimeZone));
