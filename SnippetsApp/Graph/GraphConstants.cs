@@ -22,6 +22,9 @@ namespace SnippetsApp
         public const string UserReadWrite = "User.ReadWrite";
         public const string UserReadWriteAll = "User.ReadWrite.All";
 
+        // Group
+        public const string GroupReadWriteAll = "Group.ReadWrite.All";
+
         // Mailbox settings
         public const string MailboxSettingsRead = "MailboxSettings.Read";
 

@@ -5,10 +5,8 @@ using SnippetsApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Client;
 using Microsoft.Identity.Web;
 using Microsoft.Graph;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -17,17 +15,12 @@ using System.Threading.Tasks;
 namespace SnippetsApp.Controllers
 {
     [Authorize]
-    public class UsersController : Controller
+    public class UsersController : BaseController
     {
-        private readonly ITokenAcquisition _tokenAcquisition;
-        private readonly ILogger<HomeController> _logger;
-
         public UsersController(
             ITokenAcquisition tokenAcquisition,
-            ILogger<HomeController> logger)
+            ILogger<HomeController> logger) : base(tokenAcquisition, logger)
         {
-            _tokenAcquisition = tokenAcquisition;
-            _logger = logger;
         }
 
         public IActionResult Index()
@@ -142,7 +135,7 @@ namespace SnippetsApp.Controllers
                     }
                 }
 
-                return View("CreateUser", model: domainName);
+                return View(model: domainName);
             }
             catch (ServiceException ex)
             {
@@ -355,7 +348,7 @@ namespace SnippetsApp.Controllers
                         else if (ex.IsMatch(GraphConstants.RequestDenied) &&
                                 !Request.Path.Equals("/Users/AdminDisplay"))
                         {
-                            return View("UserDisplay", model)
+                            return View("Display", model)
                                 .WithInfoActionLink(
                                     "Listing manager and direct reports for this user requires admin consent. " +
                                     "If you are an admin, you can use this link to consent to additional permissions.",
@@ -403,7 +396,7 @@ namespace SnippetsApp.Controllers
                     }
                 }
 
-                return View("UserDisplay", model);
+                return View("Display", model);
             }
             catch (ServiceException ex)
             {
@@ -523,33 +516,6 @@ namespace SnippetsApp.Controllers
 
                 return RedirectToAction("Display", new { userId = userId })
                     .WithError($"Error updating user", ex.Error.Message);
-            }
-        }
-
-        // Gets a Graph client configured with
-        // the specified scopes
-        private GraphServiceClient GetGraphClientForScopes(string[] scopes)
-        {
-            return GraphServiceClientFactory
-                .GetAuthenticatedGraphClient(async () =>
-                {
-                    return await _tokenAcquisition
-                        .GetAccessTokenForUserAsync(scopes);
-                }
-            );
-        }
-
-        // If the Graph client is unable to get a token for the
-        // requested scopes, it throws this type of exception.
-        private void InvokeAuthIfNeeded(ServiceException serviceException)
-        {
-            // Check if this failed because interactive auth is needed
-            if (serviceException.InnerException is MsalUiRequiredException)
-            {
-                // Throwing the exception causes Microsoft.Identity.Web to
-                // take over, handling auth (based on scopes defined in the
-                // AuthorizeForScopes attribute)
-                throw serviceException;
             }
         }
     }

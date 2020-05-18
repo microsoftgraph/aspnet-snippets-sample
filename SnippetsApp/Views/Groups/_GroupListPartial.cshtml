@@ -1,0 +1,24 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@using Microsoft.Graph
+
+@model IEnumerable<Group>
+
+<div class="list-group">
+  @foreach (var group in Model)
+  {
+    <div class="list-group-item">
+      <div class="d-flex">
+        <div class="flex-grow-1">
+          <span class="align-middle">@group.DisplayName</span>
+        </div>
+        <a asp-action="Display" asp-route-groupId="@group.Id" class="btn btn-secondary btn-sm mr-2">Display</a>
+        <form asp-action="Delete" onsubmit="return confirm('Are you sure you want to delete @group.DisplayName?');">
+          <input type="hidden" name="groupId" value="@group.Id">
+          <input type="submit" value="Delete" class="btn btn-secondary btn-sm">
+        </form>
+      </div>
+    </div>
+  }
+</div>
