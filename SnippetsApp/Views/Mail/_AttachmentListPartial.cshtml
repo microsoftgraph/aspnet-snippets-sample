@@ -1,0 +1,26 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model IEnumerable<Attachment>
+
+@using Microsoft.Graph
+
+@{
+  var attachmentString = "";
+  foreach (var attachment in Model)
+  {
+    if (attachment.IsInline.Equals(true))
+    {
+      continue;
+    }
+
+    if (!string.IsNullOrEmpty(attachmentString))
+    {
+      attachmentString += "; ";
+    }
+
+    attachmentString += attachment.Name;
+  }
+}
+
+<span>@attachmentString</span>

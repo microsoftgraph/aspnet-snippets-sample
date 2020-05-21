@@ -13,7 +13,7 @@ namespace SnippetsApp.Controllers
 {
     public class BaseController : Controller
     {
-        private readonly ITokenAcquisition _tokenAcquisition;
+        protected readonly ITokenAcquisition _tokenAcquisition;
         protected readonly ILogger<HomeController> _logger;
 
         public BaseController(

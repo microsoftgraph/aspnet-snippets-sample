@@ -1,0 +1,172 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model Message
+
+@using Microsoft.Graph
+
+@{
+  ViewData["Title"] = string.IsNullOrEmpty(Model.Subject) ? "(No subject)" : Model.Subject;
+  string dateTimeFormat = $"{User.GetUserGraphDateFormat()} {User.GetUserGraphTimeFormat()}";
+}
+
+<div class="btn-group">
+  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">Reply</button>
+  <div class="dropdown-menu">
+    <button class="dropdown-item" role="button" data-toggle="collapse" data-target="#replyForm">Reply</button>
+    <button class="dropdown-item" role="button" data-toggle="collapse" data-target="#replyAllForm">Reply all</button>
+    <button class="dropdown-item" role="button" data-toggle="collapse" data-target="#forwardForm">Forward</button>
+  </div>
+</div>
+<div class="btn-group">
+  <form asp-action="Update">
+    <input type="hidden" name="messageId" value="@Model.Id">
+    <input type="hidden" name="isRead" value="@((!Model.IsRead.GetValueOrDefault()).ToString())">
+    <input type="submit" class="btn btn-secondary" value="@(Model.IsRead.Equals(true) ? "Mark unread" : "Mark read")">
+  </form>
+</div>
+<div class="btn-group">
+  <form asp-action="Move">
+    <input type="hidden" name="messageId" value="@Model.Id">
+    <input type="hidden" name="destinationFolderId" value="archive">
+    <input type="hidden" name="returnFolderId" value="@Model.ParentFolderId">
+    <input type="submit" class="btn btn-secondary" value="Archive">
+  </form>
+</div>
+<div class="btn-group">
+  <form asp-action="Delete">
+    <input type="hidden" name="messageId" value="@Model.Id">
+    <input type="hidden" name="returnFolderId" value="@Model.ParentFolderId">
+    <input type="submit" class="btn btn-secondary" value="Delete">
+  </form>
+</div>
+
+<div class="collapse mt-3" id="replyForm">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Reply</h5>
+      <form asp-action="Respond">
+        <input type="hidden" name="messageId" value="@Model.Id">
+        <input type="hidden" name="respondAction" value="reply">
+        <div class="form-group">
+          <label for="comment">Comment</label>
+          <textarea class="form-control" name="comment" id="comment" rows="3"></textarea>
+        </div>
+        <input class="btn btn-primary" type="submit" value="Send">
+      </form>
+    </div>
+  </div>
+</div>
+<div class="collapse mt-3" id="replyAllForm">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Reply all</h5>
+      <form asp-action="Respond">
+        <input type="hidden" name="messageId" value="@Model.Id">
+        <input type="hidden" name="respondAction" value="replyAll">
+        <div class="form-group">
+          <label for="comment">Comment</label>
+          <textarea class="form-control" name="comment" id="comment" rows="3"></textarea>
+        </div>
+        <input class="btn btn-primary" type="submit" value="Send">
+      </form>
+    </div>
+  </div>
+</div>
+<div class="collapse mt-3" id="forwardForm">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Forward</h5>
+      <form asp-action="Respond">
+        <input type="hidden" name="messageId" value="@Model.Id">
+        <input type="hidden" name="respondAction" value="forward">
+        <div class="form-group">
+          <label for="toRecipient">Forward to</label>
+          <input class="form-control" type="email" name="toRecipient" id="toRecipient" placeholder="Enter an email address" required>
+        </div>
+        <div class="form-group">
+          <label for="comment">Comment</label>
+          <textarea class="form-control" name="comment" id="comment" rows="3"></textarea>
+        </div>
+        <input class="btn btn-primary" type="submit" value="Send">
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-3">
+  <div class="card-body">
+    <h1 class="card-title">@(string.IsNullOrEmpty(Model.Subject) ? "(No subject)" : Model.Subject)</h1>
+    <div class="d-flex">
+      <div class="mr-3"><strong>From:</strong></div>
+      <div>@Model.From?.EmailAddress.Name</div>
+    </div>
+    <div class="d-flex">
+      <div class="mr-3"><strong>Received:</strong></div>
+      <div><date-time-offset value="@Model.ReceivedDateTime" time-zone="@User.GetUserGraphTimeZone()" format="@dateTimeFormat"></date-time-offset></div>
+    </div>
+    @if (Model.ToRecipients?.Count() > 0)
+    {
+      <div class="d-flex">
+        <div class="mr-3"><strong>To:</strong></div>
+        <div>
+          <partial name="_RecipientListPartial" for="ToRecipients" />
+        </div>
+      </div>
+    }
+    @if (Model.CcRecipients?.Count() > 0)
+    {
+      <div class="d-flex">
+        <div class="mr-3"><strong>Cc:</strong></div>
+        <div>
+          <partial name="_RecipientListPartial" for="CcRecipients" />
+        </div>
+      </div>
+    }
+    @if (Model.Attachments?.Count() > 0)
+    {
+      <div class="d-flex">
+        <div class="mr-3"><strong>Attachments:</strong></div>
+        <div>
+          <partial name="_AttachmentListPartial" for="Attachments" />
+        </div>
+      </div>
+    }
+  </div>
+</div>
+<div class="card mt-3">
+  <div class="card-body">
+    @if (Model.Body.ContentType.Equals(BodyType.Html))
+    {
+      @Html.Raw(Model.Body.Content)
+    }
+    else
+    {
+      <p class="card-text">@Model.Body.Content</p>
+    }
+  </div></p>
+</div>
+
+@section Scripts
+{
+  <script>
+    // Handle show events to ensure only
+    // one response form is shown at a time.
+    $(document).ready(function() {
+      $('#replyForm').on('show.bs.collapse', function() {
+        $('#replyAllForm').collapse('hide');
+        $('#forwardForm').collapse('hide');
+      });
+
+      $('#replyAllForm').on('show.bs.collapse', function() {
+        $('#replyForm').collapse('hide');
+        $('#forwardForm').collapse('hide');
+      });
+
+      $('#forwardForm').on('show.bs.collapse', function() {
+        $('#replyAllForm').collapse('hide');
+        $('#replyForm').collapse('hide');
+      });
+    });
+  </script>
+}

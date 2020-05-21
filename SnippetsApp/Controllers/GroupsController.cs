@@ -19,7 +19,7 @@ namespace SnippetsApp.Controllers
     {
 
         private readonly string[] groupScopes =
-          new[] { GraphConstants.GroupReadWriteAll };
+            new[] { GraphConstants.GroupReadWriteAll };
 
         public GroupsController(
             ITokenAcquisition tokenAcquisition,

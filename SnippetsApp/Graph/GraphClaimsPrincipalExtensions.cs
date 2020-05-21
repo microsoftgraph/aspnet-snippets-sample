@@ -16,6 +16,7 @@ namespace SnippetsApp
         public const string Photo = "graph_photo";
         public const string TimeZone = "graph_timezone";
         public const string TimeFormat = "graph_timeformat";
+        public const string DateFormat = "graph_dateformat";
     }
 
     // Helper methods to access Graph user data stored in
@@ -47,6 +48,11 @@ namespace SnippetsApp
             return claimsPrincipal.FindFirstValue(GraphClaimTypes.TimeFormat);
         }
 
+        public static string GetUserGraphDateFormat(this ClaimsPrincipal claimsPrincipal)
+        {
+            return claimsPrincipal.FindFirstValue(GraphClaimTypes.DateFormat);
+        }
+
         public static bool IsPersonalAccount(this ClaimsPrincipal claimsPrincipal)
         {
             // GetDomainHint returns "consumers" for personal Microsoft accounts
@@ -70,6 +76,8 @@ namespace SnippetsApp
                     user.MailboxSettings.TimeZone));
             identity.AddClaim(
                 new Claim(GraphClaimTypes.TimeFormat, user.MailboxSettings.TimeFormat));
+            identity.AddClaim(
+                new Claim(GraphClaimTypes.DateFormat, user.MailboxSettings.DateFormat));
         }
 
         public static void AddUserGraphPhoto(this ClaimsPrincipal claimsPrincipal, Stream photoStream)

@@ -28,6 +28,11 @@ namespace SnippetsApp
         // Mailbox settings
         public const string MailboxSettingsRead = "MailboxSettings.Read";
 
+        // Mail
+        public const string MailRead = "Mail.Read";
+        public const string MailReadWrite = "Mail.ReadWrite";
+        public const string MailSend = "Mail.Send";
+
         // Calendar
         public const string CalendarReadWrite = "Calendars.ReadWrite";
 
