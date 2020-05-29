@@ -1,0 +1,48 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model IEnumerable<Attendee>
+
+@using Microsoft.Graph
+
+@{
+  var requiredAttendees = "";
+  var optionalAttendees = "";
+
+  foreach (var attendee in Model)
+  {
+    if (attendee.Type.Equals(AttendeeType.Required))
+    {
+      if (!string.IsNullOrEmpty(requiredAttendees))
+      {
+        requiredAttendees += "; ";
+      }
+
+      requiredAttendees += attendee.EmailAddress.Name;
+    }
+    else if (attendee.Type.Equals(AttendeeType.Optional))
+    {
+      if (!string.IsNullOrEmpty(optionalAttendees))
+      {
+        optionalAttendees += "; ";
+      }
+
+      optionalAttendees += attendee.EmailAddress.Name;
+    }
+  }
+}
+
+@if (!string.IsNullOrEmpty(requiredAttendees))
+{
+  <div class="d-flex">
+    <div class="mr-3"><strong>Required:</strong></div>
+    <div>@requiredAttendees</div>
+  </div>
+}
+@if (!string.IsNullOrEmpty(optionalAttendees))
+{
+  <div class="d-flex">
+    <div class="mr-3"><strong>Optional:</strong></div>
+    <div>@optionalAttendees</div>
+  </div>
+}

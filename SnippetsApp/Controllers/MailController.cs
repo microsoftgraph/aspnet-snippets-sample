@@ -19,10 +19,6 @@ namespace SnippetsApp.Controllers
     [Authorize]
     public class MailController : BaseController
     {
-
-        private readonly string[] groupScopes =
-            new[] { GraphConstants.GroupReadWriteAll };
-
         public MailController(
             ITokenAcquisition tokenAcquisition,
             ILogger<HomeController> logger) : base(tokenAcquisition, logger)
@@ -560,6 +556,12 @@ namespace SnippetsApp.Controllers
         private async Task<IActionResult> DisplayMessage(string messageId,
                                                          string[] scopes)
         {
+            if (string.IsNullOrEmpty(messageId))
+            {
+                return RedirectToAction("Index")
+                    .WithError("Message ID cannot be empty.");
+            }
+
             try
             {
                 var graphClient = GetGraphClientForScopes(scopes);

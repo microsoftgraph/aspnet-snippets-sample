@@ -26,7 +26,7 @@
 
 @foreach(var item in Model.Events)
 {
-  <tr class="@rowClass">
+  <tr class="@rowClass" style="transform: rotate(0);">
     @if (!dateCellAdded)
     {
       // Only add the day cell once
@@ -41,7 +41,7 @@
       <div>@item.Start.ToString(timeFormat) - @item.End.ToString(timeFormat)</div>
     </td>
     <td>
-      <div class="calendar-view-subject">@item.Subject</div>
+      <div class="calendar-view-subject"><a asp-action="Display" asp-route-eventId="@item.Id" class="stretched-link text-reset">@item.Subject</a></div>
       <div class="calendar-view-organizer">@item.Organizer</div>
     </td>
   </tr>

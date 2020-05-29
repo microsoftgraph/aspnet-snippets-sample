@@ -14,22 +14,20 @@ using System.Threading.Tasks;
 namespace SnippetsApp.Controllers
 {
     [AuthorizeForScopes(Scopes = new [] { GraphConstants.CalendarReadWrite })]
-    public class CalendarController : Controller
+    public class CalendarController : BaseController
     {
-        private readonly ITokenAcquisition _tokenAcquisition;
-        private readonly ILogger<HomeController> _logger;
-
         private readonly string[] _calendarScopes =
             new [] { GraphConstants.CalendarReadWrite };
 
         public CalendarController(
             ITokenAcquisition tokenAcquisition,
-            ILogger<HomeController> logger)
+            ILogger<HomeController> logger) : base(tokenAcquisition, logger)
         {
-            _tokenAcquisition = tokenAcquisition;
-            _logger = logger;
         }
 
+        // GET /Calendar
+        // Displays a calendar view of the current week for
+        // the logged-in user
         public async Task<IActionResult> Index()
         {
             try
@@ -57,11 +55,67 @@ namespace SnippetsApp.Controllers
             }
         }
 
+        // GET /Calendar/Display?eventId=""
+        // eventId: ID of the event to display
+        // Displays the requested event allowing the user
+        // to delete, update, or respond
+        public async Task<IActionResult> Display(string eventId)
+        {
+            if (string.IsNullOrEmpty(eventId))
+            {
+                return RedirectToAction("Index")
+                    .WithError("Event ID cannot be empty.");
+            }
+
+            try
+            {
+                var graphClient = GetGraphClientForScopes(_calendarScopes);
+
+                // GET /me/events/eventId
+                var graphEvent = await graphClient.Me
+                    .Events[eventId]
+                    .Request()
+                    // Send the Prefer header so times are in the user's timezone
+                    .Header("Prefer", $"outlook.timezone=\"{User.GetUserGraphTimeZone()}\"")
+                    // Request only the fields used by the app
+                    .Select(e => new
+                    {
+                        e.Attendees,
+                        e.Body,
+                        e.End,
+                        e.Id,
+                        e.IsOrganizer,
+                        e.Location,
+                        e.Organizer,
+                        e.ResponseStatus,
+                        e.Start,
+                        e.Subject
+                    })
+                    // Include attachments in the response
+                    .Expand("attachments")
+                    .GetAsync();
+
+                return View(graphEvent);
+            }
+            catch(ServiceException ex)
+            {
+                InvokeAuthIfNeeded(ex);
+
+                return RedirectToAction("Index")
+                    .WithError($"Error getting event with ID {eventId}",
+                        ex.Error.Message);
+            }
+        }
+
+        // GET /Calendar/New
+        // Gets the new event form
         public IActionResult New()
         {
             return View();
         }
 
+        // POST /Calendar/New
+        // Receives form data to create a new event
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> New([Bind("Subject,Attendees,Start,End,Body")] NewEvent newEvent)
@@ -118,17 +172,11 @@ namespace SnippetsApp.Controllers
                 }
             }
 
-            var graphClient = GraphServiceClientFactory
-                .GetAuthenticatedGraphClient(async () =>
-                {
-                    return await _tokenAcquisition
-                        .GetAccessTokenForUserAsync(_calendarScopes);
-                }
-            );
-
             try
             {
+                var graphClient = GetGraphClientForScopes(_calendarScopes);
                 // Add the event
+                // POST /me/events
                 await graphClient.Me.Events
                     .Request()
                     .AddAsync(graphEvent);
@@ -141,6 +189,229 @@ namespace SnippetsApp.Controllers
                 // Redirect to the calendar view with an error message
                 return RedirectToAction("Index")
                     .WithError("Error creating event", ex.Error.Message);
+            }
+        }
+
+        // POST /Calendar/Update
+        // Receives form data to update the start and end times
+        // for an event
+        // eventId: ID of the event to update
+        // startTime: New start time
+        // startTimeZone: Time zone for start time
+        // endTime: New end time
+        // endTimeZone: Time zone for end time
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Update(string eventId,
+                                                string startTime,
+                                                string startTimeZone,
+                                                string endTime,
+                                                string endTimeZone)
+        {
+            if (string.IsNullOrEmpty(eventId))
+            {
+                return RedirectToAction("Index")
+                    .WithError("Event ID cannot be empty.");
+            }
+
+            try
+            {
+                var graphClient = GetGraphClientForScopes(_calendarScopes);
+
+                // Create a new Event object with only the
+                // fields to update set
+                var updateEvent = new Event
+                {
+                    Start = new DateTimeTimeZone
+                    {
+                        DateTime = startTime,
+                        TimeZone = startTimeZone
+                    },
+                    End = new DateTimeTimeZone
+                    {
+                        DateTime = endTime,
+                        TimeZone = endTimeZone
+                    }
+                };
+
+                // PATCH /me/events/eventId
+                await graphClient.Me
+                    .Events[eventId]
+                    .Request()
+                    .UpdateAsync(updateEvent);
+
+                return RedirectToAction("Display", new { eventId = eventId })
+                .WithSuccess("Event times updated");
+            }
+            catch(ServiceException ex)
+            {
+                InvokeAuthIfNeeded(ex);
+
+                return RedirectToAction("Display", new { eventId = eventId })
+                    .WithError($"Error updating event with ID {eventId}",
+                        ex.Error.Message);
+            }
+
+        }
+
+        // POST /Calendar/Accept
+        // Receives form data to accept an event
+        // eventId: ID of the event to accept
+        // sendResponse: True to send the response to the organizer
+        // comment: Optional message to include in response to organizer
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Accept(string eventId,
+                                                bool sendResponse,
+                                                string comment)
+        {
+            if (string.IsNullOrEmpty(eventId))
+            {
+                return RedirectToAction("Index")
+                    .WithError("Event ID cannot be empty.");
+            }
+
+            try
+            {
+                var graphClient = GetGraphClientForScopes(_calendarScopes);
+
+                // POST /me/events/eventId/accept
+                await graphClient.Me
+                    .Events[eventId]
+                    .Accept(comment, sendResponse)
+                    .Request()
+                    .PostAsync();
+
+                return RedirectToAction("Display", new { eventId = eventId })
+                    .WithSuccess("Meeting accepted");
+            }
+            catch(ServiceException ex)
+            {
+                InvokeAuthIfNeeded(ex);
+
+                return RedirectToAction("Display", new { eventId = eventId })
+                    .WithError("Error accepting meeting",
+                        ex.Error.Message);
+            }
+        }
+
+        // POST /Calendar/Tentative
+        // Receives form data to tentatively accept an event
+        // eventId: ID of the event to tentatively accept
+        // sendResponse: True to send the response to the organizer
+        // comment: Optional message to include in response to organizer
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Tentative(string eventId,
+                                                   bool sendResponse,
+                                                   string comment)
+        {
+            if (string.IsNullOrEmpty(eventId))
+            {
+                return RedirectToAction("Index")
+                    .WithError("Event ID cannot be empty.");
+            }
+
+            try
+            {
+                var graphClient = GetGraphClientForScopes(_calendarScopes);
+
+                // POST /me/events/eventId/tentativelyAccept
+                await graphClient.Me
+                    .Events[eventId]
+                    .TentativelyAccept(comment, sendResponse)
+                    .Request()
+                    .PostAsync();
+
+                return RedirectToAction("Display", new { eventId = eventId })
+                    .WithSuccess("Meeting tentatively accepted");
+            }
+            catch(ServiceException ex)
+            {
+                InvokeAuthIfNeeded(ex);
+
+                return RedirectToAction("Display", new { eventId = eventId })
+                    .WithError("Error tentatively accepting meeting",
+                        ex.Error.Message);
+            }
+        }
+
+        // POST /Calendar/Decline
+        // Receives form data to decline an event
+        // eventId: ID of the event to decline
+        // sendResponse: True to send the response to the organizer
+        // comment: Optional message to include in response to organizer
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Decline(string eventId,
+                                                 bool sendResponse,
+                                                 string comment)
+        {
+            if (string.IsNullOrEmpty(eventId))
+            {
+                return RedirectToAction("Index")
+                    .WithError("Event ID cannot be empty.");
+            }
+
+            try
+            {
+                var graphClient = GetGraphClientForScopes(_calendarScopes);
+
+                // POST /me/events/eventId/decline
+                await graphClient.Me
+                    .Events[eventId]
+                    .Decline(comment, sendResponse)
+                    .Request()
+                    .PostAsync();
+
+                return RedirectToAction("Index")
+                    .WithSuccess("Meeting declined");
+            }
+            catch(ServiceException ex)
+            {
+                InvokeAuthIfNeeded(ex);
+
+                return RedirectToAction("Display", new { eventId = eventId })
+                    .WithError("Error declining meeting",
+                        ex.Error.Message);
+            }
+        }
+
+        // POST /Calendar/Delete
+        // Deletes an event from the calendar
+        // If user is the organizer and there are attendees,
+        // attendees will receive a cancellation
+        // eventId: ID of the event to delete
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(string eventId)
+        {
+            if (string.IsNullOrEmpty(eventId))
+            {
+                return RedirectToAction("Index")
+                    .WithError("Event ID cannot be empty.");
+            }
+
+            try
+            {
+                var graphClient = GetGraphClientForScopes(_calendarScopes);
+
+                // DELETE /me/events/eventId
+                await graphClient.Me
+                    .Events[eventId]
+                    .Request()
+                    .DeleteAsync();
+
+                return RedirectToAction("Index")
+                    .WithSuccess("Event deleted");
+            }
+            catch(ServiceException ex)
+            {
+                InvokeAuthIfNeeded(ex);
+
+                return RedirectToAction("Index")
+                    .WithError($"Error deleting event with ID {eventId}",
+                        ex.Error.Message);
             }
         }
 
