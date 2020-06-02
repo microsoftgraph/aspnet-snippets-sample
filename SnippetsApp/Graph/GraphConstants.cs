@@ -36,6 +36,10 @@ namespace SnippetsApp
         // Calendar
         public const string CalendarReadWrite = "Calendars.ReadWrite";
 
+        // Files
+        public const string FilesReadWrite = "Files.ReadWrite";
+        public const string FilesReadWriteAll = "Files.ReadWrite.All";
+
         // Errors
         public const string ItemNotFound = "ErrorItemNotFound";
         public const string RequestDenied = "Authorization_RequestDenied";

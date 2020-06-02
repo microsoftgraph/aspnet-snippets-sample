@@ -1,0 +1,69 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model DriveItem
+
+@using Microsoft.Graph
+@using ByteSizeLib
+
+@{
+  ViewData["Title"] = Model.Name;
+  string dateTimeFormat = $"{User.GetUserGraphDateFormat()} {User.GetUserGraphTimeFormat()}";
+}
+
+<a asp-action="Index" asp-route-folderId="@Model.ParentReference.Id" class="btn btn-secondary">Back</a>
+<div class="btn-group">
+  <form asp-action="Download">
+    <input type="hidden" name="fileId" value="@Model.Id">
+    <input type="submit" class="btn btn-secondary" value="Download">
+  </form>
+</div>
+<div class="btn-group">
+  <form asp-action="Share">
+    <input type="hidden" name="fileId" value="@Model.Id">
+    <input type="submit" class="btn btn-secondary" value="Share">
+  </form>
+</div>
+<div class="btn-group">
+  <form asp-action="Delete">
+    <input type="hidden" name="fileId" value="@Model.Id">
+    <input type="hidden" name="returnFolderId" value="@Model.ParentReference.Id">
+    <input type="submit" class="btn btn-secondary" value="Delete">
+  </form>
+</div>
+
+<div class="card mt-3">
+  <div class="card-body">
+    <form asp-action="Update">
+      <input type="hidden" name="fileId" value="@Model.Id">
+      <div class="form-group">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" id="newFileName" name="newFileName" value="@Model.Name">
+          <div class="input-group-append">
+            <input type="submit" value="Rename" class="btn btn-primary">
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="d-flex">
+      <div class="mr-3"><strong>Size:</strong></div>
+      <div>@ByteSize.FromBytes(Model.Size.Value).ToString()</div>
+    </div>
+    <div class="d-flex">
+      <div class="mr-3"><strong>Created by:</strong></div>
+      <div>@Model.CreatedBy.User.DisplayName</div>
+    </div>
+    <div class="d-flex">
+      <div class="mr-3"><strong>Created on:</strong></div>
+      <div><date-time-offset value="@Model.CreatedDateTime" time-zone="@User.GetUserGraphTimeZone()" format="@dateTimeFormat"></date-time-offset></div>
+    </div>
+    <div class="d-flex">
+      <div class="mr-3"><strong>Last modified by:</strong></div>
+      <div>@Model.LastModifiedBy.User.DisplayName</div>
+    </div>
+    <div class="d-flex">
+      <div class="mr-3"><strong>Last modified on:</strong></div>
+      <div><date-time-offset value="@Model.LastModifiedDateTime" time-zone="@User.GetUserGraphTimeZone()" format="@dateTimeFormat"></date-time-offset></div>
+    </div>
+  </div>
+</div>

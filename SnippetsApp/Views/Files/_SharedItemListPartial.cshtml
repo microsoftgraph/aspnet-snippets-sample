@@ -1,0 +1,15 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model IEnumerable<DriveItem>
+
+@using Microsoft.Graph
+
+@foreach(var item in Model)
+{
+  <div class="d-flex list-group-item">
+    <i class="@($"ms-Icon ms-Icon--{(item.RemoteItem.Folder == null ? "Document" : "FolderHorizontal")} mr-3")" aria-hidden="true"></i>
+    <div class="mr-3">@item.RemoteItem.Name</div>
+    <div class="mr-3"><strong>Shared by: </strong><span>@item.RemoteItem.Shared.SharedBy.User.DisplayName</span></div>
+  </div>
+}

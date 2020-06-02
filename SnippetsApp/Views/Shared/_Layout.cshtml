@@ -53,10 +53,17 @@
             <li class="@(controller == "Calendar" ? "nav-item active" : "nav-item")">
               <a class="nav-link" asp-controller="Calendar" asp-action="Index">Calendar</a>
             </li>
-            <li class="@(controller == "Files" ? "nav-item active" : "nav-item")">
-              <a class="nav-link" asp-controller="Files" asp-action="Index">Files</a>
+            <li class="@(controller == "Files" ? "nav-item dropdown active" : "nav-item dropdown")">
+              <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">Files</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" asp-controller="Files" asp-action="Index">My files and folders</a>
+                <a class="dropdown-item" asp-controller="Files" asp-action="SharedWithMe">Shared with me</a>
+                <a class="dropdown-item" asp-controller="Files" asp-action="Drive">My Drive properties</a>
+              </div>
             </li>
+            <li class="@(controller == "Files" ? "nav-item active" : "nav-item")">
 
+            </li>
             }
           </ul>
           <partial name="_LoginPartial"/>

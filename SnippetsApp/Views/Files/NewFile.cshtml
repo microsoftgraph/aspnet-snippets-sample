@@ -1,0 +1,41 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model string
+
+@{
+  ViewData["Title"] = "New file";
+}
+
+<div class="card">
+  <div class="card-body">
+    <h1 class="card-title">New file</h1>
+    <div class="alert alert-warning" role="alert">
+      Please select a file less than 4 MB in size. To upload files larger than that, please go back to the folder view and use the <strong>Upload</strong> button.
+    </div>
+    <form asp-action="NewFile" enctype="multipart/form-data">
+      <input type="hidden" name="folderId" value="@Model">
+      <div class="form-group">
+        <div class="custom-file">
+          <input type="file" class="custom-file-input" name="uploadFiles" id="uploadFiles" required>
+          <label for="uploadFiles" class="custom-file-label">Choose file</label>
+        </div>
+      </div>
+      <div class="mt-3">
+        <input type="submit" class="btn btn-primary" value="Create">
+        <a asp-action="Index" asp-route-folderId="@Model" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+    <script>
+      // Initialize Bootstrap custom file input
+      $(document).ready(function () {
+          bsCustomFileInput.init();
+      });
+    </script>
+}
