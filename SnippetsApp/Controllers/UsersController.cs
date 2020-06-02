@@ -39,7 +39,7 @@ namespace SnippetsApp.Controllers
         {
             string[] scopes = new[]
             {
-                GraphConstants.UserRead,
+                GraphConstants.UserReadWrite,
                 GraphConstants.UserReadBasicAll
             };
 
