@@ -31,8 +31,15 @@ namespace SnippetsApp.Controllers
             return GraphServiceClientFactory
                 .GetAuthenticatedGraphClient(async () =>
                 {
-                    return await _tokenAcquisition
+                    var token = await _tokenAcquisition
                         .GetAccessTokenForUserAsync(scopes);
+
+                    // Uncomment to print access token to debug console
+                    // This will happen for every Graph call, so leave this
+                    // out unless you're debugging your token
+                    //_logger.LogInformation($"Access token: {token}");
+
+                    return token;
                 }
             );
         }
