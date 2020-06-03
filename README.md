@@ -1,24 +1,6 @@
----
-page_type: sample
-products:
-- office-365
-- office-outlook
-- ms-graph
-languages:
-- csharp
-- aspx
-description: "This sample uses the Microsoft Graph .NET Client Library to work with data, and the Microsoft Authentication Library (MSAL) for authentication on the Azure AD v2.0 endpoint."
-extensions:
-  contentType: samples 
-  technologies:
-  - Microsoft Graph
-  services:
-  - Office 365
-  - Outlook
-  - Groups
-  createdDate: 8/4/2016 10:31:51 AM
----
 # Microsoft Graph Snippets Sample for ASP.NET 4.6
+
+**NOTE: This branch contains the original version of this sample, built on ASP.NET 4.6. This sample has been migrated to ASP.NET Core 3.1 in the master branch.**
 
 ## Table of contents
 
