@@ -1,5 +1,7 @@
 # Microsoft Graph Snippets Sample for ASP.NET 4.6
 
+**NOTE: This branch contains the original version of this sample, built on ASP.NET 4.6. This sample has been migrated to ASP.NET Core 3.1 in the master branch.**
+
 ## Table of contents
 
 * [Prerequisites](#prerequisites)

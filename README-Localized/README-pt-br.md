@@ -1,8 +1,26 @@
+---
+page_type: sample
+products:
+- office-365
+- office-outlook
+- ms-graph
+languages:
+- csharp
+- aspx
+description: "Esta amostra usa a Biblioteca de Clientes do Microsoft Graph .NET para trabalhar com os dados e a Biblioteca de Autenticação da Microsoft (MSAL) para autenticação do ponto de extremidade do Azure AD v2.0."
+extensions:
+  contentType: samples 
+  technologies:
+  - Microsoft Graph
+  services:
+  - Office 365
+  - Outlook
+  - Groups
+  createdDate: 8/4/2016 10:31:51 AM
+---
 # Exemplo de Trechos de Código do Microsoft Graph para ASP.NET 4.6
-<a id="microsoft-graph-snippets-sample-for-aspnet-46" class="xliff"></a>
 
 ## Sumário
-<a id="table-of-contents" class="xliff"></a>
 
 * [Pré-requisitos](#prerequisites)
 * [Registrar o aplicativo](#register-the-application)
@@ -18,52 +36,54 @@ O exemplo usa a [Biblioteca de Autenticação da Microsoft (MSAL)](https://www.n
 
 Além disso, o exemplo mostra como solicitar tokens de forma incremental, um recurso compatível com o ponto de extremidade do Microsoft Azure AD versão 2.0. Os usuários permitem um conjunto inicial de escopos de permissão durante a conexão, mas podem permitir outros escopos posteriormente. No caso deste exemplo, qualquer usuário válido pode entrar, mas apenas administradores podem posteriormente permitir os escopos de administrador necessários para determinadas operações.
 
-O exemplo usa o [middleware OWIN do OpenId Connect do ASP.NET](https://www.nuget.org/packages/Microsoft.Owin.Security.OpenIdConnect/) para entrar e durante a aquisição de token inicial. O exemplo também implementa o middleware Owin personalizado para compartilhar um código de autorização para tokens de acesso e de atualização fora do fluxo de entrada. O middleware personalizado chama a MSAL para compilar o URI de solicitação de autorização e manipula os redirecionamentos. Para saber mais sobre o consentimento incremental, confira o artigo [Integrar a identidade da Microsoft e o Microsoft Graph em um aplicativo Web usando o OpenID Connect](https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2).
+O exemplo usa o [middleware OWIN do OpenId Connect do ASP.NET](https://www.nuget.org/packages/Microsoft.Owin.Security.OpenIdConnect/) para entrar e durante a aquisição de token inicial. O exemplo também implementa o middleware Owin personalizado para compartilhar um código de autorização para tokens de acesso e de atualização fora do fluxo de entrada. O middleware personalizado chama a MSAL para compilar o URI de solicitação de autorização e manipula os redirecionamentos. Para saber mais sobre o consentimento incremental, consulte [Integrar a identidade da Microsoft e o Microsoft Graph em um aplicativo Web usando o OpenID Connect](https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2).
+
+> Este exemplo usa ASP.NET MVC 4.6. Para obter exemplos que usam ASP.NET Core, confira um desses dois exemplos: - [exemplo de conexão do Microsoft Graph para ASP.NET Core 2.1](https://github.com/microsoftgraph/aspnetcore-connect-sample) - [Habilite seus aplicativos Web para conectar usuários e chamar APIs com a plataforma de identidade da Microsoft para desenvolvedores](https://github.com/Azure-Samples/active-directory-aspnetcore-webapp-openidconnect-v2)
 
 ## Observação importante sobre a Visualização da MSAL
-<a id="important-note-about-the-msal-preview" class="xliff"></a>
 
 Esta biblioteca é adequada para uso em um ambiente de produção. Ela recebe o mesmo suporte de nível de produção que fornecemos às nossas bibliotecas de produção atuais. Durante a visualização, podemos fazer alterações na API, no formato de cache interno e em outros mecanismos desta biblioteca, que você será solicitado a implementar juntamente com correções de bugs ou melhorias de recursos. Isso pode impactar seu aplicativo. Por exemplo, uma alteração no formato de cache pode impactar seus usuários, exigindo que eles entrem novamente. Uma alteração na API pode requerer que você atualize seu código. Quando fornecermos a versão de Disponibilidade Geral, você será solicitado a atualizar a versão de Disponibilidade Geral no prazo de seis meses, pois os aplicativos escritos usando uma versão de visualização da biblioteca podem não funcionar mais.
 
-
 ## Pré-requisitos
-<a id="prerequisites" class="xliff"></a>
 
 Este exemplo requer o seguinte:  
 
-  * [Visual Studio 2015](https://www.visualstudio.com/en-us/downloads) 
-  * Uma [conta da Microsoft](https://www.outlook.com) ou uma [conta do Office 365 para empresas](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account). Uma conta de administrador do Office 365 é necessária para executar operações de administrador. Inscreva-se para [uma Assinatura de Desenvolvedor do Office 365](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account), que inclui os recursos necessários para que você comece a criar aplicativos.
+  * [Visual Studio](https://www.visualstudio.com/en-us/downloads) 
+  * Uma [conta Microsoft](https://www.outlook.com) ou uma [conta do Office 365 para empresas](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account). Uma conta de administrador do Office 365 é necessária para executar operações de administrador. Você pode se inscrever para uma [assinatura de Desenvolvedor do Office 365](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account)que inclui os recursos necessários para começar a criar aplicativos.
 
-## Registrar o aplicativo
-<a id="register-the-application" class="xliff"></a>
+## Registrar o aplicativo Web
 
-1. Entre no [Portal de Registro do Aplicativo](https://apps.dev.microsoft.com/) usando sua conta pessoal ou sua conta comercial ou escolar.
+### Escolha o locatário do Azure AD no local em que você deseja criar o aplicativo
 
-2. Escolha **Adicionar um aplicativo**.
+Como primeira etapa, você precisará:
 
-3. Insira um nome para o aplicativo e escolha **Criar aplicativo**. 
-    
-   A página de registro é exibida, listando as propriedades do seu aplicativo.
+1. Entrar no [portal do Azure](https://portal.azure.com)usando uma conta corporativa, de estudante ou uma conta Microsoft pessoal.
+1. Se sua conta estiver presente em mais de um locatário do Azure AD, selecione seu perfil no canto superior direito no menu na parte superior da página e, em seguida, selecione **alternar diretório**. Alterar a sessão do portal para o locatário do Azure AD desejado.
 
-4. Copie a ID do Aplicativo. Esse é o identificador exclusivo do aplicativo. 
+### Registrar o aplicativo
 
-5. Em **Segredos do Aplicativo**, escolha **Gerar Nova Senha**. Copie a senha da caixa de diálogo **Nova senha gerada**.
-
-   Será preciso inserir os valores da ID do aplicativo e o segredo do aplicativo que você copiou para o exemplo de aplicativo. 
-
-6. Em **Plataformas**, escolha **Adicionar plataforma**.
-
-7. Escolha **Web**.
-
-8. Verifique se a caixa de diálogo **Permitir Fluxo Implícito** está marcada e insira *https://localhost:44300/* como o URI de redirecionamento. 
-
-   A opção **Permitir Fluxo Implícito** habilita o fluxo híbrido. Durante a autenticação, isso permite que o aplicativo receba informações de entrada (o id_token) e artefatos (neste caso, um código de autorização) que o aplicativo pode usar para obter um token de acesso.
-
-9. Escolha **Salvar**.
- 
+1. Navegue até a página [Registros do aplicativo](https://go.microsoft.com/fwlink/?linkid=2083908) da plataforma de identidade da Microsoft para desenvolvedores.
+1. Selecione **Novo registro**.
+1. Quando a página **Registrar um aplicativo for exibida**, insira as informações de registro do aplicativo:
+   - Na seção **Nome**, insira um nome de aplicativo relevante que será exibido aos usuários do aplicativo.
+   - Altere **Tipos de conta com suporte** para **Contas em qualquer diretório organizacional e contas pessoais da Microsoft (por exemplo, Skype, Xbox, Outlook.com)**.
+     > Observe que há mais de um URI de redirecionamento. Será preciso adicioná-los na guia **Autenticação** mais tarde, depois que o aplicativo for criado com êxito.
+1. Selecione **Registrar** para criar o aplicativo.
+1. Na página **Visão geral** do aplicativo, encontre o valor de **ID do aplicativo (cliente)** e registre-o para usar mais tarde. Será necessário configurar o arquivo de configuração do Visual Studio para este projeto.
+1. Na página Visão geral do aplicativo, selecione a seção **Autenticação**.
+   - Na seção Redirecionar URIs, selecione **Web** na caixa de combinação e digite os seguintes URIs de redirecionamento.
+       - `https://localhost:44300/`
+       - `https://localhost:44300/signin-oidc`
+   - Na seção **Configurações avançadas**, defina **URL de saída** como `https://localhost:44300/signout-oidc`
+   - Na seção **Configurações avançadas** | **Concessão implícita**, verifique **tokens de ID**, já que este exemplo requer que o [fluxo de concessão implícita](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow) esteja habilitado para conectar um usuário e chamar uma API.
+1. Selecione **Salvar**.
+1. Na página **Certificados e segredos**, na seção **Segredos do cliente**, escolha **Novo segredo do cliente**:
+   - Digite um descritor da chave (por exemplo, `segredo do aplicativo`),
+   - Selecione uma duração de chave de **1 ano**, **2 anos** ou **Nunca Expirará**.
+   - Quando você pressionar o botão **Adicionar**, o valor da chave será exibido. Copie e salve o valor de chave em uma localização segura.
+   - Você precisará dessa chave mais tarde para configurar o projeto no Visual Studio. Esse valor da chave não será exibido novamente, nem poderá ser recuperado por nenhum outro meio, portanto, grave-o assim que estiver visível no portal do Azure.
  
 ## Criar e executar o exemplo
-<a id="build-and-run-the-sample" class="xliff"></a>
 
 1. Baixe ou clone o Exemplo de Trechos de Código do Microsoft Graph para ASP.NET 4.6.
 
@@ -81,15 +101,12 @@ Este exemplo requer o seguinte:
 
 7. Escolha uma operação que você queira executar. Observe o seguinte:
   - As operações que exigem um argumento (como ID) são desativadas até você executar um trecho de código que permita escolher uma entidade. 
-
-  - Alguns trechos de código (marcados como *somente administradores*) exigem escopos de permissão comerciais que só podem ser concedidos por um administrador. Para executar esses trechos de código, entre como administrador e use o link na guia *Escopos de administrador* para permitir escopos em nível de administrador. Essa guia não está disponível para usuários que estão conectados com contas pessoais.
-   
+  - Alguns trechos de código (marcados como *somente administradores*) exigem escopos de permissão comerciais que só podem ser concedidos por um administrador. Para executá-los, você precisa entrar no portal do Azure como um administrador. Em seguida, use a seção *Permissões de API* do registro do aplicativo para concordar com os escopos no nível de administrador. Essa guia não está disponível para usuários que estão conectados com contas pessoais.
   - Se você estiver conectado com uma conta pessoal, os trechos de código sem suporte para contas da Microsoft serão desabilitados.
    
 As informações de resposta são exibidas na parte inferior da página.
 
 ### Como o exemplo afeta os dados da conta
-<a id="how-the-sample-affects-your-account-data" class="xliff"></a>
 
 Este exemplo cria, atualiza e exclui entidades e dados (como usuários ou arquivos). Dependendo do modo como você a usar, **poderá editar ou excluir dados e entidades reais** e deixar artefatos de dados. 
 
@@ -97,15 +114,14 @@ Para usar o exemplo sem modificar seus dados reais da conta, certifique-se de ex
 
 
 ## Código da observação
-<a id="code-of-note" class="xliff"></a>
 
 - [Startup.Auth.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/App_Start/Startup.Auth.cs). Autentica o usuário atual e inicializa o cache de token do exemplo.
 
 - [SessionTokenCache.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/TokenStorage/SessionTokenCache.cs). Armazena as informações de token do usuário. Você pode substituir pelo seu próprio cache de token personalizado. Saiba mais em [Armazenamento de tokens de acesso em cache em um aplicativo de vários locatários](https://azure.microsoft.com/en-us/documentation/articles/guidance-multitenant-identity-token-cache/).
 
-- [SampleAuthProvider.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SampleAuthProvider.cs). Implementa a interface IAuthProvider local e obtém acesso a um token usando o método **AcquireTokenSilentAsync**. Isso pode ser substituído pelo seu próprio provedor de autorização. 
+- [SampleAuthProvider.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SampleAuthProvider.cs). Implementa a interface IAuthProvider local e obtém acesso a um token, usando o método **AcquireTokenSilentAsync**. Isso pode ser substituído pelo seu próprio provedor de autorização. 
 
-- [SDKHelper.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SDKHelper.cs). Inicializa o **GraphServiceClient**, na [Biblioteca do Cliente .NET para Microsoft Graph](https://github.com/microsoftgraph/msgraph-sdk-dotnet), que é usado para interagir com o Microsoft Graph.
+- [SDKHelper.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Helpers/SDKHelper.cs). Inicializa o **GraphServiceClient** na [Biblioteca de Cliente do Microsoft Graph .NET](https://github.com/microsoftgraph/msgraph-sdk-dotnet) usada para interagir com o Microsoft Graph.
 
 - Os seguintes controladores contêm métodos que usam o **GraphServiceClient** para criar e enviar chamadas para o serviço do Microsoft Graph e processar a resposta.
   - [UsersController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/UsersController.cs) 
@@ -123,28 +139,25 @@ Para usar o exemplo sem modificar seus dados reais da conta, certifique-se de ex
 
 - Os arquivos a seguir contêm os modelos de exibição e exibição parcial usados para analisar e exibir dados do Microsoft Graph como objetos genéricos (para os fins deste exemplo). 
   - [ResultsViewModel.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Models/ResultsViewModel.cs)
-  - [_ResultsPartial.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Shared/_ResultsPartial.cshtml)  
+  - [\_ResultsPartial.cshtml](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Views/Shared/_ResultsPartial.cshtml)  
 
-- Os arquivos a seguir contêm o código usado para fornecer suporte ao consentimento incremental. Neste exemplo, os usuários são solicitados a consentir um conjunto inicial de permissões durante a entrada e a consentir permissões de administrador separadamente. 
+- Os arquivos a seguir contêm o código usado para fornecer suporte ao consentimento incremental. Neste exemplo, os usuários são solicitados a consentir em um conjunto inicial de permissões durante a entrada e a consentir em permissões de administrador separadamente. 
   - [AdminController.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Controllers/AdminController.cs)
   - [OAuth2CodeRedeemerMiddleware.cs](/Graph-ASPNET-46-Snippets/Microsoft%20Graph%20ASPNET%20Snippets/Utils/OAuth2CodeRedeemerMiddleware.cs). Middleware personalizado que resgata um código de autorização para tokens de acesso e de atualização fora do fluxo de entrada. Confira https://github.com/Azure-Samples/active-directory-dotnet-webapp-openidconnect-v2 para saber mais sobre como implementar o consentimento incremental.
 
 ## Perguntas e comentários
-<a id="questions-and-comments" class="xliff"></a>
 
-Gostaríamos de saber sua opinião sobre este exemplo. Você pode nos enviar suas perguntas e sugestões por meio da seção [Issues](https://github.com/microsoftgraph/aspnet-snippets-sample/issues) deste repositório.
+Gostaríamos de saber sua opinião sobre este exemplo. Você pode enviar perguntas e sugestões na seção [Problemas](https://github.com/microsoftgraph/aspnet-snippets-sample/issues) deste repositório.
 
-Seus comentários são importantes para nós. Junte-se a nós na página [Stack Overflow](http://stackoverflow.com/questions/tagged/microsoftgraph). Marque suas perguntas com [MicrosoftGraph].
+Seus comentários são importantes para nós. Junte-se a nós na página do [Stack Overflow](http://stackoverflow.com/questions/tagged/microsoftgraph). Marque suas perguntas com \[MicrosoftGraph].
 
 ## Colaboração
-<a id="contributing" class="xliff"></a>
 
 Se quiser contribuir para esse exemplo, confira [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Este projeto adotou o [Código de Conduta do Código Aberto da Microsoft](https://opensource.microsoft.com/codeofconduct/). Para saber mais, confira as [Perguntas frequentes do Código de Conduta](https://opensource.microsoft.com/codeofconduct/faq/) ou contate [opencode@microsoft.com](mailto:opencode@microsoft.com) se tiver outras dúvidas ou comentários. 
+Este projeto adotou o [Código de Conduta do Código Aberto da Microsoft](https://opensource.microsoft.com/codeofconduct/).  Para saber mais, confira as [Perguntas frequentes sobre o Código de Conduta](https://opensource.microsoft.com/codeofconduct/faq/) ou entre em contato pelo [opencode@microsoft.com](mailto:opencode@microsoft.com) se tiver outras dúvidas ou comentários. 
 
 ## Recursos adicionais
-<a id="additional-resources" class="xliff"></a>
 
 - [Outros exemplos de trechos de código do Microsoft Graph](https://github.com/MicrosoftGraph?utf8=%E2%9C%93&query=snippets)
 - [Visão geral do Microsoft Graph](http://graph.microsoft.io)
@@ -152,5 +165,4 @@ Este projeto adotou o [Código de Conduta do Código Aberto da Microsoft](https:
 - [Centro de Desenvolvimento do Office](http://dev.office.com/)
 
 ## Direitos autorais
-<a id="copyright" class="xliff"></a>
 Copyright © 2016 Microsoft. Todos os direitos reservados.
