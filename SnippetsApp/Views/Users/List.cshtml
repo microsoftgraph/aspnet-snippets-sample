@@ -1,0 +1,14 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model UsersListDisplayModel
+
+@{
+    ViewData["Title"] = "List users";
+}
+
+@if (!string.IsNullOrEmpty(Model.NextPageUrl))
+{
+  <a class="btn btn-light mb-2" asp-action="Page" asp-route-pageUrl="@Model.NextPageUrl" asp-route-isAdmin="false">Next page</a>
+}
+<partial name="_UserListPartial" for="UsersList" />

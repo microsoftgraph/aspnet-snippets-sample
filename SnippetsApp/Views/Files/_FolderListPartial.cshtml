@@ -1,0 +1,16 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model IEnumerable<DriveItem>
+
+@using Microsoft.Graph
+
+@foreach(var folder in Model)
+{
+  <a asp-action="Index" asp-route-folderId="@folder.Id" class="list-group-item list-group-item-action">
+    <div class="d-flex">
+      <i class="ms-Icon ms-Icon--FolderHorizontal mr-3" aria-hidden="true"></i>
+      <div>@folder.Name</div>
+    </div>
+  </a>
+}

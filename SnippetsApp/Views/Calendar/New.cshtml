@@ -1,0 +1,52 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+<!-- <NewFormSnippet> -->
+@model NewEvent
+
+@{
+    ViewData["Title"] = "New event";
+}
+
+<form asp-action="New">
+  <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+  <div class="form-group">
+    <label asp-for="Subject" class="control-label"></label>
+    <input asp-for="Subject" class="form-control" />
+    <span asp-validation-for="Subject" class="text-danger"></span>
+  </div>
+  <div class="form-group">
+    <label asp-for="Attendees" class="control-label"></label>
+    <input asp-for="Attendees" class="form-control" />
+    <span asp-validation-for="Attendees" class="text-danger"></span>
+  </div>
+  <div class="form-row">
+    <div class="col">
+      <div class="form-group">
+        <label asp-for="Start" class="control-label"></label>
+        <input asp-for="Start" class="form-control" />
+        <span asp-validation-for="Start" class="text-danger"></span>
+      </div>
+    </div>
+    <div class="col">
+      <div class="form-group">
+        <label asp-for="End" class="control-label"></label>
+        <input asp-for="End" class="form-control" />
+        <span asp-validation-for="End" class="text-danger"></span>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label asp-for="Body" class="control-label"></label>
+    <textarea asp-for="Body" class="form-control"></textarea>
+    <span asp-validation-for="Body" class="text-danger"></span>
+  </div>
+  <div class="form-group">
+    <input type="submit" value="Save" class="btn btn-primary" />
+  </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+<!-- </NewFormSnippet> -->

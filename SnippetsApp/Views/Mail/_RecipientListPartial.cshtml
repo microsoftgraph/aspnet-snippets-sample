@@ -1,0 +1,20 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model IEnumerable<Recipient>
+
+@using Microsoft.Graph
+
+@{
+  var recipientString = "";
+  foreach (var recipient in Model)
+  {
+    if (!string.IsNullOrEmpty(recipientString))
+    {
+      recipientString += "; ";
+    }
+    recipientString += recipient.EmailAddress.Name;
+  }
+}
+
+<span>@recipientString</span>

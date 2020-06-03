@@ -1,0 +1,60 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model GroupWithPhoto
+
+@{
+    ViewData["Title"] = Model.Group.DisplayName;
+    string groupTypes = Model.Group.GroupTypes.Count() > 0 ?
+      string.Join(",", Model.Group.GroupTypes) :
+      "Security";
+}
+
+<div class="card mb-4" id="group-card">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      <img class="card-img" src="@Model.ProfilePhotoUri" />
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h1 class="card-title">@Model.Group.DisplayName</h1>
+        <small class="text-muted">Group type: @groupTypes</small>
+        <p class="card-text">@Model.Group.Description</p>
+        <div class="form-check">
+          @if (Model.Group.MailEnabled.Equals(true))
+          {
+            <input type="checkbox" class="form-check-input" id="mailEnabled" checked disabled>
+          }
+          else
+          {
+            <input type="checkbox" class="form-check-input" id="mailEnabled" disabled>
+          }
+          <label for="mailEnabled" class="form-check-label">Mail enabled</label>
+        </div>
+        <div class="form-check mb-3">
+          @if (Model.Group.SecurityEnabled.Equals(true))
+          {
+            <input type="checkbox" class="form-check-input" id="securityEnabled" checked disabled>
+          }
+          else
+          {
+            <input type="checkbox" class="form-check-input" id="securityEnabled" disabled>
+          }
+          <label for="securityEnabled" class="form-check-label">Security enabled</label>
+        </div>
+        <form id="group-update-form" asp-action="Update">
+          <input type="hidden" form="group-update-form" id="groupId" name="groupId" value="@Model.Group.Id">
+          <div class="form-group">
+            <label for="displayName">Display name</label>
+            <div class="input-group mb-3">
+              <input type="text" form="group-update-form" class="form-control" id="displayName" name="displayName" value="@Model.Group.DisplayName">
+              <div class="input-group-append">
+                <input type="submit" form="group-update-form" value="Update" class="btn btn-primary">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,47 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@{
+  ViewData["Title"] = "New message";
+}
+
+<h1>New message</h1>
+<form asp-action="Send" enctype="multipart/form-data">
+  <div class="form-group row">
+    <label for="recipient" class="col-2 col-form-label">To</label>
+    <div class="col-10">
+      <input type="email" class="form-control" required name="recipient" id="recipient">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="subject" class="col-2 col-form-label">Subject</label>
+    <div class="col-10">
+      <input type="text" class = "form-control" name="subject" id="subject">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="attachmentFiles" class="col-2 col-form-label">Attachment</label>
+    <div class="col-10">
+      <div class="custom-file">
+        <input type="file" class="custom-file-input" name="attachmentFiles" id="attachmentFiles">
+        <label for="attachmentFiles" class="custom-file-label">Choose file</label>
+      </div>
+    </div>
+  </div>
+  <textarea class="form-control" rows=8 name="body"></textarea>
+  <div class="mt-3">
+    <input type="submit" class="btn btn-primary" value="Send">
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+  </div>
+</form>
+
+@section Scripts
+{
+    <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+    <script>
+      // Initialize Bootstrap custom file input
+      $(document).ready(function () {
+          bsCustomFileInput.init();
+      });
+    </script>
+}

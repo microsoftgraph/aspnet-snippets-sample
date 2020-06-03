@@ -1,0 +1,50 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model Drive
+
+@using Microsoft.Graph
+@using ByteSizeLib
+
+@{
+  ViewData["Title"] = Model.Name;
+  string stateClass = "text-critical";
+  if (Model.Quota.State == "normal")
+  {
+    stateClass = "text-success";
+  }
+  else if (Model.Quota.State == "nearing")
+  {
+    stateClass = "text-warning";
+  }
+}
+
+<div class="card">
+  <div class="card-body">
+    <h1 class="card-title">@Model.Name</h1>
+    @if(!string.IsNullOrEmpty(Model.Description))
+    {
+      <p class="card-text">@Model.Description</p>
+    }
+    <div class="d-flex">
+      <div class="mr-3"><strong>State:</strong></div>
+      <div class="@stateClass">@Model.Quota.State</div>
+    </div>
+    <div class="d-flex">
+      <div class="mr-3"><strong>Capacity:</strong></div>
+      <div>@ByteSize.FromBytes(Model.Quota.Total.Value).ToString()</div>
+    </div>
+    <div class="d-flex">
+      <div class="mr-3"><strong>Used:</strong></div>
+      <div>@ByteSize.FromBytes(Model.Quota.Used.Value).ToString()</div>
+    </div>
+    <div class="d-flex">
+      <div class="mr-3"><strong>Available:</strong></div>
+      <div>@ByteSize.FromBytes(Model.Quota.Remaining.Value).ToString()</div>
+    </div>
+    <div class="d-flex">
+      <div class="mr-3"><strong>Recycle bin:</strong></div>
+      <div>@ByteSize.FromBytes(Model.Quota.Deleted.Value).ToString()</div>
+    </div>
+  </div>
+</div>

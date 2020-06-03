@@ -1,0 +1,31 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@{
+    ViewData["Title"] = "Create group";
+}
+
+<form asp-action="Create">
+  <div class="form-group">
+    <label for="displayName">Display name</label>
+    <input type="text" class="form-control" id="displayName" name="displayName">
+  </div>
+  <div class="form-group">
+    <label for="mailNickName">Mail nickname</label>
+    <input type="text" class="form-control" id="mailNickName" name="mailNickName">
+  </div>
+  <div class="form-group">
+    <label for="description">Description</label>
+    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+  </div>
+  <div class="form-check">
+    <input type="checkbox" class="form-check-input" id="mailEnabled" name="mailEnabled" value="true">
+    <label for="mailEnabled" class="form-check-label">Mail enabled</label>
+  </div>
+  <div class="form-check mb-3">
+    <input type="checkbox" class="form-check-input" id="securityEnabled" name="securityEnabled" value="true">
+    <label for="securityEnabled" class="form-check-label">Security enabled</label>
+  </div>
+  <input type="submit" class="btn btn-primary" value="Create">
+  <a asp-action="List" class="btn btn-secondary">Cancel</a>
+</form>

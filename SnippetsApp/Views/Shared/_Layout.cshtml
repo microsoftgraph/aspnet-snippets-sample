@@ -1,0 +1,86 @@
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@{
+    string controller = $"{ViewContext.RouteData.Values["controller"]}";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@ViewData["Title"] - Graph Snippets</title>
+  <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+  <link
+    rel="stylesheet"
+    href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/11.0.0/css/fabric.min.css"
+  />
+  <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+  <header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
+      <div class="container">
+        <a class="navbar-brand" asp-controller="Home" asp-action="Index">Graph Snippets</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse mr-auto">
+          <ul class="navbar-nav flex-grow-1">
+            <li class="@(controller == "Home" ? "nav-item active" : "nav-item")">
+              <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+            </li>
+            @if (User.Identity.IsAuthenticated)
+            {
+              if (!User.IsPersonalAccount())
+              {
+                <li class="@(controller == "Users" ? "nav-item dropdown active" : "nav-item dropdown")">
+                  <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">Users</a>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" asp-controller="Users" asp-action="List">List users</a>
+                    <a class="dropdown-item" asp-controller="Users" asp-action="AdminList">Manage users (Admin)</a>
+                  </div>
+                </li>
+                <li class="@(controller == "Groups" ? "nav-item active" : "nav-item")">
+                  <a class="nav-link" asp-controller="Groups" asp-action="List">Groups</a>
+                </li>
+              }
+            <li class="@(controller == "Mail" ? "nav-item active" : "nav-item")">
+              <a class="nav-link" asp-controller="Mail" asp-action="Index">Mail</a>
+            </li>
+            <li class="@(controller == "Calendar" ? "nav-item active" : "nav-item")">
+              <a class="nav-link" asp-controller="Calendar" asp-action="Index">Calendar</a>
+            </li>
+            <li class="@(controller == "Files" ? "nav-item dropdown active" : "nav-item dropdown")">
+              <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">Files</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" asp-controller="Files" asp-action="Index">My files and folders</a>
+                <a class="dropdown-item" asp-controller="Files" asp-action="SharedWithMe">Shared with me</a>
+                <a class="dropdown-item" asp-controller="Files" asp-action="Drive">My Drive properties</a>
+              </div>
+            </li>
+            <li class="@(controller == "Extensions" ? "nav-item active" : "nav-item")">
+              <a class="nav-link" asp-controller="Extensions" asp-action="Index">Extensions</a>
+            </li>
+            }
+          </ul>
+          <partial name="_LoginPartial"/>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <div class="container">
+    <main role="main" class="pb-3">
+      <partial name="_AlertPartial"/>
+      @RenderBody()
+    </main>
+  </div>
+
+  <script src="~/lib/jquery/dist/jquery.min.js"></script>
+  <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="~/js/site.js" asp-append-version="true"></script>
+  @RenderSection("Scripts", required: false)
+</body>
+</html>

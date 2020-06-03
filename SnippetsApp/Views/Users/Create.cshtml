@@ -1,0 +1,36 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model string
+
+@{
+    ViewData["Title"] = "Create user";
+    string domainName = $"@{Model}";
+}
+
+<form asp-action="Create">
+  <div class="form-group">
+    <label for="displayName">Display name</label>
+    <input type="text" class="form-control" id="displayName" name="displayName">
+  </div>
+  <div class="form-group">
+    <label for="userName">User name</label>
+    <input type="hidden" name="domainName" value="@domainName">
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" id="userName" name="userName">
+      <div class="input-group-append">
+        <span class="input-group-text">@domainName</span>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input type="password" class="form-control" id="password" name="password">
+  </div>
+  <div class="form-group">
+    <label for="mobilePhone">Mobile phone</label>
+    <input type="tel" class="form-control" id="mobilePhone" name="mobilePhone">
+  </div>
+  <input type="submit" class="btn btn-primary" value="Create">
+  <a asp-action="AdminList" class="btn btn-secondary">Cancel</a>
+</form>

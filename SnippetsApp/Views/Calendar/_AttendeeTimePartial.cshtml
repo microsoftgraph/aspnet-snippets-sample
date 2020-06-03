@@ -1,0 +1,66 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model Event
+
+@using Microsoft.Graph
+
+@{
+  var start = DateTimeOffset.Parse(Model.Start.DateTime);
+  var end = DateTimeOffset.Parse(Model.End.DateTime);
+  var format = $"{User.GetUserGraphDateFormat()} {User.GetUserGraphTimeFormat()}";
+  string response = "";
+  switch(Model.ResponseStatus.Response)
+  {
+    case ResponseType.Accepted:
+      response = "You accepted on ";
+      break;
+    case ResponseType.Declined:
+      response = "You declined on ";
+      break;
+    case ResponseType.TentativelyAccepted:
+      response = "You tentatively accepted on ";
+      break;
+    default:
+      response = "You have not responded";
+      break;
+  }
+}
+
+<div class="d-flex">
+  <div class="mr-3"><strong>Start:</strong></div>
+  <div>@start.ToString(format)</div>
+</div>
+<div class="d-flex">
+  <div class="mr-3"><strong>End:</strong></div>
+  <div>@end.ToString(format)</div>
+</div>
+<div class="text-muted mt-3">
+  @response
+  @if (!Model.ResponseStatus.Response.Equals(ResponseType.NotResponded))
+  {
+    <date-time-offset value="@Model.ResponseStatus.Time.Value" time-zone="@User.GetUserGraphTimeZone()" format="@format"></date-time-offset>
+  }
+</div>
+<button class="btn btn-sm btn-secondary mt-3" data-toggle="collapse" data-target="#respondForm">Respond</button>
+
+<div class="collapse mt-3" id="respondForm">
+  <div class="card">
+    <div class="card-body">
+      <form asp-action="Accept">
+        <input type="hidden" name="eventId" value="@Model.Id">
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" name="sendResponse" value="true">
+          <label for="sendResponse">Send response to organizer?</label>
+        </div>
+        <div class="form-group">
+          <label for="comment">Comment</label>
+          <textarea class="form-control" name="comment" id="comment" rows="3"></textarea>
+        </div>
+        <input class="btn btn-sm btn-success" type="submit" value="Accept">
+        <input class="btn btn-sm btn-primary" type="submit" formaction="/Calendar/Tentative" value="Tentative">
+        <input class="btn btn-sm btn-danger" type="submit" formaction="/Calendar/Decline" value="Decline">
+      </form>
+    </div>
+  </div>
+</div>

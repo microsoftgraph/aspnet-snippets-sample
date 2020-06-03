@@ -1,0 +1,35 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model UsersListDisplayModel
+
+@{
+    ViewData["Title"] = "Manage users";
+}
+
+<div class="row">
+  <div class="col-auto mr-auto">
+  @if (!string.IsNullOrEmpty(Model.NextPageUrl))
+  {
+    <a class="btn btn-light mb-2" asp-action="Page" asp-route-pageUrl="@Model.NextPageUrl" asp-route-isAdmin="true">Next page</a>
+  }
+  </div>
+  <div class="col-auto">
+    <a class="btn btn-light mb-2 float-right" asp-action="Create">Create user</a>
+  </div>
+</div>
+<div class="list-group">
+  @foreach (var user in Model.UsersList)
+  {
+    <div class="list-group-item">
+      <div class="d-flex">
+        <div class="flex-grow-1"><span class="align-middle">@user.DisplayName</span></div>
+        <a asp-action="Display" asp-route-userId="@user.Id" class="btn btn-secondary btn-sm mr-2">Display</a>
+        <form asp-action="Delete" onsubmit="return confirm('Are you sure you want to delete @user.DisplayName?');">
+          <input type="hidden" name="userId" value="@user.Id">
+          <input type="submit" value="Delete" class="btn btn-secondary btn-sm">
+        </form>
+      </div>
+    </div>
+  }
+</div>

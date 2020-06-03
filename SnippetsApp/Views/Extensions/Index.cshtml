@@ -1,0 +1,48 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model RoamingSettingsDisplayModel
+
+@{
+  ViewData["Title"] = "Roaming settings";
+  string formAction = Model.Settings == null ? "Create" : "Update";
+}
+
+<div class="card">
+  <div class="card-body">
+    <h1 class="card-title">Roaming settings</h1>
+    @if (Model.Settings == null)
+    {
+      <div class="alert alert-info">
+        No settings found. Use the form below to add roaming settings to your profile.
+      </div>
+    }
+    else
+    {
+      <form asp-action="Delete">
+        <input type="submit" class="btn btn-secondary mb-3" value="Delete settings">
+      </form>
+    }
+    <form asp-action="@formAction">
+      <div class="form-group">
+        <label for="theme">Theme</label>
+        <select asp-for="SelectedTheme" asp-items="@Model.Themes" class="form-control">
+          <option hidden disabled selected>Select a theme</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="color">Color</label>
+        <select asp-for="SelectedColor" asp-items="@Model.Colors" class="form-control">
+          <option hidden disabled selected>Select a color</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="language">Language</label>
+        <select asp-for="SelectedLanguage" asp-items="@Model.Languages" class="form-control">
+          <option hidden disabled selected>Select a language</option>
+        </select>
+      </div>
+      <input type="submit" class="btn btn-primary" value="@formAction">
+    </form>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model MailViewDisplayModel
+
+@{
+    string folderName = Model.SelectedFolder == null ? "All folders" :
+      Model.SelectedFolder.DisplayName;
+    ViewData["Title"] = $"Mail - {folderName}";
+}
+
+<div class="btn-group">
+  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">Folders</button>
+  <div class="dropdown-menu">
+    <a class="dropdown-item" asp-action="Index">All folders</a>
+    <div class="dropdown-divider"></div>
+    @foreach (var folder in Model.MailFolders)
+    {
+      <a class="dropdown-item" asp-action="Index" asp-route-folderId="@folder.Id">@folder.DisplayName</a>
+    }
+  </div>
+</div>
+<a class="btn btn-secondary" asp-action="New">New message</a>
+
+@if (!string.IsNullOrEmpty(Model.NextPageUrl))
+{
+  <a class="btn btn-secondary" asp-action="Page" asp-route-folderId="@Model.SelectedFolder?.Id" asp-route-pageUrl="@Model.NextPageUrl">Next page</a>
+}
+
+<h1 class="mt-3">@folderName</h1>
+
+<partial name="_MessageListPartial" for="Messages">

@@ -1,0 +1,37 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+<!-- <CalendarIndexSnippet> -->
+@model CalendarViewModel
+
+@{
+    ViewData["Title"] = "Calendar";
+}
+
+<div class="mb-3">
+  <h1 class="mb-3">@Model.TimeSpan()</h1>
+  <a class="btn btn-light btn-sm" asp-controller="Calendar" asp-action="New">New event</a>
+</div>
+<div class="calendar-week">
+  <div class="table-responsive">
+    <table class="table table-sm">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Event</th>
+        </tr>
+      </thead>
+      <tbody>
+        <partial name="_DailyEventsPartial" for="Sunday" />
+        <partial name="_DailyEventsPartial" for="Monday" />
+        <partial name="_DailyEventsPartial" for="Tuesday" />
+        <partial name="_DailyEventsPartial" for="Wednesday" />
+        <partial name="_DailyEventsPartial" for="Thursday" />
+        <partial name="_DailyEventsPartial" for="Friday" />
+        <partial name="_DailyEventsPartial" for="Saturday" />
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- </CalendarIndexSnippet> -->

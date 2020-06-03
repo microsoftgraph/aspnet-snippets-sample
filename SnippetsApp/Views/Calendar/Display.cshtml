@@ -1,0 +1,68 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model Event
+
+@using Microsoft.Graph
+
+@{
+  ViewData["Title"] = Model.Subject;
+}
+
+<form asp-action="Delete" class="mb-3">
+  <input type="hidden" name="eventId" value="@Model.Id">
+  <input type="submit" class="btn btn-sm btn-secondary" value="Delete">
+</form>
+<div class="card">
+  <div class="card-body">
+    <h1 class="card-title">@(string.IsNullOrEmpty(Model.Subject) ? "(No subject)" : Model.Subject)</h1>
+    <div class="d-flex">
+      <div class="mr-3"><strong>Organizer:</strong></div>
+      <div>@Model.Organizer?.EmailAddress.Name</div>
+    </div>
+    @if (Model.Attendees?.Count() > 0)
+    {
+      <partial name="_AttendeeListPartial" for="Attendees" />
+    }
+    @if (Model.Location != null)
+    {
+      <div class="d-flex">
+        <div class="mr-3"><strong>Location:</strong></div>
+        <div>@Model.Location.DisplayName</div>
+      </div>
+    }
+    @if (Model.Attachments?.Count() > 0)
+    {
+      <div class="d-flex">
+        <div class="mr-3"><strong>Attachments:</strong></div>
+        <div>
+          <partial name="_AttachmentListPartial" for="Attachments" />
+        </div>
+      </div>
+    }
+  </div>
+</div>
+<div class="card mt-3">
+  <div class="card-body">
+    @if (Model.IsOrganizer.Equals(true))
+    {
+      <partial name="_OrganizerTimePartial" model="Model" />
+    }
+    else
+    {
+      <partial name="_AttendeeTimePartial" model="Model" />
+    }
+  </div>
+</div>
+<div class="card mt-3">
+  <div class="card-body">
+    @if (Model.Body.ContentType.Equals(BodyType.Html))
+    {
+      @Html.Raw(Model.Body.Content)
+    }
+    else
+    {
+      <p class="card-text">@Model.Body.Content</p>
+    }
+  </div></p>
+</div>

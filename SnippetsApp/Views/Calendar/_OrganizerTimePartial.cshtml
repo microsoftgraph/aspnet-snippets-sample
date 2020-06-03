@@ -1,0 +1,28 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model Event
+
+@using Microsoft.Graph
+
+@{
+  var start = DateTimeOffset.Parse(Model.Start.DateTime);
+  var end = DateTimeOffset.Parse(Model.End.DateTime);
+}
+
+<form asp-action="Update">
+  <input type="hidden" name="eventId" value="@Model.Id">
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="startTime">Start (@Model.Start.TimeZone)</label>
+      <input type="datetime-local" id="startTime" name="startTime" class="form-control" value="@start.ToString("s")">
+      <input type="hidden" name="startTimeZone" value="@Model.Start.TimeZone">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="endTime">End (@Model.End.TimeZone)</label>
+      <input type="datetime-local" id="endTime" name="endTime" class="form-control" value="@end.ToString("s")">
+      <input type="hidden" name="endTimeZone" value="@Model.End.TimeZone">
+    </div>
+  </div>
+  <input type="submit" class="btn btn-sm btn-primary" value="Update">
+</form>

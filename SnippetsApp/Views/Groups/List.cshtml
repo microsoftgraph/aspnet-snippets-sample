@@ -1,0 +1,45 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model GroupsListDisplayModel
+
+@{
+    ViewData["Title"] = "List groups";
+}
+
+<div class="row">
+  <div class="col-auto mr-auto">
+    <ul class="nav nav-tabs mb-2" id="groups-tab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <a class="nav-link active" id="all-groups" data-toggle="tab" href="#allgroups" role="tab">All groups</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" id="unified-groups" data-toggle="tab" href="#unifiedgroups" role="tab">Unified groups</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" id="member-groups" data-toggle="tab" href="#membership" role="tab">My group memberships</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" id="owned-groups" data-toggle="tab" href="#ownedgroups" role="tab">My owned groups</a>
+      </li>
+    </ul>
+  </div>
+  <div class="col-auto">
+    <a class="btn btn-light mb-2 float-right" asp-action="Create">Create group</a>
+  </div>
+</div>
+
+<div class="tab-content" id="groups-tab-content">
+  <div class="tab-pane fade show active" id="allgroups" role="tabpanel">
+    <partial name="_GroupListPartial" for="AllGroups">
+  </div>
+  <div class="tab-pane fade" id="unifiedgroups" role="tabpanel">
+    <partial name="_GroupListPartial" for="UnifiedGroups">
+  </div>
+  <div class="tab-pane fade" id="membership" role="tabpanel">
+    <partial name="_GroupListPartial" for="GroupMemberships">
+  </div>
+  <div class="tab-pane fade" id="ownedgroups" role="tabpanel">
+    <partial name="_GroupListPartial" for="OwnedGroups">
+  </div>
+</div>

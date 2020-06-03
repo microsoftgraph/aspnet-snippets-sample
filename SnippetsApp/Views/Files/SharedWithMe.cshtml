@@ -1,0 +1,26 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model FilesViewDisplayModel
+
+@{
+    ViewData["Title"] = $"Shared with me";
+}
+
+@if (!string.IsNullOrEmpty(Model.NextPageUrl))
+{
+  <a class="btn btn-secondary" asp-action="SharedWithMe" asp-route-pageUrl="@Model.NextPageUrl">Next page</a>
+}
+
+<h1 class="mt-3">Shared with me</h1>
+
+<div class="list-group">
+  @if(Model.Folders.Count > 0)
+  {
+    <partial name="_SharedItemListPartial" for="Folders" />
+  }
+  @if(Model.Files.Count > 0)
+  {
+    <partial name="_SharedItemListPartial" for="Files" />
+  }
+</div>

@@ -1,0 +1,33 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model IEnumerable<DriveItem>
+
+@using Microsoft.Graph
+
+@{
+  string format = $"{User.GetUserGraphDateFormat()} {User.GetUserGraphTimeFormat()}";
+}
+
+@foreach(var file in Model)
+{
+  <a asp-action="Display" asp-route-fileId="@file.Id" class="list-group-item list-group-item-action">
+    <div class="card">
+      <div class="row no-gutters">
+        <div class="d-flex align-items-center justify-content-center" style="width:100px; height:100px;">
+          <img src="@file.Thumbnails.CurrentPage.First().Small.Url" onerror="this.src='/img/no-profile-photo.png';">
+        </div>
+        <div class="col-auto">
+          <div class="card-body">
+            <h5 class="card-title">@file.Name</h5>
+             <p class="card-text">
+              <span>Modified: </span>
+              <date-time-offset value="@file.FileSystemInfo.LastModifiedDateTime" time-zone="@User.GetUserGraphTimeZone()" format="@format" ></date-time-offset>
+              <span>by @file.LastModifiedBy.User.DisplayName</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </a>
+}
