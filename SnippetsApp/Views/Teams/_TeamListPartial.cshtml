@@ -1,0 +1,13 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@using Microsoft.Graph
+
+@model IEnumerable<Team>
+
+<div class="list-group">
+  @foreach (var team in Model)
+  {
+    <a asp-action="Display" asp-route-teamId="@team.Id" class="list-group-item list-group-item-action">@team.AdditionalData["displayName"]</a>
+  }
+</div>

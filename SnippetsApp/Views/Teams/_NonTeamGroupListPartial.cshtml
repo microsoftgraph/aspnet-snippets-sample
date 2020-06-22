@@ -1,0 +1,23 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@using Microsoft.Graph
+
+@model IEnumerable<Group>
+
+<div class="list-group">
+  @foreach (var group in Model)
+  {
+    <div class="list-group-item">
+      <div class="d-flex">
+        <div class="flex-grow-1">
+          <span class="align-middle">@group.DisplayName</span>
+        </div>
+        <form asp-action="AddTeamToGroup" onsubmit="return confirm('Are you sure you want to add a Team to @group.DisplayName?');">
+          <input type="hidden" name="groupId" value="@group.Id">
+          <input type="submit" value="Add Team" class="btn btn-secondary btn-sm">
+        </form>
+      </div>
+    </div>
+  }
+</div>

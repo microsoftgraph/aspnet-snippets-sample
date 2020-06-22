@@ -1,0 +1,150 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model TeamDisplayModel
+
+@using Microsoft.Graph
+
+@{
+    ViewData["Title"] = Model.Team.AdditionalData["displayName"];
+    ViewData["teamId"] = Model.Team.Id;
+    ViewData["teamArchived"] = Model.Team.IsArchived.Value;
+    var archiveButtonLabel = Model.Team.IsArchived.Value ? "Unarchive" : "Archive";
+}
+
+<div class="card mb-4" id="team-card">
+  <div class="card-body">
+    <h1 class="card-title">@Model.Team.AdditionalData["displayName"]</h1>
+    <form asp-action="ArchiveTeam" class="mb-3" onsubmit="return confirm('Are you sure you want @archiveButtonLabel.ToLower() this team?');">
+      <input type="hidden" name="teamId" value="@Model.Team.Id">
+      <input type="hidden" name="archiveAction" value="@archiveButtonLabel">
+      <input type="submit" class="btn btn-primary" value="@archiveButtonLabel">
+    </form>
+    <ul class="nav nav-tabs mb-2" id="team-tab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <a class="nav-link active" id="channel-list" data-toggle="tab" href="#channels" role="tab">Channels</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" id="team-settings" data-toggle="tab" href="#settings" role="tab">Settings</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" id="installed-apps" data-toggle="tab" href="#apps" role="tab">Apps</a>
+      </li>
+    </ul>
+    <div class="tab-content" id="team-tab-content">
+      <div class="tab-pane fade show active" id="channels" role="tabpanel">
+        <form class="form-inline mt-3 mb-3" asp-action="CreateChannel">
+          <input type="hidden" name="teamId" value="@Model.Team.Id">
+          <label class="sr-only" for="channelName">New channel name</label>
+          <input type="text" class="form-control mb-2 mr-2" name="channelName" id="channelName" placeholder="New channel name" required>
+          <label class="sr-only" for="channelDescription">New channel description</label>
+          <input type="text" class="form-control mb-2 mr-2" name="channelDescription" id="channelDescription" placeholder="New channel description">
+          <input type="submit" class="btn btn-sm btn-primary mb-2" value="Create new channel" disabled="@Model.Team.IsArchived.Value">
+        </form>
+        <partial name="_ChannelListPartial" for="Channels" view-data="ViewData">
+      </div>
+      <div class="tab-pane fade" id="settings" role="tabpanel">
+        <div class="card">
+          <div class="card-body">
+            <form asp-action="UpdateSettings">
+              <input type="hidden" name="Id" value="@Model.Team.Id">
+              <h5 class="mb-3">Messaging settings</h5>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="MessagingSettings.AllowChannelMentions" checked="@Model.Team.MessagingSettings.AllowChannelMentions.Value" value="true">
+                <label class="form-check-label">Allow channel mentions</label>
+                <input type="hidden" name="MessagingSettings.AllowChannelMentions" value="false">
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="MessagingSettings.AllowTeamMentions" checked="@Model.Team.MessagingSettings.AllowTeamMentions.Value" value="true">
+                <label class="form-check-label">Allow team mentions</label>
+                <input type="hidden" name="MessagingSettings.AllowTeamMentions" value="false">
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="MessagingSettings.AllowOwnerDeleteMessages" checked="@Model.Team.MessagingSettings.AllowOwnerDeleteMessages.Value" value="true">
+                <label class="form-check-label">Allow owner to delete messages</label>
+                <input type="hidden" name="MessagingSettings.AllowOwnerDeleteMessages" value="false">
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="MessagingSettings.AllowUserDeleteMessages" checked="@Model.Team.MessagingSettings.AllowUserDeleteMessages.Value" value="true">
+                <label class="form-check-label">Allow users to delete messages</label>
+                <input type="hidden" name="MessagingSettings.AllowUserDeleteMessages" value="false">
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="MessagingSettings.AllowUserEditMessages" checked="@Model.Team.MessagingSettings.AllowUserEditMessages.Value" value="true">
+                <label class="form-check-label">Allow users to edit</label>
+                <input type="hidden" name="MessagingSettings.AllowUserEditMessages" value="false">
+              </div>
+              <hr/>
+              <h5 class="mb-3">Member settings</h5>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="MemberSettings.AllowCreateUpdateChannels" checked="@Model.Team.MemberSettings.AllowCreateUpdateChannels.Value" value="true">
+                <label class="form-check-label">Allow members to create and update channels</label>
+                <input type="hidden" name="MemberSettings.AllowCreateUpdateChannels" value="false">
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="MemberSettings.AllowDeleteChannels" checked="@Model.Team.MemberSettings.AllowDeleteChannels.Value" value="true">
+                <label class="form-check-label">Allow members to delete channels</label>
+                <input type="hidden" name="MemberSettings.AllowDeleteChannels" value="false">
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="MemberSettings.AllowCreateUpdateRemoveTabs" checked="@Model.Team.MemberSettings.AllowCreateUpdateRemoveTabs.Value" value="true">
+                <label class="form-check-label">Allow members to create, udpate, and remove tabs</label>
+                <input type="hidden" name="MemberSettings.AllowCreateUpdateRemoveTabs" value="false">
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="MemberSettings.AllowAddRemoveApps" checked="@Model.Team.MemberSettings.AllowAddRemoveApps.Value" value="true">
+                <label class="form-check-label">Allow members to add and remove apps</label>
+                <input type="hidden" name="MemberSettings.AllowAddRemoveApps" value="false">
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="MemberSettings.AllowCreateUpdateRemoveConnectors" checked="@Model.Team.MemberSettings.AllowCreateUpdateRemoveConnectors.Value" value="true">
+                <label class="form-check-label">Allow members to create, update, and remove connectors</label>
+                <input type="hidden" name="MemberSettings.AllowCreateUpdateRemoveConnectors" value="false">
+              </div>
+              <hr/>
+              <h5 class="mb-3">Guest settings</h5>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="GuestSettings.AllowCreateUpdateChannels" checked="@Model.Team.GuestSettings.AllowCreateUpdateChannels.Value" value="true">
+                <label class="form-check-label">Allow guests to create and update channels</label>
+                <input type="hidden" name="GuestSettings.AllowCreateUpdateChannels" value="false">
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="GuestSettings.AllowDeleteChannels" checked="@Model.Team.GuestSettings.AllowDeleteChannels.Value" value="true">
+                <label class="form-check-label">Allow guests to delete channels</label>
+                <input type="hidden" name="GuestSettings.AllowDeleteChannels" value="false">
+              </div>
+              <hr/>
+              <h5 class="mb-3">Fun settings</h5>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="FunSettings.AllowGiphy" checked="@Model.Team.FunSettings.AllowGiphy.Value" value="true">
+                <label class="form-check-label">Allow Giphy</label>
+                <input type="hidden" name="FunSettings.AllowGiphy" value="false">
+              </div>
+              <div class="form-group">
+                <label>Giphy content rating</label>
+                <select name="FunSettings.GiphyContentRating" class="form-control">
+                  <option value="strict" selected="@Model.Team.FunSettings.GiphyContentRating.Value.Equals(GiphyRatingType.Strict)">Strict</option>
+                  <option value="moderate" selected="@Model.Team.FunSettings.GiphyContentRating.Value.Equals(GiphyRatingType.Moderate)">Moderate</option>
+                </select>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="FunSettings.AllowStickersAndMemes" checked="@Model.Team.FunSettings.AllowStickersAndMemes.Value" value="true">
+                <label class="form-check-label">Allow stickers and memes</label>
+                <input type="hidden" name="FunSettings.AllowStickersAndMemes" value="false">
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="FunSettings.AllowCustomMemes" checked="@Model.Team.FunSettings.AllowCustomMemes.Value" value="true">
+                <label class="form-check-label">Allow custom memes</label>
+                <input type="hidden" name="FunSettings.AllowCustomMemes" value="false">
+              </div>
+              <input type="submit" class="btn btn-primary mt-3" value="Update" disabled="@Model.Team.IsArchived.Value">
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="apps" role="tabpanel">
+        <partial name="_AppListPartial" for="InstalledApps" view-data="ViewData">
+      </div>
+    </div>
+  </div>
+</div>

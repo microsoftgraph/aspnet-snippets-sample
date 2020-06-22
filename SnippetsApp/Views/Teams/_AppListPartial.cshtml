@@ -1,0 +1,25 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model IEnumerable<TeamsAppInstallation>
+
+@using Microsoft.Graph
+
+<div class="list-group">
+  @foreach (var app in Model)
+  {
+    <div class="list-group-item">
+      <div class="d-flex">
+        <div class="flex-grow-1">
+          <span class="align-middle">@app.TeamsAppDefinition.DisplayName</span>
+          <span class="align-middle">@app.TeamsAppDefinition.Version</span>
+        </div>
+        <form asp-action="DeleteApp">
+          <input type="hidden" name="teamId" value="@ViewData["teamId"]">
+          <input type="hidden" name="appId" value="@app.Id">
+          <input type="submit" class="btn btn-sm btn-primary" value="Uninstall">
+        </form>
+      </div>
+    </div>
+  }
+</div>

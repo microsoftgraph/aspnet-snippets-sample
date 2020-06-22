@@ -46,6 +46,9 @@
                 <li class="@(controller == "Groups" ? "nav-item active" : "nav-item")">
                   <a class="nav-link" asp-controller="Groups" asp-action="List">Groups</a>
                 </li>
+                <li class="@(controller == "Teams" ? "nav-item active" : "nav-item")">
+                  <a class="nav-link" asp-controller="Teams" asp-action="Index">Teams</a>
+                </li>
               }
             <li class="@(controller == "Mail" ? "nav-item active" : "nav-item")">
               <a class="nav-link" asp-controller="Mail" asp-action="Index">Mail</a>
