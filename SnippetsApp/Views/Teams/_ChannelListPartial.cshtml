@@ -1,0 +1,30 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model IEnumerable<Channel>
+
+@using Microsoft.Graph
+
+@{
+  var teamArchived = ViewData["teamArchived"] as bool?;
+}
+
+<div class="list-group">
+  @foreach (var channel in Model)
+  {
+    <div class="list-group-item">
+      <div class="d-flex">
+        <div class="flex-grow-1">
+          <span class="align-middle">@channel.DisplayName</span>
+        </div>
+        @if (!teamArchived.Value)
+        {
+          <a class="btn btn-sm btn-primary"
+            asp-action="PostMessageToChannel"
+            asp-route-channelId="@channel.Id"
+            asp-route-teamId="@ViewData["teamId"]">Post message</a>
+        }
+      </div>
+    </div>
+  }
+</div>

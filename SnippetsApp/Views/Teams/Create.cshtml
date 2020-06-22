@@ -1,0 +1,24 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@{
+    ViewData["Title"] = "Create new group and team";
+}
+
+<h1>Create new group and team</h1>
+<form asp-action="Create">
+  <div class="form-group">
+    <label for="teamName">Team name</label>
+    <input type="text" class="form-control" name="teamName" id="teamName" required>
+  </div>
+  <div class="form-group">
+    <label for="teamDescription">Description</label>
+    <input type="text" class="form-control" name="teamDescription" id="teamDescription">
+  </div>
+  <div class="form-group">
+    <label for="teamMailNickname">Mail nickname</label>
+    <input type="text" class="form-control" name="teamMailNickname" id="teamMailNickname" required>
+  </div>
+  <input type="submit" class="btn btn-primary" value="Create">
+  <a asp-action="List" class="btn btn-secondary">Cancel</a>
+</form>

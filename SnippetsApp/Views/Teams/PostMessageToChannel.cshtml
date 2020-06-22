@@ -1,0 +1,17 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+
+@model TeamMessageDisplayModel
+
+@{
+    ViewData["Title"] = "New message";
+}
+
+<h1>Post message to channel</h1>
+<form asp-action="PostMessageToChannel">
+  <input type="hidden" name="channelId" value="@Model.ChannelId">
+  <input type="hidden" name="teamId" value="@Model.TeamId">
+  <textarea class="form-control mb-3" name="Message" rows=4></textarea>
+  <input type="submit" class="btn btn-primary" value="Post message">
+  <a asp-action="Display" asp-route-teamId="@Model.TeamId" class="btn btn-secondary">Cancel</a>
+</form>
