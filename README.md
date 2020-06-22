@@ -2,7 +2,10 @@
 page_type: sample
 products:
 - office-365
+- office-onedrive
 - office-outlook
+- office-teams
+- m365
 - ms-graph
 languages:
 - csharp
@@ -12,10 +15,14 @@ extensions:
   contentType: samples
   technologies:
   - Microsoft Graph
+  - Microsoft identity platform
   services:
   - Office 365
+  - OneDrive
   - Outlook
   - Groups
+  - Microsoft identity platform
+  - Microsoft Teams
   createdDate: 8/4/2016 10:31:51 AM
 ---
 # Microsoft Graph snippets sample for ASP.NET Core 3.1
