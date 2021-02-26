@@ -73,11 +73,11 @@ namespace SnippetsApp
                     claimsPrincipal.IsPersonalAccount()? user.UserPrincipalName : user.Mail));
             identity.AddClaim(
                 new Claim(GraphClaimTypes.TimeZone,
-                    user.MailboxSettings.TimeZone));
+                    user.MailboxSettings.TimeZone ?? "UTC"));
             identity.AddClaim(
-                new Claim(GraphClaimTypes.TimeFormat, user.MailboxSettings.TimeFormat));
+                new Claim(GraphClaimTypes.TimeFormat, user.MailboxSettings.TimeFormat ?? "h:mm tt"));
             identity.AddClaim(
-                new Claim(GraphClaimTypes.DateFormat, user.MailboxSettings.DateFormat));
+                new Claim(GraphClaimTypes.DateFormat, user.MailboxSettings.DateFormat ?? "M/d/yyyy"));
         }
 
         public static void AddUserGraphPhoto(this ClaimsPrincipal claimsPrincipal, Stream photoStream)

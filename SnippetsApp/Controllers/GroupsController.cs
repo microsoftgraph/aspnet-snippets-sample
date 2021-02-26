@@ -81,7 +81,7 @@ namespace SnippetsApp.Controllers
                     // So just check for 404, not specific error codes
                     if (!ex.StatusCode.Equals(HttpStatusCode.NotFound))
                     {
-                        throw ex;
+                        throw;
                     }
                 }
 
