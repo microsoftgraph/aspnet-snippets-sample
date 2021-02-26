@@ -1,8 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
-using Microsoft.AspNetCore.Razor.TagHelpers;
 using System;
+using Microsoft.AspNetCore.Razor.TagHelpers;
+using TimeZoneConverter;
 
 namespace SnippetsApp.TagHelpers
 {
@@ -27,7 +28,9 @@ namespace SnippetsApp.TagHelpers
             DateTime dateTime;
             try
             {
-                var userTimeZone = TimeZoneInfo.FindSystemTimeZoneById(TimeZone);
+                // TZConvert handles either an IANA or Windows identifier
+                // Graph can return either
+                var userTimeZone = TZConvert.GetTimeZoneInfo(TimeZone);
                 dateTime = TimeZoneInfo.ConvertTimeFromUtc(Value.GetValueOrDefault().UtcDateTime, userTimeZone);
             }
             catch(TimeZoneNotFoundException)

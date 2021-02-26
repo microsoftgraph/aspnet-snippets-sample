@@ -1,15 +1,16 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
-using SnippetsApp.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Web;
 using Microsoft.Graph;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using SnippetsApp.Models;
+using TimeZoneConverter;
 
 namespace SnippetsApp.Controllers
 {
@@ -32,7 +33,9 @@ namespace SnippetsApp.Controllers
         {
             try
             {
-                var userTimeZone = TimeZoneInfo.FindSystemTimeZoneById(
+                // TZConvert handles either an IANA or Windows identifier
+                // Graph can return either
+                var userTimeZone = TZConvert.GetTimeZoneInfo(
                     User.GetUserGraphTimeZone());
                 var startOfWeek = CalendarController.GetUtcStartOfWeekInTimeZone(
                     DateTime.Today, userTimeZone);
