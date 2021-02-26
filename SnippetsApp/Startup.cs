@@ -1,6 +1,10 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
+using System.Net;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,8 +17,6 @@ using Microsoft.Identity.Web.TokenCacheProviders.InMemory;
 using Microsoft.Identity.Web.UI;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.Graph;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace SnippetsApp
 {
@@ -30,110 +32,103 @@ namespace SnippetsApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddOptions();
-
             // Add Microsoft Identity Platform sign-in
-            // <AddSignInSnippet>
-            services.AddSignIn(options =>
-            {
-                Configuration.Bind("AzureAd", options);
+            services
+                .AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+                .AddMicrosoftIdentityWebApp(options => {
+                    Configuration.Bind("AzureAd", options);
 
-                options.Prompt = "select_account";
+                    options.Prompt = "select_account";
 
-                var authCodeHandler = options.Events.OnAuthorizationCodeReceived;
-                options.Events.OnAuthorizationCodeReceived = async context => {
-                    // Invoke the original handler first
-                    // This allows the Microsoft.Identity.Web library to
-                    // add the user to its token cache
-                    await authCodeHandler(context);
+                    options.Events.OnTokenValidated = async context => {
+                        var tokenAcquisition = context.HttpContext.RequestServices
+                            .GetRequiredService<ITokenAcquisition>();
 
-                    var tokenAcquisition = context.HttpContext.RequestServices
-                        .GetRequiredService<ITokenAcquisition>() as ITokenAcquisition;
+                        var graphClient = new GraphServiceClient(
+                            new DelegateAuthenticationProvider(async (request) => {
+                                var token = await tokenAcquisition
+                                    .GetAccessTokenForUserAsync(GraphConstants.DefaultScopes, user:context.Principal);
+                                request.Headers.Authorization =
+                                    new AuthenticationHeaderValue("Bearer", token);
+                            })
+                        );
 
-                    var graphClient = GraphServiceClientFactory
-                        .GetAuthenticatedGraphClient(async () =>
-                        {
-                            return await tokenAcquisition
-                                .GetAccessTokenForUserAsync(GraphConstants.DefaultScopes);
-                        }
-                    );
-
-                    // Get user information from Graph
-                    var user = await graphClient.Me.Request()
-                        .Select(u => new {
-                            u.DisplayName,
-                            u.Mail,
-                            u.UserPrincipalName,
-                            u.MailboxSettings
-                        })
-                        .GetAsync();
-
-                    context.Principal.AddUserGraphInfo(user);
-
-                    if (context.Principal.IsPersonalAccount())
-                    {
-                        // Personal accounts do not support getting their
-                        // photo via Graph
-                        // Support is there in the beta API
-                        context.Principal.AddUserGraphPhoto(null);
-                        return;
-                    }
-
-                    // Get the user's photo
-                    // If the user doesn't have a photo, this throws
-                    try
-                    {
-                        var photo = await graphClient.Me
-                            .Photos["48x48"]
-                            .Content
-                            .Request()
+                        // Get user information from Graph
+                        var user = await graphClient.Me.Request()
+                            .Select(u => new {
+                                u.DisplayName,
+                                u.Mail,
+                                u.UserPrincipalName,
+                                u.MailboxSettings
+                            })
                             .GetAsync();
 
-                        context.Principal.AddUserGraphPhoto(photo);
-                    }
-                    catch (ServiceException ex)
-                    {
-                        if (ex.IsMatch("ErrorItemNotFound"))
+                        context.Principal.AddUserGraphInfo(user);
+
+                        if (context.Principal.IsPersonalAccount())
                         {
+                            // Personal accounts do not support getting their
+                            // photo via Graph
+                            // Support is there in the beta API
                             context.Principal.AddUserGraphPhoto(null);
+                            return;
                         }
-                        else
+
+                        // Get the user's photo
+                        // If the user doesn't have a photo, this throws
+                        try
                         {
-                            throw ex;
+                            var photo = await graphClient.Me
+                                .Photos["48x48"]
+                                .Content
+                                .Request()
+                                .GetAsync();
+
+                            context.Principal.AddUserGraphPhoto(photo);
                         }
-                    }
-                };
+                        catch (ServiceException ex)
+                        {
+                            if (ex.IsMatch("ErrorItemNotFound"))
+                            {
+                                context.Principal.AddUserGraphPhoto(null);
+                            }
+                            else
+                            {
+                                throw;
+                            }
+                        }
+                    };
 
-                options.Events.OnAuthenticationFailed = context => {
-                    var error = WebUtility.UrlEncode(context.Exception.Message);
-                    context.Response
-                        .Redirect($"/Home/ErrorWithMessage?message=Authentication+error&debug={error}");
-                    context.HandleResponse();
-
-                    return Task.FromResult(0);
-                };
-
-                options.Events.OnRemoteFailure = context => {
-                    if (context.Failure is OpenIdConnectProtocolException)
-                    {
-                        var error = WebUtility.UrlEncode(context.Failure.Message);
+                    options.Events.OnAuthenticationFailed = context => {
+                        var error = WebUtility.UrlEncode(context.Exception.Message);
                         context.Response
-                            .Redirect($"/Home/ErrorWithMessage?message=Sign+in+error&debug={error}");
+                            .Redirect($"/Home/ErrorWithMessage?message=Authentication+error&debug={error}");
                         context.HandleResponse();
-                    }
 
-                    return Task.FromResult(0);
-                };
-            }, options =>
-            {
-                Configuration.Bind("AzureAd", options);
-            });
-            // </AddSignInSnippet>
+                        return Task.FromResult(0);
+                    };
 
-            // Add ability to call web API (Graph)
-            // and get access tokens
-            services.AddWebAppCallsProtectedWebApi(Configuration,
-                GraphConstants.DefaultScopes)
+                    options.Events.OnRemoteFailure = context => {
+                        if (context.Failure is OpenIdConnectProtocolException)
+                        {
+                            var error = WebUtility.UrlEncode(context.Failure.Message);
+                            context.Response
+                                .Redirect($"/Home/ErrorWithMessage?message=Sign+in+error&debug={error}");
+                            context.HandleResponse();
+                        }
+
+                        return Task.FromResult(0);
+                    };
+                })
+                // Add ability to call web API (Graph)
+                // and get access tokens
+                .EnableTokenAcquisitionToCallDownstreamApi(options => {
+                    Configuration.Bind("AzureAd", options);
+                }, GraphConstants.DefaultScopes)
+                // Add a GraphServiceClient via dependency injection
+                .AddMicrosoftGraph(options => {
+                    options.Scopes = string.Join(' ', GraphConstants.DefaultScopes);
+                })
                 // Use in-memory token cache
                 // See https://github.com/AzureAD/microsoft-identity-web/wiki/token-cache-serialization
                 .AddInMemoryTokenCaches();

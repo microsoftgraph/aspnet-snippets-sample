@@ -318,7 +318,7 @@ namespace SnippetsApp.Controllers
                         // So just check for 404, not specific error codes
                         if (!ex.StatusCode.Equals(HttpStatusCode.NotFound))
                         {
-                            throw ex;
+                            throw;
                         }
                     }
 
@@ -355,7 +355,7 @@ namespace SnippetsApp.Controllers
                                     "Provide admin consent",
                                     Url.Action("AdminDisplay", new { userId = userId }));
                         }
-                        else throw ex;
+                        else throw;
                     }
 
                     try
@@ -392,7 +392,7 @@ namespace SnippetsApp.Controllers
                         {
                             model.DirectReports = null;
                         }
-                        else throw ex;
+                        else throw;
                     }
                 }
 

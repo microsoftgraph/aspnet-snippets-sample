@@ -47,7 +47,7 @@ namespace SnippetsApp.Controllers
             {
                 if (ex.InnerException is MsalUiRequiredException)
                 {
-                    throw ex;
+                    throw;
                 }
 
                 return View(new CalendarViewModel())

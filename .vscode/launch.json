@@ -10,7 +10,7 @@
       "request": "launch",
       "preLaunchTask": "build",
       // If you have changed target frameworks, make sure to update the program path.
-      "program": "${workspaceFolder}/SnippetsApp/bin/Debug/netcoreapp3.1/SnippetsApp.dll",
+      "program": "${workspaceFolder}/SnippetsApp/bin/Debug/net5.0/SnippetsApp.dll",
       "args": [],
       "cwd": "${workspaceFolder}/SnippetsApp",
       "stopAtEntry": false,

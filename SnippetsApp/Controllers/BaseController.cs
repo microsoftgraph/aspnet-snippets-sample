@@ -49,7 +49,7 @@ namespace SnippetsApp.Controllers
         protected void InvokeAuthIfNeeded(ServiceException serviceException)
         {
             // Check if this failed because interactive auth is needed
-            if (serviceException.InnerException is MsalUiRequiredException)
+            if (serviceException.InnerException is MicrosoftIdentityWebChallengeUserException)
             {
                 // Throwing the exception causes Microsoft.Identity.Web to
                 // take over, handling auth (based on scopes defined in the
