@@ -7,11 +7,11 @@
 
   <ItemGroup>
     <PackageReference Include="ByteSize" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.3" />
-    <PackageReference Include="Microsoft.Graph" Version="3.25.0" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="1.6.0" />
-    <PackageReference Include="Microsoft.Identity.Web.MicrosoftGraph" Version="1.6.0" />
-    <PackageReference Include="Microsoft.Identity.Web.UI" Version="1.6.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.4" />
+    <PackageReference Include="Microsoft.Graph" Version="3.28.0" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="1.8.2" />
+    <PackageReference Include="Microsoft.Identity.Web.MicrosoftGraph" Version="1.8.2" />
+    <PackageReference Include="Microsoft.Identity.Web.UI" Version="1.8.2" />
     <PackageReference Include="TimeZoneConverter" Version="3.4.0" />
   </ItemGroup>
 
