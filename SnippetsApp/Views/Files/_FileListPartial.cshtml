@@ -15,7 +15,14 @@
     <div class="card">
       <div class="row no-gutters">
         <div class="d-flex align-items-center justify-content-center" style="width:100px; height:100px;">
-          <img src="@file.Thumbnails.CurrentPage.First().Small.Url" onerror="this.src='/img/no-profile-photo.png';">
+          @if (file.Thumbnails.CurrentPage.Count > 0)
+          {
+            <img src="@file.Thumbnails.CurrentPage.First().Small.Url" onerror="this.src='/img/no-profile-photo.png';">
+          }
+          else
+          {
+            <img src="/img/no-profile-photo.png">
+          }
         </div>
         <div class="col-auto">
           <div class="card-body">
