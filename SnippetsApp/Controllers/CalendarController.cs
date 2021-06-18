@@ -48,10 +48,7 @@ namespace SnippetsApp.Controllers
             }
             catch (ServiceException ex)
             {
-                if (ex.InnerException is MsalUiRequiredException)
-                {
-                    throw;
-                }
+                InvokeAuthIfNeeded(ex);
 
                 return View(new CalendarViewModel())
                     .WithError("Error getting calendar view", ex.Message);
@@ -189,6 +186,8 @@ namespace SnippetsApp.Controllers
             }
             catch (ServiceException ex)
             {
+                InvokeAuthIfNeeded(ex);
+
                 // Redirect to the calendar view with an error message
                 return RedirectToAction("Index")
                     .WithError("Error creating event", ex.Error.Message);
@@ -420,13 +419,7 @@ namespace SnippetsApp.Controllers
 
         private async Task<IList<Event>> GetUserWeekCalendar(DateTime startOfWeek)
         {
-            var graphClient = GraphServiceClientFactory
-                .GetAuthenticatedGraphClient(async () =>
-                {
-                    return await _tokenAcquisition
-                        .GetAccessTokenForUserAsync(_calendarScopes);
-                }
-            );
+            var graphClient = GetGraphClientForScopes(_calendarScopes);
 
             // Configure a calendar view for the current week
             var endOfWeek = startOfWeek.AddDays(7);
