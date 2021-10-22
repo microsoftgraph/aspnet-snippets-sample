@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using SnippetsApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,14 +15,19 @@ using System.Threading.Tasks;
 
 namespace SnippetsApp.Controllers
 {
+    [Authorize]
     public class FilesController : BaseController
     {
-      private readonly string[] _filesScopes =
+        private readonly string[] _filesScopes =
             new [] { GraphConstants.FilesReadWrite };
 
+        private readonly string[] _filesAllScopes =
+            new [] { GraphConstants.FilesReadWriteAll };
+
         public FilesController(
+            GraphServiceClient graphClient,
             ITokenAcquisition tokenAcquisition,
-            ILogger<HomeController> logger) : base(tokenAcquisition, logger)
+            ILogger<HomeController> logger) : base(graphClient, tokenAcquisition, logger)
         {
         }
 
@@ -32,6 +38,7 @@ namespace SnippetsApp.Controllers
         [AuthorizeForScopes(Scopes = new [] { GraphConstants.FilesReadWrite })]
         public async Task<IActionResult> Index(string folderId = null)
         {
+            await EnsureScopes(_filesScopes);
             return await GetViewForFolder(folderId);
         }
 
@@ -43,6 +50,7 @@ namespace SnippetsApp.Controllers
         public async Task<IActionResult> Page(string pageUrl,
                                               string folderId = null)
         {
+            await EnsureScopes(_filesScopes);
             return await GetViewForFolder(folderId, pageUrl);
         }
 
@@ -52,13 +60,12 @@ namespace SnippetsApp.Controllers
         [AuthorizeForScopes(Scopes = new[] { GraphConstants.FilesReadWriteAll })]
         public async Task<IActionResult> SharedWithMe(string pageUrl = null)
         {
+            await EnsureScopes(_filesAllScopes);
+
             var model = new FilesViewDisplayModel();
 
-            var scopes = new[] { GraphConstants.FilesReadWriteAll };
             try
             {
-                var graphClient = GetGraphClientForScopes(scopes);
-
                 IDriveSharedWithMeRequest sharedItemsRequest;
 
                 // Is this a page request?
@@ -67,7 +74,7 @@ namespace SnippetsApp.Controllers
                     // Not a page request, use the Graph client
                     // to build the request
                     // GET /me/drive/sharedWithMe
-                    sharedItemsRequest = graphClient.Me
+                    sharedItemsRequest = _graphClient.Me
                         .Drive
                         .SharedWithMe()
                         .Request();
@@ -78,7 +85,7 @@ namespace SnippetsApp.Controllers
                     // the request builders, initialize the request directly
                     // from the URL
                     sharedItemsRequest = new DriveSharedWithMeRequest(
-                        pageUrl, graphClient, null);
+                        pageUrl, _graphClient, null);
                 }
 
                 // Send the request
@@ -121,12 +128,12 @@ namespace SnippetsApp.Controllers
         [AuthorizeForScopes(Scopes = new [] { GraphConstants.FilesReadWrite })]
         public async Task<IActionResult> Drive()
         {
+            await EnsureScopes(_filesScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(_filesScopes);
-
                 // GET /me/drive
-                var drive = await graphClient.Me
+                var drive = await _graphClient.Me
                     .Drive
                     .Request()
                     .GetAsync();
@@ -156,12 +163,12 @@ namespace SnippetsApp.Controllers
                     .WithError("File ID cannot be empty.");
             }
 
+            await EnsureScopes(_filesScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(_filesScopes);
-
                 // Get /me/drive/items/fileId
-                var file = await graphClient.Me
+                var file = await _graphClient.Me
                     .Drive
                     .Items[fileId]
                     .Request()
@@ -204,13 +211,13 @@ namespace SnippetsApp.Controllers
                     .WithError("File ID cannot be empty.");
             }
 
+            await EnsureScopes(_filesScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(_filesScopes);
-
                 // Get the file name and type
                 // GET /me/drive/items/fileId
-                var file = await graphClient.Me
+                var file = await _graphClient.Me
                     .Drive
                     .Items[fileId]
                     .Request()
@@ -225,7 +232,7 @@ namespace SnippetsApp.Controllers
 
                 // Get the contents of the file
                 // GET /me/drive/items/fileId/content
-                var fileContents = await graphClient.Me
+                var fileContents = await _graphClient.Me
                     .Drive
                     .Items[fileId]
                     .Content
@@ -263,13 +270,13 @@ namespace SnippetsApp.Controllers
                     .WithError("File ID cannot be empty.");
             }
 
+            await EnsureScopes(_filesScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(_filesScopes);
-
                 // Get a read-only link to the file
                 // POST /me/drive/items/fileId/createLink
-                var permission = await graphClient.Me
+                var permission = await _graphClient.Me
                     .Drive
                     .Items[fileId]
                     .CreateLink("view")
@@ -307,10 +314,10 @@ namespace SnippetsApp.Controllers
                     .WithError("Message ID cannot be empty.");
             }
 
+            await EnsureScopes(_filesScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(_filesScopes);
-
                 // Create a new DriveItem object with just the properties
                 // to update, in this case, Name
                 var updateFile = new DriveItem
@@ -323,7 +330,7 @@ namespace SnippetsApp.Controllers
                 // {
                 //   "name": "..."
                 // }
-                await graphClient.Me
+                await _graphClient.Me
                     .Drive
                     .Items[fileId]
                     .Request()
@@ -358,12 +365,12 @@ namespace SnippetsApp.Controllers
                     .WithError("File ID cannot be empty.");
             }
 
+            await EnsureScopes(_filesScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(_filesScopes);
-
                 // DELETE /me/drive/items/fileId
-                await graphClient.Me
+                await _graphClient.Me
                     .Drive
                     .Items[fileId]
                     .Request()
@@ -385,8 +392,9 @@ namespace SnippetsApp.Controllers
         // GET /Files/NewFile
         // Get the form to create a new file
         [AuthorizeForScopes(Scopes = new [] { GraphConstants.FilesReadWrite })]
-        public IActionResult NewFile(string folderId)
+        public async Task<IActionResult> NewFile(string folderId)
         {
+            await EnsureScopes(_filesScopes);
             return View(model: folderId);
         }
 
@@ -407,14 +415,14 @@ namespace SnippetsApp.Controllers
                     .WithError("No folder ID was specified");
             }
 
+            await EnsureScopes(_filesScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(_filesScopes);
-
                 var file = uploadFiles.First();
 
                 // PUT /me/drive/items/folderId:/fileName:/content
-                var newFile = await graphClient.Me
+                var newFile = await _graphClient.Me
                     .Drive
                     .Items[folderId]
                     .ItemWithPath(file.FileName)
@@ -437,8 +445,9 @@ namespace SnippetsApp.Controllers
         // GET /Files/UploadFile
         // Gets the form to upload a file
         [AuthorizeForScopes(Scopes = new [] { GraphConstants.FilesReadWrite })]
-        public IActionResult UploadFile(string folderId)
+        public async Task<IActionResult> UploadFile(string folderId)
         {
+            await EnsureScopes(_filesScopes);
             return View(model: folderId);
         }
 
@@ -458,10 +467,10 @@ namespace SnippetsApp.Controllers
                     .WithError("No folder ID was specified");
             }
 
+            await EnsureScopes(_filesScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(_filesScopes);
-
                 var file = uploadFiles.First();
 
                 // Use properties to specify the conflict behavior
@@ -476,7 +485,7 @@ namespace SnippetsApp.Controllers
                 };
 
                 // POST /me/drive/items/folderId:/fileName:/createUploadSession
-                var uploadSession = await graphClient.Me
+                var uploadSession = await _graphClient.Me
                     .Drive
                     .Items[folderId]
                     .ItemWithPath(file.FileName)
@@ -521,8 +530,9 @@ namespace SnippetsApp.Controllers
         // GET /Files/NewFolder
         // Get the form to create a new folder
         [AuthorizeForScopes(Scopes = new [] { GraphConstants.FilesReadWrite })]
-        public IActionResult NewFolder(string folderId)
+        public async Task<IActionResult> NewFolder(string folderId)
         {
+            await EnsureScopes(_filesScopes);
             return View(model: folderId);
         }
 
@@ -548,12 +558,12 @@ namespace SnippetsApp.Controllers
                     .WithError("No folder name was specified");
             }
 
+            await EnsureScopes(_filesScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(_filesScopes);
-
                 // PUT /me/drive/items/folderId:/fileName:/content
-                var newFolder = await graphClient.Me
+                var newFolder = await _graphClient.Me
                     .Drive
                     .Items[folderId]
                     .Children
@@ -586,15 +596,13 @@ namespace SnippetsApp.Controllers
 
             try
             {
-                var graphClient = GetGraphClientForScopes(_filesScopes);
-
                 // Get selected folder
                 IDriveItemRequest folderRequest;
                 if (string.IsNullOrEmpty(folderId))
                 {
                     // Get the root
                     // GET /me/drive/root
-                    folderRequest = graphClient.Me
+                    folderRequest = _graphClient.Me
                         .Drive
                         .Root
                         .Request();
@@ -602,7 +610,7 @@ namespace SnippetsApp.Controllers
                 else
                 {
                     // GET /me/drive/items/folderId
-                    folderRequest = graphClient.Me
+                    folderRequest = _graphClient.Me
                         .Drive
                         .Items[folderId]
                         .Request();
@@ -629,14 +637,14 @@ namespace SnippetsApp.Controllers
                     // initialize the request directly from the supplied
                     // URL
                     itemRequest = new DriveItemChildrenCollectionRequest(
-                        pageRequestUrl, graphClient, null);
+                        pageRequestUrl, _graphClient, null);
                 }
                 else if (string.IsNullOrEmpty(folderId))
                 {
                     // No folder ID specified, so use /me/drive/root/children
                     // to get all items in the root of user's drive
                     // GET /me/drive/root/children
-                    itemRequest = graphClient.Me
+                    itemRequest = _graphClient.Me
                         .Drive
                         .Root
                         .Children
@@ -646,7 +654,7 @@ namespace SnippetsApp.Controllers
                 {
                     // Folder ID specified
                     // GET /me/drive/items/folderId/children
-                    itemRequest =  graphClient.Me
+                    itemRequest =  _graphClient.Me
                         .Drive
                         .Items[folderId]
                         .Children
