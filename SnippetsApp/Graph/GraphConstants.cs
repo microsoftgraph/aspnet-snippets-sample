@@ -25,6 +25,14 @@ namespace SnippetsApp
         // Group
         public const string GroupReadWriteAll = "Group.ReadWrite.All";
 
+        // Teams
+        public const string ChannelCreate = "Channel.Create";
+        public const string ChannelMessageSend = "ChannelMessage.Send";
+        public const string ChannelSettingsReadWriteAll = "ChannelSettings.ReadWrite.All";
+        public const string TeamsAppInstallationReadWriteForTeam = "TeamsAppInstallation.ReadWriteForTeam";
+        public const string TeamCreate = "Team.Create";
+        public const string TeamSettingsReadWriteAll = "TeamSettings.ReadWrite.All";
+
         // Mailbox settings
         public const string MailboxSettingsRead = "MailboxSettings.Read";
 
