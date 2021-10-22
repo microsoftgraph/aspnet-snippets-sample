@@ -4,9 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Client;
 using Microsoft.Identity.Web;
 using Microsoft.Graph;
 using SnippetsApp.Models;
@@ -14,15 +14,16 @@ using TimeZoneConverter;
 
 namespace SnippetsApp.Controllers
 {
+    [Authorize]
     [AuthorizeForScopes(Scopes = new [] { GraphConstants.CalendarReadWrite })]
     public class CalendarController : BaseController
     {
         private readonly string[] _calendarScopes =
             new [] { GraphConstants.CalendarReadWrite };
-
         public CalendarController(
+            GraphServiceClient graphClient,
             ITokenAcquisition tokenAcquisition,
-            ILogger<HomeController> logger) : base(tokenAcquisition, logger)
+            ILogger<HomeController> logger) : base(graphClient, tokenAcquisition, logger)
         {
         }
 
@@ -31,6 +32,8 @@ namespace SnippetsApp.Controllers
         // the logged-in user
         public async Task<IActionResult> Index()
         {
+            await EnsureScopes(_calendarScopes);
+
             try
             {
                 // TZConvert handles either an IANA or Windows identifier
@@ -67,12 +70,12 @@ namespace SnippetsApp.Controllers
                     .WithError("Event ID cannot be empty.");
             }
 
+            await EnsureScopes(_calendarScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(_calendarScopes);
-
                 // GET /me/events/eventId
-                var graphEvent = await graphClient.Me
+                var graphEvent = await _graphClient.Me
                     .Events[eventId]
                     .Request()
                     // Send the Prefer header so times are in the user's timezone
@@ -109,8 +112,9 @@ namespace SnippetsApp.Controllers
 
         // GET /Calendar/New
         // Gets the new event form
-        public IActionResult New()
+        public async Task<IActionResult> New()
         {
+            await EnsureScopes(_calendarScopes);
             return View();
         }
 
@@ -120,6 +124,8 @@ namespace SnippetsApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> New([Bind("Subject,Attendees,Start,End,Body")] NewEvent newEvent)
         {
+            await EnsureScopes(_calendarScopes);
+
             var timeZone = User.GetUserGraphTimeZone();
 
             // Create a Graph event with the required fields
@@ -174,10 +180,9 @@ namespace SnippetsApp.Controllers
 
             try
             {
-                var graphClient = GetGraphClientForScopes(_calendarScopes);
                 // Add the event
                 // POST /me/events
-                await graphClient.Me.Events
+                await _graphClient.Me.Events
                     .Request()
                     .AddAsync(graphEvent);
 
@@ -216,10 +221,10 @@ namespace SnippetsApp.Controllers
                     .WithError("Event ID cannot be empty.");
             }
 
+            await EnsureScopes(_calendarScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(_calendarScopes);
-
                 // Create a new Event object with only the
                 // fields to update set
                 var updateEvent = new Event
@@ -237,7 +242,7 @@ namespace SnippetsApp.Controllers
                 };
 
                 // PATCH /me/events/eventId
-                await graphClient.Me
+                await _graphClient.Me
                     .Events[eventId]
                     .Request()
                     .UpdateAsync(updateEvent);
@@ -273,12 +278,12 @@ namespace SnippetsApp.Controllers
                     .WithError("Event ID cannot be empty.");
             }
 
+            await EnsureScopes(_calendarScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(_calendarScopes);
-
                 // POST /me/events/eventId/accept
-                await graphClient.Me
+                await _graphClient.Me
                     .Events[eventId]
                     .Accept(comment, sendResponse)
                     .Request()
@@ -314,12 +319,12 @@ namespace SnippetsApp.Controllers
                     .WithError("Event ID cannot be empty.");
             }
 
+            await EnsureScopes(_calendarScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(_calendarScopes);
-
                 // POST /me/events/eventId/tentativelyAccept
-                await graphClient.Me
+                await _graphClient.Me
                     .Events[eventId]
                     .TentativelyAccept(comment, sendResponse)
                     .Request()
@@ -355,12 +360,12 @@ namespace SnippetsApp.Controllers
                     .WithError("Event ID cannot be empty.");
             }
 
+            await EnsureScopes(_calendarScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(_calendarScopes);
-
                 // POST /me/events/eventId/decline
-                await graphClient.Me
+                await _graphClient.Me
                     .Events[eventId]
                     .Decline(comment, sendResponse)
                     .Request()
@@ -394,12 +399,12 @@ namespace SnippetsApp.Controllers
                     .WithError("Event ID cannot be empty.");
             }
 
+            await EnsureScopes(_calendarScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(_calendarScopes);
-
                 // DELETE /me/events/eventId
-                await graphClient.Me
+                await _graphClient.Me
                     .Events[eventId]
                     .Request()
                     .DeleteAsync();
@@ -419,8 +424,6 @@ namespace SnippetsApp.Controllers
 
         private async Task<IList<Event>> GetUserWeekCalendar(DateTime startOfWeek)
         {
-            var graphClient = GetGraphClientForScopes(_calendarScopes);
-
             // Configure a calendar view for the current week
             var endOfWeek = startOfWeek.AddDays(7);
 
@@ -430,7 +433,7 @@ namespace SnippetsApp.Controllers
                 new QueryOption("endDateTime", endOfWeek.ToString("o"))
             };
 
-            var events = await graphClient.Me
+            var events = await _graphClient.Me
                 .CalendarView
                 .Request(viewOptions)
                 // Send user time zone in request so date/time in
@@ -458,7 +461,7 @@ namespace SnippetsApp.Controllers
                 // Create a page iterator to iterate over subsequent pages
                 // of results. Build a list from the results
                 var pageIterator = PageIterator<Event>.CreatePageIterator(
-                    graphClient, events,
+                    _graphClient, events,
                     (e) => {
                         allEvents.Add(e);
                         return true;
