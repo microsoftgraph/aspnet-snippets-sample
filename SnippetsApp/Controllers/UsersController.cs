@@ -17,9 +17,16 @@ namespace SnippetsApp.Controllers
     [Authorize]
     public class UsersController : BaseController
     {
+        private readonly string[] _userScopes =
+            new [] { GraphConstants.UserReadWrite, GraphConstants.UserReadBasicAll };
+
+        private readonly string[] _userAdminScopes =
+            new [] { GraphConstants.UserReadWriteAll };
+
         public UsersController(
+            GraphServiceClient graphClient,
             ITokenAcquisition tokenAcquisition,
-            ILogger<HomeController> logger) : base(tokenAcquisition, logger)
+            ILogger<HomeController> logger) : base(graphClient, tokenAcquisition, logger)
         {
         }
 
@@ -37,13 +44,8 @@ namespace SnippetsApp.Controllers
               GraphConstants.UserReadBasicAll })]
         public async Task<IActionResult> Display(string userId)
         {
-            string[] scopes = new[]
-            {
-                GraphConstants.UserReadWrite,
-                GraphConstants.UserReadBasicAll
-            };
-
-            return await GetViewForUser(userId, scopes);
+            await EnsureScopes(_userScopes);
+            return await GetViewForUser(userId);
         }
 
         // GET /Users/AdminDisplay?userId=""
@@ -52,12 +54,8 @@ namespace SnippetsApp.Controllers
         [AuthorizeForScopes(Scopes = new[] { GraphConstants.UserReadWriteAll })]
         public async Task<IActionResult> AdminDisplay(string userId)
         {
-            string[] scopes = new[]
-            {
-                GraphConstants.UserReadWriteAll
-            };
-
-            return await GetViewForUser(userId, scopes);
+            await EnsureScopes(_userAdminScopes);
+            return await GetViewForUser(userId);
         }
 
         // GET /Users/List
@@ -67,12 +65,8 @@ namespace SnippetsApp.Controllers
         [AuthorizeForScopes(Scopes = new[] { GraphConstants.UserReadBasicAll })]
         public async Task<IActionResult> List()
         {
-            string[] scopes = new[]
-            {
-                GraphConstants.UserReadBasicAll
-            };
-
-            return await GetViewForUserList(scopes, false);
+            await EnsureScopes(_userScopes);
+            return await GetViewForUserList(false);
         }
 
         // GET /Users/AdminList
@@ -82,23 +76,15 @@ namespace SnippetsApp.Controllers
         [AuthorizeForScopes(Scopes = new[] { GraphConstants.UserReadWriteAll })]
         public async Task<IActionResult> AdminList()
         {
-            string[] scopes = new[]
-            {
-                GraphConstants.UserReadWriteAll
-            };
-
-            return await GetViewForUserList(scopes, true);
+            await EnsureScopes(_userAdminScopes);
+            return await GetViewForUserList(true);
         }
 
         // GET /Users/Page?pageUrl=""&isAdmin=""
         // Gets the next page of results when the user list is paged
         public async Task<IActionResult> Page(string pageUrl, bool isAdmin)
         {
-            string[] scopes = isAdmin ?
-                new[] { GraphConstants.UserReadBasicAll } :
-                new[] { GraphConstants.UserReadWriteAll };
-
-            return await GetViewForUserList(scopes, isAdmin, pageUrl);
+            return await GetViewForUserList(isAdmin, pageUrl);
         }
 
         // GET /Users/Create
@@ -106,20 +92,14 @@ namespace SnippetsApp.Controllers
         [AuthorizeForScopes(Scopes = new[] { GraphConstants.UserReadWriteAll })]
         public async Task<IActionResult> Create()
         {
-            string[] scopes = new[]
-            {
-                GraphConstants.UserReadWriteAll
-            };
-
+            await EnsureScopes(_userAdminScopes);
             try
             {
-                var graphClient = GetGraphClientForScopes(scopes);
-
                 // Get the Graph organization to determine the org's
                 // default domain name (@contoso.com, etc.)
                 // This value will be combined with the entered "user name"
                 // to create a UPN for the new user
-                var organization = await graphClient.Organization
+                var organization = await _graphClient.Organization
                     .Request()
                     // Only need the verified domains
                     .Select(o => new{ o.VerifiedDomains })
@@ -166,15 +146,10 @@ namespace SnippetsApp.Controllers
                     .WithError("Invalid data. You must supply a value for Display name, User name, and Password");
             }
 
-            string[] scopes = new[]
-            {
-                GraphConstants.UserReadWriteAll
-            };
+            await EnsureScopes(_userAdminScopes);
 
             try
             {
-                var graphClient = GetGraphClientForScopes(scopes);
-
                 // Crate a new user object with supplied values
                 var newUser = new User
                 {
@@ -191,7 +166,7 @@ namespace SnippetsApp.Controllers
                 };
 
                 // Add the user
-                await graphClient.Users
+                await _graphClient.Users
                     .Request()
                     .AddAsync(newUser);
 
@@ -214,12 +189,8 @@ namespace SnippetsApp.Controllers
         [AuthorizeForScopes(Scopes = new[] { GraphConstants.UserReadWrite })]
         public async Task<IActionResult> Update(string userId, string mobilePhone)
         {
-            string[] scopes = new[]
-            {
-                GraphConstants.UserReadWrite
-            };
-
-            return await UpdateUserMobilePhone(userId, mobilePhone, scopes);
+            await EnsureScopes(_userAdminScopes);
+            return await UpdateUserMobilePhone(userId, mobilePhone);
         }
 
         // POST /Users/Delete
@@ -235,16 +206,11 @@ namespace SnippetsApp.Controllers
                     .WithError("User ID cannot be empty.");
             }
 
-            string[] scopes = new[]
-            {
-                GraphConstants.UserReadWriteAll
-            };
+            await EnsureScopes(_userAdminScopes);
 
             try
             {
-                var graphClient = GetGraphClientForScopes(scopes);
-
-                await graphClient.Users[userId]
+                await _graphClient.Users[userId]
                     .Request()
                     .DeleteAsync();
 
@@ -261,7 +227,7 @@ namespace SnippetsApp.Controllers
         }
 
         // Builds the UsersDisplayModel and view for displaying a single user
-        private async Task<IActionResult> GetViewForUser(string userId, string[] scopes)
+        private async Task<IActionResult> GetViewForUser(string userId)
         {
             if (string.IsNullOrEmpty(userId))
             {
@@ -274,11 +240,9 @@ namespace SnippetsApp.Controllers
 
             try
             {
-                var graphClient = GetGraphClientForScopes(scopes);
-
                 // Use the request builder that matches the ID specified
                 var userRequestBuilder = userId.ToLower() == "me" ?
-                    graphClient.Me : graphClient.Users[userId];
+                    _graphClient.Me : _graphClient.Users[userId];
 
                 // Get the requested user
                 // Either GET /me or GET /users/userId
@@ -374,7 +338,7 @@ namespace SnippetsApp.Controllers
                         model.DirectReports = new List<User>();
 
                         var pageIterator = PageIterator<DirectoryObject>.CreatePageIterator(
-                            graphClient, directReportPage,
+                            _graphClient, directReportPage,
                             (drObject) => {
                                 // Executes for each object in the result set
                                 User directReport = drObject as User;
@@ -408,21 +372,19 @@ namespace SnippetsApp.Controllers
         }
 
         // Builds the UsersDisplayModel and view for listing users
-        private async Task<IActionResult> GetViewForUserList(string[] scopes, bool isAdmin, string pageRequestUrl = null)
+        private async Task<IActionResult> GetViewForUserList(bool isAdmin, string pageRequestUrl = null)
         {
             // Initialize the model
             var model = new UsersListDisplayModel();
 
             try
             {
-                var graphClient = GetGraphClientForScopes(scopes);
-
                 // Is this a page request?
                 if (string.IsNullOrEmpty(pageRequestUrl))
                 {
                     // Not a page request, so do
                     // GET /users
-                    var userPage = await graphClient.Users
+                    var userPage = await _graphClient.Users
                         .Request()
                         // Get max PageSize number of results
                         .Top(GraphConstants.PageSize)
@@ -449,7 +411,7 @@ namespace SnippetsApp.Controllers
                     // NOTE: The nextLink contains all of the query parameters needed,
                     // like $top and $orderby
                     var pageRequest = new GraphServiceUsersCollectionRequest(
-                        pageRequestUrl, graphClient, null);
+                        pageRequestUrl, _graphClient, null);
 
                     var userPage = await pageRequest.GetAsync();
 
@@ -469,7 +431,7 @@ namespace SnippetsApp.Controllers
         }
 
         // Updates a user's mobile phone number
-        private async Task<IActionResult> UpdateUserMobilePhone(string userId, string mobilePhone, string[] scopes)
+        private async Task<IActionResult> UpdateUserMobilePhone(string userId, string mobilePhone)
         {
             if (string.IsNullOrEmpty(userId))
             {
@@ -479,8 +441,6 @@ namespace SnippetsApp.Controllers
 
             try
             {
-                var graphClient = GetGraphClientForScopes(scopes);
-
                 // Create a new User object and set only
                 // the values to update
                 var userUpdate = new User
@@ -489,7 +449,7 @@ namespace SnippetsApp.Controllers
                 };
 
                 // PATCH /users/userId
-                var result = await graphClient.Users[userId]
+                var result = await _graphClient.Users[userId]
                     .Request()
                     .UpdateAsync(userUpdate);
 
