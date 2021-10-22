@@ -20,6 +20,7 @@ namespace SnippetsApp.Controllers
     {
         private readonly string[] _calendarScopes =
             new [] { GraphConstants.CalendarReadWrite };
+
         public CalendarController(
             GraphServiceClient graphClient,
             ITokenAcquisition tokenAcquisition,

@@ -23,6 +23,7 @@ namespace SnippetsApp.Controllers
 
         private readonly string[] _mailSendScopes =
             new [] { GraphConstants.MailReadWrite, GraphConstants.MailSend };
+
         public MailController(
             GraphServiceClient graphClient,
             ITokenAcquisition tokenAcquisition,
