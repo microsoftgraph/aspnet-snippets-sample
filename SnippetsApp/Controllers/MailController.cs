@@ -1,26 +1,32 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
-using SnippetsApp.Models;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
 using Microsoft.Graph;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using SnippetsApp.Models;
 
 namespace SnippetsApp.Controllers
 {
     [Authorize]
     public class MailController : BaseController
     {
+        private readonly string[] _mailScopes =
+            new [] { GraphConstants.MailReadWrite };
+
+        private readonly string[] _mailSendScopes =
+            new [] { GraphConstants.MailReadWrite, GraphConstants.MailSend };
         public MailController(
+            GraphServiceClient graphClient,
             ITokenAcquisition tokenAcquisition,
-            ILogger<HomeController> logger) : base(tokenAcquisition, logger)
+            ILogger<HomeController> logger) : base(graphClient, tokenAcquisition, logger)
         {
         }
 
@@ -31,6 +37,7 @@ namespace SnippetsApp.Controllers
         [AuthorizeForScopes(Scopes = new[] { GraphConstants.MailReadWrite })]
         public async Task<IActionResult> Index(string folderId = null)
         {
+            await EnsureScopes(_mailScopes);
             return await GetViewForList(folderId);
         }
 
@@ -42,6 +49,7 @@ namespace SnippetsApp.Controllers
         public async Task<IActionResult> Page(string pageUrl,
                                               string folderId = null)
         {
+            await EnsureScopes(_mailScopes);
             return await GetViewForList(folderId, pageUrl);
         }
 
@@ -52,9 +60,8 @@ namespace SnippetsApp.Controllers
         [AuthorizeForScopes(Scopes = new[] { GraphConstants.MailReadWrite })]
         public async Task<IActionResult> Display(string messageId)
         {
-            var scopes = new[] { GraphConstants.MailReadWrite };
-
-            return await DisplayMessage(messageId, scopes);
+            await EnsureScopes(_mailScopes);
+            return await DisplayMessage(messageId);
         }
 
         // Get /Mail/DisplayAndConsentForSend?messageId
@@ -67,10 +74,8 @@ namespace SnippetsApp.Controllers
                                              GraphConstants.MailSend })]
         public async Task<IActionResult> DisplayAndConsentForSend(string messageId)
         {
-            var scopes = new[] { GraphConstants.MailReadWrite,
-                                 GraphConstants.MailSend };
-
-            return await DisplayMessage(messageId, scopes);
+            await EnsureScopes(_mailSendScopes);
+            return await DisplayMessage(messageId);
         }
 
         // POST /Mail/Update?messageId=""&isRead=""
@@ -88,12 +93,10 @@ namespace SnippetsApp.Controllers
                     .WithError("Message ID cannot be empty.");
             }
 
-            var scopes = new[] { GraphConstants.MailReadWrite };
+            await EnsureScopes(_mailScopes);
 
             try
             {
-                var graphClient = GetGraphClientForScopes(scopes);
-
                 // Create a new message object with just the properties
                 // to update, in this case, IsRead
                 var updateMessage = new Message
@@ -106,7 +109,7 @@ namespace SnippetsApp.Controllers
                 // {
                 //   "isRead": "true"
                 // }
-                await graphClient.Me
+                await _graphClient.Me
                     .Messages[messageId]
                     .Request()
                     .UpdateAsync(updateMessage);
@@ -142,18 +145,16 @@ namespace SnippetsApp.Controllers
                     .WithError("Message ID/folder ID cannot be empty.");
             }
 
-            var scopes = new[] { GraphConstants.MailReadWrite };
+            await EnsureScopes(_mailScopes);
 
             try
             {
-                var graphClient = GetGraphClientForScopes(scopes);
-
                 // POST /me/messages/messageId/move
                 //
                 // {
                 //   "destinationId": "..."
                 // }
-                await graphClient.Me
+                await _graphClient.Me
                     .Messages[messageId]
                     .Move(destinationFolderId)
                     .Request()
@@ -189,14 +190,12 @@ namespace SnippetsApp.Controllers
                     .WithError("Message ID cannot be empty.");
             }
 
-            var scopes = new[] { GraphConstants.MailReadWrite };
+            await EnsureScopes(_mailScopes);
 
             try
             {
-                var graphClient = GetGraphClientForScopes(scopes);
-
                 // DELETE /me/messages/messageId
-                await graphClient.Me
+                await _graphClient.Me
                     .Messages[messageId]
                     .Request()
                     .DeleteAsync();
@@ -241,23 +240,19 @@ namespace SnippetsApp.Controllers
                     .WithError("You must supply a recipient email address to forward a message.");
             }
 
-            var scopes = new[] { GraphConstants.MailReadWrite, GraphConstants.MailSend };
-
             try
             {
-                var graphClient = GetGraphClientForScopes(scopes);
-
                 switch (respondAction.ToLower())
                 {
                     case "reply":
-                        await graphClient.Me
+                        await _graphClient.Me
                             .Messages[messageId]
                             .Reply(Comment: comment)
                             .Request()
                             .PostAsync();
                         break;
                     case "replyall":
-                        await graphClient.Me
+                        await _graphClient.Me
                             .Messages[messageId]
                             .ReplyAll(Comment: comment)
                             .Request()
@@ -275,7 +270,7 @@ namespace SnippetsApp.Controllers
                             }
                         };
 
-                        await graphClient.Me
+                        await _graphClient.Me
                             .Messages[messageId]
                             .Forward(recipients, Comment: comment)
                             .Request()
@@ -306,11 +301,12 @@ namespace SnippetsApp.Controllers
         }
 
         // GET /Mail/New
-        [AuthorizeForScopes(Scopes= new[] { GraphConstants.MailSend })]
+        [AuthorizeForScopes(Scopes= new[] {
+            GraphConstants.MailReadWrite,
+            GraphConstants.MailSend })]
         public async Task<IActionResult> New()
         {
-            var scopes = new[] { GraphConstants.MailSend };
-            await _tokenAcquisition.GetAccessTokenForUserAsync(scopes);
+            await EnsureScopes(_mailSendScopes);
             return View();
         }
 
@@ -319,7 +315,9 @@ namespace SnippetsApp.Controllers
         // Sent Items
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [AuthorizeForScopes(Scopes= new[] { GraphConstants.MailSend })]
+        [AuthorizeForScopes(Scopes= new[] {
+            GraphConstants.MailReadWrite,
+            GraphConstants.MailSend })]
         public async Task<IActionResult> Send(string recipient,
                                               string subject,
                                               string body,
@@ -331,12 +329,10 @@ namespace SnippetsApp.Controllers
                     .WithError("You must supply a recipient");
             }
 
-            var scopes = new[] { GraphConstants.MailSend };
+            await EnsureScopes(_mailSendScopes);
 
             try
             {
-                var graphClient = GetGraphClientForScopes(scopes);
-
                 bool saveToSentItems = true;
                 // Create the new message
                 var message  = new Message
@@ -405,7 +401,7 @@ namespace SnippetsApp.Controllers
                 //     ]
                 //   }
                 // }
-                await graphClient.Me
+                await _graphClient.Me
                     .SendMail(message, saveToSentItems)
                     .Request()
                     .PostAsync();
@@ -430,14 +426,10 @@ namespace SnippetsApp.Controllers
         {
             var model = new MailViewDisplayModel();
 
-            var scopes = new[] { GraphConstants.MailReadWrite };
-
             try
             {
-                var graphClient = GetGraphClientForScopes(scopes);
-
                 // Get the mail folder list
-                var mailFolderPage = await graphClient.Me
+                var mailFolderPage = await _graphClient.Me
                     .MailFolders
                     .Request()
                     .Top(GraphConstants.PageSize)
@@ -452,7 +444,7 @@ namespace SnippetsApp.Controllers
                 else
                 {
                     model.MailFolders = await GetAllPages<MailFolder>(
-                        graphClient, mailFolderPage);
+                        _graphClient, mailFolderPage);
                 }
 
                 if (!string.IsNullOrEmpty(folderId))
@@ -476,7 +468,7 @@ namespace SnippetsApp.Controllers
                     // URL
                     var pageRequest =
                     new MailFolderMessagesCollectionRequest(
-                        pageRequestUrl, graphClient, null);
+                        pageRequestUrl, _graphClient, null);
 
                     var messagePage = await pageRequest.GetAsync();
 
@@ -488,7 +480,7 @@ namespace SnippetsApp.Controllers
                     // No folder ID specified, so use /me/messages
                     // to get all messages in all folders
                     // GET /me/messages?$top=25&$select=""&orderby=""
-                    var messagePage = await graphClient.Me
+                    var messagePage = await _graphClient.Me
                         .Messages
                         .Request()
                         // Get max PageSize number of results
@@ -516,7 +508,7 @@ namespace SnippetsApp.Controllers
                     // Folder ID specified, so only get messages from
                     // that folder
                     // GET /me/mailfolders/folderId/messages?...
-                    var messagePage = await graphClient.Me
+                    var messagePage = await _graphClient.Me
                         .MailFolders[folderId]
                         .Messages
                         .Request()
@@ -552,8 +544,7 @@ namespace SnippetsApp.Controllers
         // Returns a view for the requested message
         // messageId: ID of the message to display
         // scopes: Array of permission scopes to use in the Graph client
-        private async Task<IActionResult> DisplayMessage(string messageId,
-                                                         string[] scopes)
+        private async Task<IActionResult> DisplayMessage(string messageId)
         {
             if (string.IsNullOrEmpty(messageId))
             {
@@ -563,10 +554,8 @@ namespace SnippetsApp.Controllers
 
             try
             {
-                var graphClient = GetGraphClientForScopes(scopes);
-
                 // GET /me/messages/messageId?$select=""&expand="attachments"
-                var message = await graphClient.Me
+                var message = await _graphClient.Me
                     .Messages[messageId]
                     .Request()
                     // Only get the fields used by the app
