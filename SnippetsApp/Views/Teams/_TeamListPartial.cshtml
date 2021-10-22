@@ -8,6 +8,6 @@
 <div class="list-group">
   @foreach (var team in Model)
   {
-    <a asp-action="Display" asp-route-teamId="@team.Id" class="list-group-item list-group-item-action">@team.AdditionalData["displayName"]</a>
+    <a asp-action="Display" asp-route-teamId="@team.Id" class="list-group-item list-group-item-action">@team.DisplayName</a>
   }
 </div>

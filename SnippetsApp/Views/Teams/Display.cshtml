@@ -6,7 +6,7 @@
 @using Microsoft.Graph
 
 @{
-    ViewData["Title"] = Model.Team.AdditionalData["displayName"];
+    ViewData["Title"] = Model.Team.DisplayName;
     ViewData["teamId"] = Model.Team.Id;
     ViewData["teamArchived"] = Model.Team.IsArchived.Value;
     var archiveButtonLabel = Model.Team.IsArchived.Value ? "Unarchive" : "Archive";
@@ -14,7 +14,7 @@
 
 <div class="card mb-4" id="team-card">
   <div class="card-body">
-    <h1 class="card-title">@Model.Team.AdditionalData["displayName"]</h1>
+    <h1 class="card-title">@Model.Team.DisplayName</h1>
     <form asp-action="ArchiveTeam" class="mb-3" onsubmit="return confirm('Are you sure you want @archiveButtonLabel.ToLower() this team?');">
       <input type="hidden" name="teamId" value="@Model.Team.Id">
       <input type="hidden" name="archiveAction" value="@archiveButtonLabel">
