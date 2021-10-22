@@ -2,11 +2,11 @@
 // Licensed under the MIT license.
 
 // <WithAlertResultSnippet>
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.DependencyInjection;
 using SnippetsApp.Models;
-using System.Threading.Tasks;
 
 namespace SnippetsApp
 {

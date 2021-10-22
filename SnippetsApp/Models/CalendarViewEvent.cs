@@ -2,8 +2,8 @@
 // Licensed under the MIT license.
 
 // <CalendarViewEventSnippet>
-using Microsoft.Graph;
 using System;
+using Microsoft.Graph;
 
 namespace SnippetsApp.Models
 {

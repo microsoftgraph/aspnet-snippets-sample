@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
-using Microsoft.Graph;
 using System.Collections.Generic;
+using Microsoft.Graph;
 
 namespace SnippetsApp.Models
 {

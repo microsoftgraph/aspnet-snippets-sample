@@ -1,12 +1,11 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
+using System.Collections.Generic;
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SnippetsApp.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
 
 namespace SnippetsApp
 {
