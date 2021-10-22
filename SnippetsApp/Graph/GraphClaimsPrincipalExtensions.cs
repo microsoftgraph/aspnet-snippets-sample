@@ -2,11 +2,11 @@
 // Licensed under the MIT license.
 
 // <GraphClaimsExtensionsSnippet>
-using Microsoft.Identity.Web;
-using Microsoft.Graph;
 using System;
 using System.IO;
 using System.Security.Claims;
+using Microsoft.Identity.Web;
+using Microsoft.Graph;
 
 namespace SnippetsApp
 {

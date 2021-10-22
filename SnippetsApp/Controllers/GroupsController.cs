@@ -1,29 +1,27 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
-using SnippetsApp.Models;
-using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
 using Microsoft.Graph;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+using SnippetsApp.Models;
 
 namespace SnippetsApp.Controllers
 {
     [AuthorizeForScopes(Scopes = new[] { GraphConstants.GroupReadWriteAll })]
     public class GroupsController : BaseController
     {
-
-        private readonly string[] groupScopes =
-            new[] { GraphConstants.GroupReadWriteAll };
+        private readonly string[] _groupScopes =
+            new [] { GraphConstants.GroupReadWriteAll };
 
         public GroupsController(
+            GraphServiceClient graphClient,
             ITokenAcquisition tokenAcquisition,
-            ILogger<HomeController> logger) : base(tokenAcquisition, logger)
+            ILogger<HomeController> logger) : base(graphClient, tokenAcquisition, logger)
         {
         }
 
@@ -41,15 +39,15 @@ namespace SnippetsApp.Controllers
                     .WithError("Group ID cannot be empty.");
             }
 
+            await EnsureScopes(_groupScopes);
+
             // Initialize the model
             var model = new GroupWithPhoto();
 
             try
             {
-                var graphClient = GetGraphClientForScopes(groupScopes);
-
                 // GET /groups/groupId
-                model.Group = await graphClient.Groups[groupId]
+                model.Group = await _graphClient.Groups[groupId]
                     .Request()
                     // Select just the fields used by the app
                     .Select(g => new
@@ -66,7 +64,7 @@ namespace SnippetsApp.Controllers
                 {
                     // Get the full size photo
                     // GET /groups/groupId/photo/$value
-                    var photoStream = await graphClient.Groups[groupId]
+                    var photoStream = await _graphClient.Groups[groupId]
                         .Photo
                         .Content
                         .Request()
@@ -100,16 +98,16 @@ namespace SnippetsApp.Controllers
         // GET /Groups/List
         public async Task<IActionResult> List()
         {
+            await EnsureScopes(_groupScopes);
+
             // Initialize the model
             var model = new GroupsListDisplayModel();
 
             try
             {
-                var graphClient = GetGraphClientForScopes(groupScopes);
-
                 // Get all groups
                 // GET /groups
-                var groupsPage = await graphClient.Groups
+                var groupsPage = await _graphClient.Groups
                     .Request()
                     // Select just the fields used by the app
                     .Select(g => new
@@ -131,14 +129,14 @@ namespace SnippetsApp.Controllers
                 else
                 {
                     model.AllGroups = await GetAllPages<Group>(
-                        graphClient, groupsPage);
+                        _graphClient, groupsPage);
                 }
 
                 // Get only unified groups
                 // Same as previous request, except
                 // filtered, and without a sort
                 // (Sort not supported when filtering groups)
-                var unifiedGroupsPage = await graphClient.Groups
+                var unifiedGroupsPage = await _graphClient.Groups
                     .Request()
                     .Filter("groupTypes/any(a:a%20eq%20'unified')")
                     .Select(g => new
@@ -157,12 +155,12 @@ namespace SnippetsApp.Controllers
                 else
                 {
                     model.UnifiedGroups = await GetAllPages<Group>(
-                        graphClient, unifiedGroupsPage);
+                        _graphClient, unifiedGroupsPage);
                 }
 
                 // Get groups user is a member of
                 // GET /me/memberOf
-                var membershipPage = await graphClient.Me.MemberOf
+                var membershipPage = await _graphClient.Me.MemberOf
                     .Request()
                     .Select("displayName,groupTypes,id")
                     .Top(GraphConstants.PageSize)
@@ -171,18 +169,18 @@ namespace SnippetsApp.Controllers
                 // This method casts the returned DirectoryObjects
                 // as Group object, and filters out any non-Group objects
                 model.GroupMemberships = await GetAllPagesAsType<Group>(
-                    graphClient, membershipPage);
+                    _graphClient, membershipPage);
 
                 // Get groups user owns
                 // GET /me/ownedObjects
-                var ownershipPage = await graphClient.Me.OwnedObjects
+                var ownershipPage = await _graphClient.Me.OwnedObjects
                     .Request()
                     .Select("displayName,groupTypes,id")
                     .Top(GraphConstants.PageSize)
                     .GetAsync();
 
                 model.OwnedGroups = await GetAllPagesAsType<Group>(
-                    graphClient, ownershipPage);
+                    _graphClient, ownershipPage);
 
                 return View(model);
             }
@@ -196,8 +194,9 @@ namespace SnippetsApp.Controllers
         }
 
         // GET /Groups/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            await EnsureScopes(_groupScopes);
             return View();
         }
 
@@ -217,10 +216,10 @@ namespace SnippetsApp.Controllers
                     .WithError("Invalid data. You must supply a value for Display name and Mail nickname");
             }
 
+            await EnsureScopes(_groupScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(groupScopes);
-
                 // Create a new group with the supplied values
                 var newGroup = new Group
                 {
@@ -247,7 +246,7 @@ namespace SnippetsApp.Controllers
                 newGroup.AdditionalData.Add("owners@odata.bind", userIds);
 
                 // POST /groups
-                await graphClient.Groups
+                await _graphClient.Groups
                     .Request()
                     .AddAsync(newGroup);
             }
@@ -274,10 +273,10 @@ namespace SnippetsApp.Controllers
                     .WithError("Group ID cannot be empty.");
             }
 
+            await EnsureScopes(_groupScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(groupScopes);
-
                 // Create a new Group object with just the
                 // properties to update
                 var updateGroup = new Group
@@ -286,7 +285,7 @@ namespace SnippetsApp.Controllers
                 };
 
                 // PATCH /groups/groupId
-                await graphClient.Groups[groupId]
+                await _graphClient.Groups[groupId]
                     .Request()
                     .UpdateAsync(updateGroup);
 
@@ -314,19 +313,17 @@ namespace SnippetsApp.Controllers
                     .WithError("Group ID cannot be empty.");
             }
 
+            await EnsureScopes(_groupScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(groupScopes);
-
                 // DELETE /groups/groupId
-                await graphClient.Groups[groupId]
+                await _graphClient.Groups[groupId]
                     .Request()
                     .DeleteAsync();
 
                 return RedirectToAction("List")
                     .WithSuccess("Group deleted");
-
-
             }
             catch (ServiceException ex)
             {

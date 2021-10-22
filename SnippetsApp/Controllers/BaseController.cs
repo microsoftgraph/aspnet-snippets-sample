@@ -1,31 +1,34 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
-using Microsoft.Identity.Client;
 using Microsoft.Identity.Web;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace SnippetsApp.Controllers
 {
     public class BaseController : Controller
     {
+        protected readonly GraphServiceClient _graphClient;
         protected readonly ITokenAcquisition _tokenAcquisition;
         protected readonly ILogger<HomeController> _logger;
 
         public BaseController(
+            GraphServiceClient graphClient,
             ITokenAcquisition tokenAcquisition,
             ILogger<HomeController> logger)
         {
+            _graphClient = graphClient;
             _tokenAcquisition = tokenAcquisition;
             _logger = logger;
         }
 
         // Gets a Graph client configured with
         // the specified scopes
+        /*
         protected GraphServiceClient GetGraphClientForScopes(string[] scopes)
         {
             return GraphServiceClientFactory
@@ -42,6 +45,12 @@ namespace SnippetsApp.Controllers
                     return token;
                 }
             );
+        }
+        */
+
+        protected async Task EnsureScopes(string[] scopes)
+        {
+            await _tokenAcquisition.GetAccessTokenForUserAsync(scopes);
         }
 
         // If the Graph client is unable to get a token for the

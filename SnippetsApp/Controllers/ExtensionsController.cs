@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using SnippetsApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace SnippetsApp.Controllers
 {
+    [Authorize]
     [AuthorizeForScopes(Scopes = new [] { GraphConstants.UserReadWrite })]
     public class ExtensionsController : BaseController
     {
@@ -17,8 +19,9 @@ namespace SnippetsApp.Controllers
             new [] { GraphConstants.UserReadWrite };
 
         public ExtensionsController(
+            GraphServiceClient graphClient,
             ITokenAcquisition tokenAcquisition,
-            ILogger<HomeController> logger) : base(tokenAcquisition, logger)
+            ILogger<HomeController> logger) : base(graphClient, tokenAcquisition, logger)
         {
         }
 
@@ -26,12 +29,12 @@ namespace SnippetsApp.Controllers
         // Displays the open extension added to the signed-in user
         public async Task<IActionResult> Index()
         {
+            await EnsureScopes(_userScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(_userScopes);
-
                 // GET /me/extensions/com.contoso.roamingSettings
-                var extension = await graphClient.Me
+                var extension = await _graphClient.Me
                     .Extensions[RoamingSettings.ExtensionName]
                     .Request()
                     .GetAsync();
@@ -65,10 +68,10 @@ namespace SnippetsApp.Controllers
                                                 string SelectedColor,
                                                 string SelectedLanguage)
         {
+            await EnsureScopes(_userScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(_userScopes);
-
                 var roamingSettings = RoamingSettings.Create(SelectedTheme, SelectedColor, SelectedLanguage);
 
                 var extension = roamingSettings.ToOpenExtension();
@@ -83,7 +86,7 @@ namespace SnippetsApp.Controllers
                   "language": "..."
                 }
                 */
-                await graphClient.Me
+                await _graphClient.Me
                     .Extensions
                     .Request()
                     .AddAsync(extension);
@@ -109,10 +112,10 @@ namespace SnippetsApp.Controllers
                                                 string SelectedColor,
                                                 string SelectedLanguage)
         {
+            await EnsureScopes(_userScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(_userScopes);
-
                 var roamingSettings = RoamingSettings.Create(SelectedTheme, SelectedColor, SelectedLanguage);
 
                 var extension = roamingSettings.ToOpenExtension();
@@ -127,8 +130,8 @@ namespace SnippetsApp.Controllers
                   "language": "..."
                 }
                 */
-                await graphClient.Me
-                    .Extensions[extension.Id]
+                await _graphClient.Me
+                    .Extensions[extension.ExtensionName]
                     .Request()
                     .UpdateAsync(extension);
 
@@ -151,12 +154,12 @@ namespace SnippetsApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete()
         {
+            await EnsureScopes(_userScopes);
+
             try
             {
-                var graphClient = GetGraphClientForScopes(_userScopes);
-
                 // DELETE /me/extensions/com.contoso.roamingSettings
-                await graphClient.Me
+                await _graphClient.Me
                     .Extensions[RoamingSettings.ExtensionName]
                     .Request()
                     .DeleteAsync();
