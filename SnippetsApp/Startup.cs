@@ -87,7 +87,7 @@ namespace SnippetsApp
                         }
                         catch (ServiceException ex)
                         {
-                            if (ex.IsMatch("ErrorItemNotFound"))
+                            if (ex.IsMatch("PitureNotFound"))
                             {
                                 context.Principal.AddUserGraphPhoto(null);
                             }
